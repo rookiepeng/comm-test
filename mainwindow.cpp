@@ -9,11 +9,11 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->lineEdit->setFocusPolicy(Qt::StrongFocus);
     ui->textBrowser->setFocusPolicy(Qt::NoFocus);
-#ifndef ROLE
-    ui->label->setText("Server");
-#else
-    ui->label->setText("Client");
-#endif
+//#ifndef ROLE
+//    ui->label->setText("Server");
+//#else
+//    ui->label->setText("Client");
+//#endif
     tableFormat.setBorder(0);
 
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(sendMessage()));
