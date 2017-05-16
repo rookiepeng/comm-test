@@ -5,6 +5,8 @@
 #include <QTextTable>
 #include <QScrollBar>
 
+#include "myudp.h"
+
 #define ROLE 1 // 0 server, 1 client
 
 namespace Ui {
@@ -28,6 +30,7 @@ public:
 private:
     Ui::MainWindow *ui;
     QTextTableFormat tableFormat;
+    MyUDP myudp;
 };
 
 #endif // MAINWINDOW_H

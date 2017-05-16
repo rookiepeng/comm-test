@@ -19,6 +19,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(sendMessage()));
     //connect(ui->pushButton,SIGNAL(returnPressed()),this,SLOT(appendMessage(QString,QString)));
     connect(ui->lineEdit,SIGNAL(returnPressed()),this,SLOT(sendMessage()));
+    connect(&myudp,SIGNAL(newMessage(QString,QString)),this,SLOT(appendMessage(QString,QString)));
 }
 
 MainWindow::~MainWindow()
@@ -55,6 +56,7 @@ void MainWindow::sendMessage()
         ui->textBrowser->setTextColor(color);
     } else {
         //client.sendMessage(text);
+        myudp.sendMessage(text);
 #ifndef ROLE
         appendMessage("server", text);
 #else

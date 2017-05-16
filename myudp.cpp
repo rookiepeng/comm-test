@@ -14,7 +14,17 @@ MyUDP::MyUDP(QObject *parent)
     connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
 }
 
+void MyUDP::sendMessage(QString string)
+{
+    QByteArray Data;
+    Data.append(string);
 
+    // Sends the datagram datagram
+    // to the host address and at port.
+    // qint64 QUdpSocket::writeDatagram(const QByteArray & datagram,
+    //                      const QHostAddress & host, quint16 port)
+    socket->writeDatagram(Data, QHostAddress::LocalHost, 1234);
+}
 
 void MyUDP::readyRead()
 {
@@ -34,7 +44,8 @@ void MyUDP::readyRead()
     socket->readDatagram(buffer.data(), buffer.size(),
                          &sender, &senderPort);
 
-    qDebug() << "Message from: " << sender.toString();
-    qDebug() << "Message port: " << senderPort;
-    qDebug() << "Message: " << buffer;
+    emit newMessage(sender.toString(), buffer);
+    //qDebug() << "Message from: " << sender.toString();
+    //qDebug() << "Message port: " << senderPort;
+    //qDebug() << "Message: " << buffer;
 }

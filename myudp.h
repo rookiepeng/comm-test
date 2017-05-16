@@ -10,9 +10,11 @@ public:
     MyUDP(QObject *parent = 0);
 
 signals:
+    void newMessage(const QString &from, const QString &message);
 
 public slots:
     void readyRead();
+    void sendMessage(QString string);
 
 private:
     QUdpSocket *socket;
