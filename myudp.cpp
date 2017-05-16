@@ -4,12 +4,13 @@ MyUDP::MyUDP(QObject *parent)
     : QUdpSocket(parent)
 {
     socket = new QUdpSocket(this);
+    QHostAddress Addr("127.0.0.1");
 
     // The most common way to use QUdpSocket class is
     // to bind to an address and port using bind()
     // bool QAbstractSocket::bind(const QHostAddress & address,
     //     quint16 port = 0, BindMode mode = DefaultForPlatform)
-    socket->bind(QHostAddress::LocalHost, 1234);
+    socket->bind(Addr, 1234);
 
     connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
 }

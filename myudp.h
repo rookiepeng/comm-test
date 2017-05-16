@@ -18,7 +18,6 @@ public slots:
 
 private:
     QUdpSocket *socket;
-
 };
 
 #endif // MYUDP_H
