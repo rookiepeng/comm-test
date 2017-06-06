@@ -52,10 +52,6 @@ void MainWindow::sendMessage()
                                 .arg(text.left(text.indexOf(' '))));
         ui->textBrowser->setTextColor(color);
     } else {
-        //client.sendMessage(text);
-        myudp.sendMessage(text);
-        appendMessage("server", text);
-#else
         myudp->sendMessage(text);
         appendMessage("client", text);
         //myudp->sendMessage(text);
