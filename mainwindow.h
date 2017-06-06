@@ -30,7 +30,7 @@ public:
 private:
     Ui::MainWindow *ui;
     QTextTableFormat tableFormat;
-    MyUDP myudp;
+    MyUDP *myudp;
 };
 
 #endif // MAINWINDOW_H

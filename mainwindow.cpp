@@ -9,17 +9,14 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->lineEdit->setFocusPolicy(Qt::StrongFocus);
     ui->textBrowser->setFocusPolicy(Qt::NoFocus);
-//#ifndef ROLE
-//    ui->label->setText("Server");
-//#else
-//    ui->label->setText("Client");
-//#endif
+    ui->IPlineEdit->setInputMask("000.000.000.000;_");
+
     tableFormat.setBorder(0);
+    myudp=new MyUDP;
 
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(sendMessage()));
-    //connect(ui->pushButton,SIGNAL(returnPressed()),this,SLOT(appendMessage(QString,QString)));
     connect(ui->lineEdit,SIGNAL(returnPressed()),this,SLOT(sendMessage()));
-    connect(&myudp,SIGNAL(newMessage(QString,QString)),this,SLOT(appendMessage(QString,QString)));
+    connect(myudp,SIGNAL(newMessage(QString,QString)),this,SLOT(appendMessage(QString,QString)));
 }
 
 MainWindow::~MainWindow()
@@ -57,11 +54,11 @@ void MainWindow::sendMessage()
     } else {
         //client.sendMessage(text);
         myudp.sendMessage(text);
-#ifndef ROLE
         appendMessage("server", text);
 #else
+        myudp->sendMessage(text);
         appendMessage("client", text);
-#endif
+        //myudp->sendMessage(text);
     }
 
     ui->lineEdit->clear();
