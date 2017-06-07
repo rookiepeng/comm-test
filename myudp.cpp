@@ -12,10 +12,10 @@ MyUDP::MyUDP(QObject *parent)
     //     quint16 port = 0, BindMode mode = DefaultForPlatform)  
 }
 
-void MyUDP::bindPort()
+void MyUDP::bindPort(int port)
 {
-    QHostAddress Addr("127.0.0.1");
-    isBinded=socket->bind(Addr, 1234);
+    //QHostAddress Addr("127.0.0.1");
+    isBinded=socket->bind(QHostAddress::LocalHost, port);
     emit bindSuccess(isBinded);
     connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
 }

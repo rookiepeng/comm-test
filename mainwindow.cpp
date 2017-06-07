@@ -33,9 +33,14 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->IPlineEdit,SIGNAL(textChanged(QString)),this,SLOT(enableUpdateButton()));
     connect(ui->targetPortEdit,SIGNAL(textChanged(QString)),this,SLOT(enableUpdateButton()));
     connect(ui->listenPortEdit,SIGNAL(textChanged(QString)),this,SLOT(enableUpdateButton()));
+
+    connect(ui->updateButton,SIGNAL(clicked()),this,SLOT(updateConfig()));
+
     connect(myudp,SIGNAL(newMessage(QString,QString)),this,SLOT(appendMessage(QString,QString)));
     connect(myudp,SIGNAL(bindSuccess(bool)),this,SLOT(udpBinded(bool)));
-    myudp->bindPort();
+
+    myudp->bindPort(ui->listenPortEdit->text().toInt());
+
 }
 
 MainWindow::~MainWindow()
@@ -87,4 +92,15 @@ void MainWindow::udpBinded(bool isBinded)
 void MainWindow::enableUpdateButton()
 {
     ui->updateButton->setDisabled(false);
+}
+
+void MainWindow::updateConfig()
+{
+    disconnect(this,SLOT(appendMessage(QString,QString)));
+    disconnect(this,SLOT(udpBinded(bool)));
+    myudp->close();
+    myudp=new MyUDP;
+    connect(myudp,SIGNAL(newMessage(QString,QString)),this,SLOT(appendMessage(QString,QString)));
+    connect(myudp,SIGNAL(bindSuccess(bool)),this,SLOT(udpBinded(bool)));
+    myudp->bindPort(ui->listenPortEdit->text().toInt());
 }

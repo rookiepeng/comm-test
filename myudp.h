@@ -8,7 +8,7 @@ class MyUDP: public QUdpSocket
     Q_OBJECT
 public:
     MyUDP(QObject *parent = 0);
-    void bindPort();
+    void bindPort(int port);
 
 signals:
     void newMessage(const QString &from, const QString &message);
