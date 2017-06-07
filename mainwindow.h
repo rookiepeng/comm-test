@@ -22,6 +22,8 @@ public slots:
 
 private slots:
     void sendMessage();
+    void udpBinded(bool isBinded);
+    void enableUpdateButton();
 
 public:
     explicit MainWindow(QWidget *parent = 0);

@@ -8,9 +8,11 @@ class MyUDP: public QUdpSocket
     Q_OBJECT
 public:
     MyUDP(QObject *parent = 0);
+    void bindPort();
 
 signals:
     void newMessage(const QString &from, const QString &message);
+    void bindSuccess(bool isBinded);
 
 public slots:
     void readyRead();
@@ -18,6 +20,7 @@ public slots:
 
 private:
     QUdpSocket *socket;
+    bool isBinded;
 };
 
 #endif // MYUDP_H

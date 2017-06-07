@@ -54,7 +54,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_3">
+       <widget class="QLineEdit" name="targetPortEdit">
         <property name="minimumSize">
          <size>
           <width>80</width>
@@ -94,7 +94,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="lineEdit_4">
+       <widget class="QLineEdit" name="listenPortEdit">
         <property name="minimumSize">
          <size>
           <width>80</width>
@@ -140,7 +140,7 @@
        </spacer>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton_2">
+       <widget class="QPushButton" name="updateButton">
         <property name="text">
          <string>Update</string>
         </property>

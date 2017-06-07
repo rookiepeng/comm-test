@@ -9,14 +9,33 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->setupUi(this);
     ui->lineEdit->setFocusPolicy(Qt::StrongFocus);
     ui->textBrowser->setFocusPolicy(Qt::NoFocus);
-    ui->IPlineEdit->setInputMask("000.000.000.000;_");
+    //ui->IPlineEdit->setInputMask("000.000.000.000;_");
+
+    QString Octet = "(?:[0-1]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])";
+    ui->IPlineEdit->setValidator(new QRegExpValidator(
+    QRegExp("^" + Octet + "\\." + Octet + "\\." + Octet + "\\." + Octet + "$"), this));
+    //ui->IPlineEdit->setValidator( &regValidator );
+
+    ui->targetPortEdit->setValidator(new QIntValidator(0, 65535, this));
+    ui->listenPortEdit->setValidator(new QIntValidator(0, 65535, this));
+
+    ui->IPlineEdit->setText("127.0.0.1");
+    ui->targetPortEdit->setText("1234");
+    ui->listenPortEdit->setText("1234");
+    ui->lineEdit->setFocus();
 
     tableFormat.setBorder(0);
-    myudp=new MyUDP;
 
+    //ui->updateButton->setDisabled(true);
+    myudp=new MyUDP;
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(sendMessage()));
     connect(ui->lineEdit,SIGNAL(returnPressed()),this,SLOT(sendMessage()));
+    connect(ui->IPlineEdit,SIGNAL(textChanged(QString)),this,SLOT(enableUpdateButton()));
+    connect(ui->targetPortEdit,SIGNAL(textChanged(QString)),this,SLOT(enableUpdateButton()));
+    connect(ui->listenPortEdit,SIGNAL(textChanged(QString)),this,SLOT(enableUpdateButton()));
     connect(myudp,SIGNAL(newMessage(QString,QString)),this,SLOT(appendMessage(QString,QString)));
+    connect(myudp,SIGNAL(bindSuccess(bool)),this,SLOT(udpBinded(bool)));
+    myudp->bindPort();
 }
 
 MainWindow::~MainWindow()
@@ -58,4 +77,14 @@ void MainWindow::sendMessage()
     }
 
     ui->lineEdit->clear();
+}
+
+void MainWindow::udpBinded(bool isBinded)
+{
+    ui->updateButton->setDisabled(isBinded);
+}
+
+void MainWindow::enableUpdateButton()
+{
+    ui->updateButton->setDisabled(false);
 }
