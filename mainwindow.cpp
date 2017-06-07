@@ -7,6 +7,8 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    //QHostAddress addr=QHostAddress::LocalHost;
+    //ui->statusBar->showMessage(addr.toString());
     ui->lineEdit->setFocusPolicy(Qt::StrongFocus);
     ui->textBrowser->setFocusPolicy(Qt::NoFocus);
     //ui->IPlineEdit->setInputMask("000.000.000.000;_");
@@ -19,7 +21,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->targetPortEdit->setValidator(new QIntValidator(0, 65535, this));
     ui->listenPortEdit->setValidator(new QIntValidator(0, 65535, this));
 
-    ui->IPlineEdit->setText("127.0.0.1");
+    ui->IPlineEdit->setText("192.168.10.1");
     ui->targetPortEdit->setText("1234");
     ui->listenPortEdit->setText("1234");
     ui->lineEdit->setFocus();
@@ -27,7 +29,7 @@ MainWindow::MainWindow(QWidget *parent) :
     tableFormat.setBorder(0);
 
     //ui->updateButton->setDisabled(true);
-    myudp=new MyUDP;
+
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(sendMessage()));
     connect(ui->lineEdit,SIGNAL(returnPressed()),this,SLOT(sendMessage()));
     connect(ui->IPlineEdit,SIGNAL(textChanged(QString)),this,SLOT(enableUpdateButton()));
@@ -36,9 +38,9 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(ui->updateButton,SIGNAL(clicked()),this,SLOT(updateConfig()));
 
+    myudp=new MyUDP;
     connect(myudp,SIGNAL(newMessage(QString,QString)),this,SLOT(appendMessage(QString,QString)));
     connect(myudp,SIGNAL(bindSuccess(bool)),this,SLOT(udpBinded(bool)));
-
     myudp->bindPort(ui->listenPortEdit->text().toInt());
 
 }
@@ -98,7 +100,8 @@ void MainWindow::updateConfig()
 {
     disconnect(this,SLOT(appendMessage(QString,QString)));
     disconnect(this,SLOT(udpBinded(bool)));
-    myudp->close();
+    myudp->unBind();
+    delete myudp;
     myudp=new MyUDP;
     connect(myudp,SIGNAL(newMessage(QString,QString)),this,SLOT(appendMessage(QString,QString)));
     connect(myudp,SIGNAL(bindSuccess(bool)),this,SLOT(udpBinded(bool)));

@@ -56,3 +56,14 @@ void MyUDP::readyRead()
     //qDebug() << "Message port: " << senderPort;
     //qDebug() << "Message: " << buffer;
 }
+
+void MyUDP::unBind()
+{
+    socket->close();
+
+    if(!socket->isOpen())
+    {
+        qDebug() << "socket closed";
+    }
+    socket->deleteLater();
+}
