@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     initUI();
+    findLocalIPs();
 
     targetAddr.setAddress(ui->targetIPEdit->text());
     targetPort=ui->targetPortEdit->text().toInt();
@@ -143,4 +144,22 @@ void MainWindow::saveSettings()
     settings.setValue("targetPort", ui->targetPortEdit->text());
     settings.setValue("listenPort", ui->listenPortEdit->text());
     settings.sync();
+}
+
+void MainWindow::findLocalIPs()
+{
+    QNetworkInterface *inter = new QNetworkInterface();
+    QList<QHostAddress> list;
+    list=inter->allAddresses();
+    QString str;
+
+    for (int i = 0; i < list.size(); ++i) {
+        if (list.at(i).protocol() == QAbstractSocket::IPv4Protocol && list.at(i) != QHostAddress(QHostAddress::LocalHost))
+        {
+            qDebug() << list.at(i).toString();
+        }
+
+        //str = list.at(i).toString();
+        //qDebug() << str;
+    }
 }

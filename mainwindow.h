@@ -24,6 +24,7 @@
 #include <QTextTable>
 #include <QScrollBar>
 #include <QSettings>
+#include <QNetworkInterface>
 
 #include "myudp.h"
 
@@ -55,6 +56,7 @@ private:
     void initUI();
     void loadSettings();
     void saveSettings();
+    void findLocalIPs();
 
     QTextTableFormat tableFormat;
     MyUDP *myudp;
