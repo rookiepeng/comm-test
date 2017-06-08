@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include <QTextTable>
 #include <QScrollBar>
+#include <QSettings>
 
 #include "myudp.h"
 
@@ -31,11 +32,16 @@ public:
     ~MainWindow();
 
 private:
+    void loadSettings();
+
+    void saveSettings();
+
     Ui::MainWindow *ui;
     QTextTableFormat tableFormat;
     MyUDP *myudp;
     QHostAddress senderAddr;
     quint16 senderPort;
+     QString m_sSettingsFile;
 };
 
 #endif // MAINWINDOW_H

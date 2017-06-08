@@ -7,6 +7,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    m_sSettingsFile = QApplication::applicationDirPath() + "/config.ini";
+    //qDebug() << m_sSettingsFile;
+
     //QHostAddress addr=QHostAddress::LocalHost;
     //ui->statusBar->showMessage(addr.toString());
     ui->lineEdit->setFocusPolicy(Qt::StrongFocus);
@@ -106,4 +110,18 @@ void MainWindow::updateConfig()
     connect(myudp,SIGNAL(newMessage(QString,QString)),this,SLOT(appendMessage(QString,QString)));
     connect(myudp,SIGNAL(bindSuccess(bool)),this,SLOT(udpBinded(bool)));
     myudp->bindPort(ui->listenPortEdit->text().toInt());
+    saveSettings();
+}
+
+void MainWindow::loadSettings()
+{
+ QSettings settings(m_sSettingsFile, QSettings::IniFormat);
+ QString sText = settings.value("text", "").toString();
+}
+
+void MainWindow::saveSettings()
+{
+ QSettings settings(m_sSettingsFile, QSettings::IniFormat);
+ settings.setValue("text", "sText");
+ settings.sync();
 }
