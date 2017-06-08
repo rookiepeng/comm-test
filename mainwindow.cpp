@@ -11,12 +11,10 @@ MainWindow::MainWindow(QWidget *parent) :
     //ui->statusBar->showMessage(addr.toString());
     ui->lineEdit->setFocusPolicy(Qt::StrongFocus);
     ui->textBrowser->setFocusPolicy(Qt::NoFocus);
-    //ui->IPlineEdit->setInputMask("000.000.000.000;_");
 
     QString Octet = "(?:[0-1]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])";
     ui->IPlineEdit->setValidator(new QRegExpValidator(
     QRegExp("^" + Octet + "\\." + Octet + "\\." + Octet + "\\." + Octet + "$"), this));
-    //ui->IPlineEdit->setValidator( &regValidator );
 
     ui->targetPortEdit->setValidator(new QIntValidator(0, 65535, this));
     ui->listenPortEdit->setValidator(new QIntValidator(0, 65535, this));
@@ -26,9 +24,10 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->listenPortEdit->setText("1234");
     ui->lineEdit->setFocus();
 
-    tableFormat.setBorder(0);
+    senderAddr.setAddress(ui->IPlineEdit->text());
+    senderPort=ui->targetPortEdit->text().toInt();
 
-    //ui->updateButton->setDisabled(true);
+    tableFormat.setBorder(0);
 
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(sendMessage()));
     connect(ui->lineEdit,SIGNAL(returnPressed()),this,SLOT(sendMessage()));
@@ -42,7 +41,6 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(myudp,SIGNAL(newMessage(QString,QString)),this,SLOT(appendMessage(QString,QString)));
     connect(myudp,SIGNAL(bindSuccess(bool)),this,SLOT(udpBinded(bool)));
     myudp->bindPort(ui->listenPortEdit->text().toInt());
-
 }
 
 MainWindow::~MainWindow()
@@ -78,7 +76,7 @@ void MainWindow::sendMessage()
                                 .arg(text.left(text.indexOf(' '))));
         ui->textBrowser->setTextColor(color);
     } else {
-        myudp->sendMessage(text);
+        myudp->sendMessage(senderAddr,senderPort,text);
         appendMessage("client", text);
         //myudp->sendMessage(text);
     }
@@ -100,6 +98,8 @@ void MainWindow::updateConfig()
 {
     disconnect(this,SLOT(appendMessage(QString,QString)));
     disconnect(this,SLOT(udpBinded(bool)));
+    senderAddr.setAddress(ui->IPlineEdit->text());
+    senderPort=ui->targetPortEdit->text().toInt();
     myudp->unBind();
     delete myudp;
     myudp=new MyUDP;

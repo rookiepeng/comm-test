@@ -20,7 +20,7 @@ void MyUDP::bindPort(int port)
     connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
 }
 
-void MyUDP::sendMessage(QString string)
+void MyUDP::sendMessage(QHostAddress sender,quint16 senderPort,QString string)
 {
     QByteArray Data;
     Data.append(string);
@@ -29,7 +29,7 @@ void MyUDP::sendMessage(QString string)
     // to the host address and at port.
     // qint64 QUdpSocket::writeDatagram(const QByteArray & datagram,
     //                      const QHostAddress & host, quint16 port)
-    socket->writeDatagram(Data, QHostAddress::LocalHost, 1234);
+    socket->writeDatagram(Data, sender, senderPort);
 }
 
 void MyUDP::readyRead()

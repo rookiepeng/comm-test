@@ -34,6 +34,8 @@ private:
     Ui::MainWindow *ui;
     QTextTableFormat tableFormat;
     MyUDP *myudp;
+    QHostAddress senderAddr;
+    quint16 senderPort;
 };
 
 #endif // MAINWINDOW_H

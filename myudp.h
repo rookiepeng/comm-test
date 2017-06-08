@@ -17,7 +17,7 @@ signals:
 
 public slots:
     void readyRead();
-    void sendMessage(QString string);
+    void sendMessage(QHostAddress sender, quint16 senderPort, QString string);
 
 private:
     QUdpSocket *socket;
