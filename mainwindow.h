@@ -32,16 +32,16 @@ public:
     ~MainWindow();
 
 private:
+    Ui::MainWindow *ui;
+    void initUI();
     void loadSettings();
-
     void saveSettings();
 
-    Ui::MainWindow *ui;
     QTextTableFormat tableFormat;
     MyUDP *myudp;
-    QHostAddress senderAddr;
-    quint16 senderPort;
-     QString m_sSettingsFile;
+    QHostAddress targetAddr;
+    quint16 targetPort;
+    QString settingsFileDir;
 };
 
 #endif // MAINWINDOW_H

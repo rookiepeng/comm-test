@@ -7,38 +7,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    initUI();
 
-    m_sSettingsFile = QApplication::applicationDirPath() + "/config.ini";
-    //qDebug() << m_sSettingsFile;
-
-    //QHostAddress addr=QHostAddress::LocalHost;
-    //ui->statusBar->showMessage(addr.toString());
-    ui->lineEdit->setFocusPolicy(Qt::StrongFocus);
-    ui->textBrowser->setFocusPolicy(Qt::NoFocus);
-
-    QString Octet = "(?:[0-1]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])";
-    ui->IPlineEdit->setValidator(new QRegExpValidator(
-    QRegExp("^" + Octet + "\\." + Octet + "\\." + Octet + "\\." + Octet + "$"), this));
-
-    ui->targetPortEdit->setValidator(new QIntValidator(0, 65535, this));
-    ui->listenPortEdit->setValidator(new QIntValidator(0, 65535, this));
-
-    ui->IPlineEdit->setText("192.168.10.1");
-    ui->targetPortEdit->setText("1234");
-    ui->listenPortEdit->setText("1234");
-    ui->lineEdit->setFocus();
-
-    senderAddr.setAddress(ui->IPlineEdit->text());
-    senderPort=ui->targetPortEdit->text().toInt();
-
-    tableFormat.setBorder(0);
+    targetAddr.setAddress(ui->targetIPEdit->text());
+    targetPort=ui->targetPortEdit->text().toInt();
 
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(sendMessage()));
-    connect(ui->lineEdit,SIGNAL(returnPressed()),this,SLOT(sendMessage()));
-    connect(ui->IPlineEdit,SIGNAL(textChanged(QString)),this,SLOT(enableUpdateButton()));
+    connect(ui->sendEdit,SIGNAL(returnPressed()),this,SLOT(sendMessage()));
+    connect(ui->targetIPEdit,SIGNAL(textChanged(QString)),this,SLOT(enableUpdateButton()));
     connect(ui->targetPortEdit,SIGNAL(textChanged(QString)),this,SLOT(enableUpdateButton()));
     connect(ui->listenPortEdit,SIGNAL(textChanged(QString)),this,SLOT(enableUpdateButton()));
-
     connect(ui->updateButton,SIGNAL(clicked()),this,SLOT(updateConfig()));
 
     myudp=new MyUDP;
@@ -52,40 +30,57 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+void MainWindow::initUI()
+{
+    QString rule = "(?:[0-1]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])";
+    ui->targetIPEdit->setValidator(new QRegExpValidator(QRegExp("^" + rule + "\\." + rule + "\\." + rule + "\\." + rule + "$"), this));
+    ui->targetPortEdit->setValidator(new QIntValidator(0, 65535, this));
+    ui->listenPortEdit->setValidator(new QIntValidator(0, 65535, this));
+
+    ui->messageBrowser->setFocusPolicy(Qt::NoFocus);
+
+    ui->sendEdit->setFocusPolicy(Qt::StrongFocus);
+    ui->sendEdit->setFocus();
+
+    tableFormat.setBorder(0);
+
+    loadSettings();
+}
+
 void MainWindow::appendMessage(const QString &from, const QString &message)
 {
     if (from.isEmpty() || message.isEmpty())
         return;
 
-    QTextCursor cursor(ui->textBrowser->textCursor());
+    QTextCursor cursor(ui->messageBrowser->textCursor());
     cursor.movePosition(QTextCursor::End);
 
     QTextTable *table = cursor.insertTable(1, 2, tableFormat);
     table->cellAt(0, 0).firstCursorPosition().insertText('<' + from + "> ");
     table->cellAt(0, 1).firstCursorPosition().insertText(message);
-    QScrollBar *bar = ui->textBrowser->verticalScrollBar();
+    QScrollBar *bar = ui->messageBrowser->verticalScrollBar();
     bar->setValue(bar->maximum());
 }
 
 void MainWindow::sendMessage()
 {
-    QString text = ui->lineEdit->text();
+    QString text = ui->sendEdit->text();
     if (text.isEmpty())
         return;
 
     if (text.startsWith(QChar('/'))) {
-        QColor color = ui->textBrowser->textColor();
-        ui->textBrowser->setTextColor(Qt::red);
-        ui->textBrowser->append(tr("! Unknown command: %1")
-                                .arg(text.left(text.indexOf(' '))));
-        ui->textBrowser->setTextColor(color);
+        QColor color = ui->messageBrowser->textColor();
+        ui->messageBrowser->setTextColor(Qt::red);
+        ui->messageBrowser->append(tr("! Unknown command: %1")
+                                   .arg(text.left(text.indexOf(' '))));
+        ui->messageBrowser->setTextColor(color);
     } else {
-        myudp->sendMessage(senderAddr,senderPort,text);
+        myudp->sendMessage(targetAddr,targetPort,text);
         appendMessage("client", text);
         //myudp->sendMessage(text);
     }
 
-    ui->lineEdit->clear();
+    ui->sendEdit->clear();
 }
 
 void MainWindow::udpBinded(bool isBinded)
@@ -102,8 +97,8 @@ void MainWindow::updateConfig()
 {
     disconnect(this,SLOT(appendMessage(QString,QString)));
     disconnect(this,SLOT(udpBinded(bool)));
-    senderAddr.setAddress(ui->IPlineEdit->text());
-    senderPort=ui->targetPortEdit->text().toInt();
+    targetAddr.setAddress(ui->targetIPEdit->text());
+    targetPort=ui->targetPortEdit->text().toInt();
     myudp->unBind();
     delete myudp;
     myudp=new MyUDP;
@@ -115,13 +110,18 @@ void MainWindow::updateConfig()
 
 void MainWindow::loadSettings()
 {
- QSettings settings(m_sSettingsFile, QSettings::IniFormat);
- QString sText = settings.value("text", "").toString();
+    settingsFileDir = QApplication::applicationDirPath() + "/config.ini";
+    QSettings settings(settingsFileDir, QSettings::IniFormat);
+    ui->targetIPEdit->setText(settings.value("targetIP", "127.0.0.1").toString());
+    ui->targetPortEdit->setText(settings.value("targetPort", 1234).toString());
+    ui->listenPortEdit->setText(settings.value("listenPort", 1234).toString());
 }
 
 void MainWindow::saveSettings()
 {
- QSettings settings(m_sSettingsFile, QSettings::IniFormat);
- settings.setValue("text", "sText");
- settings.sync();
+    QSettings settings(settingsFileDir, QSettings::IniFormat);
+    settings.setValue("targetIP", ui->targetIPEdit->text());
+    settings.setValue("targetPort", ui->targetPortEdit->text());
+    settings.setValue("listenPort", ui->listenPortEdit->text());
+    settings.sync();
 }

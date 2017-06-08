@@ -31,7 +31,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="IPlineEdit">
+       <widget class="QLineEdit" name="targetIPEdit">
         <property name="minimumSize">
          <size>
           <width>300</width>
@@ -156,12 +156,12 @@
      </widget>
     </item>
     <item>
-     <widget class="QTextBrowser" name="textBrowser"/>
+     <widget class="QTextBrowser" name="messageBrowser"/>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QLineEdit" name="lineEdit"/>
+       <widget class="QLineEdit" name="sendEdit"/>
       </item>
       <item>
        <widget class="QPushButton" name="pushButton">

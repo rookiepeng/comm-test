@@ -9,7 +9,7 @@ MyUDP::MyUDP(QObject *parent)
     // The most common way to use QUdpSocket class is
     // to bind to an address and port using bind()
     // bool QAbstractSocket::bind(const QHostAddress & address,
-    //     quint16 port = 0, BindMode mode = DefaultForPlatform)  
+    //     quint16 port = 0, BindMode mode = DefaultForPlatform)
 }
 
 void MyUDP::bindPort(int port)
