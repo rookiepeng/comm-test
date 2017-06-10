@@ -150,16 +150,25 @@ void MainWindow::findLocalIPs()
 {
     QNetworkInterface *inter = new QNetworkInterface();
     QList<QHostAddress> list;
+
+    QList<QNetworkInterface> listInterface = QNetworkInterface::allInterfaces();
     list=inter->allAddresses();
     QString str;
 
-    for (int i = 0; i < list.size(); ++i) {
-        if (list.at(i).protocol() == QAbstractSocket::IPv4Protocol && list.at(i) != QHostAddress(QHostAddress::LocalHost))
-        {
-            qDebug() << list.at(i).toString();
-        }
+//    for (int i = 0; i < list.size(); ++i) {
+//        if (list.at(i).protocol() == QAbstractSocket::IPv4Protocol && list.at(i) != QHostAddress(QHostAddress::LocalHost))
+//        {
+//            qDebug() << list.at(i).toString();
+//        }
 
-        //str = list.at(i).toString();
-        //qDebug() << str;
-    }
+//        //str = list.at(i).toString();
+//        //qDebug() << str;
+//    }
+
+//    foreach (QNetworkInterface iface, listInterface)  // this should print all interfaces' names
+//    {
+//        //qDebug() << iface.humanReadableName();
+//    }
+    qDebug() << listInterface.at(2).humanReadableName();
+    qDebug() << listInterface.at(2).allAddresses();
 }
