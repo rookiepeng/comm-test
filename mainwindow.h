@@ -61,6 +61,7 @@ private:
     QTextTableFormat tableFormat;
     MyUDP *myudp;
     QHostAddress targetAddr;
+    QHostAddress localAddr;
     quint16 targetPort;
     QString settingsFileDir;
     QList<QNetworkInterface> wifiList;

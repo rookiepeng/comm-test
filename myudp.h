@@ -27,7 +27,7 @@ class MyUDP: public QUdpSocket
     Q_OBJECT
 public:
     MyUDP(QObject *parent = 0);
-    void bindPort(int port);
+    void bindPort(QHostAddress addr,qint16 port);
     void unBind();
 
 signals:

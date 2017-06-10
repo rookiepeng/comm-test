@@ -31,6 +31,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     targetAddr.setAddress(ui->targetIPEdit->text());
     targetPort=ui->targetPortEdit->text().toInt();
+    localAddr.setAddress(ui->localIPBox->currentText());
 
     connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(sendMessage()));
     connect(ui->sendEdit,SIGNAL(returnPressed()),this,SLOT(sendMessage()));
@@ -42,7 +43,7 @@ MainWindow::MainWindow(QWidget *parent) :
     myudp=new MyUDP;
     connect(myudp,SIGNAL(newMessage(QString,QString)),this,SLOT(appendMessage(QString,QString)));
     connect(myudp,SIGNAL(bindSuccess(bool)),this,SLOT(udpBinded(bool)));
-    myudp->bindPort(ui->listenPortEdit->text().toInt());
+    myudp->bindPort(localAddr,ui->listenPortEdit->text().toInt());
 }
 
 MainWindow::~MainWindow()
@@ -119,12 +120,13 @@ void MainWindow::updateConfig()
     disconnect(this,SLOT(udpBinded(bool)));
     targetAddr.setAddress(ui->targetIPEdit->text());
     targetPort=ui->targetPortEdit->text().toInt();
+    localAddr.setAddress(ui->localIPBox->currentText());
     myudp->unBind();
     delete myudp;
     myudp=new MyUDP;
     connect(myudp,SIGNAL(newMessage(QString,QString)),this,SLOT(appendMessage(QString,QString)));
     connect(myudp,SIGNAL(bindSuccess(bool)),this,SLOT(udpBinded(bool)));
-    myudp->bindPort(ui->listenPortEdit->text().toInt());
+    myudp->bindPort(localAddr,ui->listenPortEdit->text().toInt());
     saveSettings();
 }
 
