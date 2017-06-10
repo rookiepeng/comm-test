@@ -12,6 +12,9 @@ public:
 signals:
 
 public slots:
+
+private:
+    QTcpSocket *tcpSocket;
 };
 
 #endif // MYTCP_H
