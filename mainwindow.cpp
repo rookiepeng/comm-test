@@ -21,29 +21,28 @@
 #include "ui_mainwindow.h"
 #include "myudp.h"
 
-MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     initUI();
     findLocalIPs();
 
-    targetAddr.setAddress(ui->targetIPEdit->text());
-    targetPort=ui->targetPortEdit->text().toInt();
-    localAddr.setAddress(ui->localIPBox->currentText());
+    targetAddr.setAddress(ui->lineEdit_targetIP->text());
+    targetPort = ui->lineEdit_targetPort->text().toInt();
+    localAddr.setAddress(ui->comboBox_localIP->currentText());
 
-    connect(ui->pushButton,SIGNAL(clicked()),this,SLOT(sendMessage()));
-    connect(ui->sendEdit,SIGNAL(returnPressed()),this,SLOT(sendMessage()));
-    connect(ui->targetIPEdit,SIGNAL(textChanged(QString)),this,SLOT(enableUpdateButton()));
-    connect(ui->targetPortEdit,SIGNAL(textChanged(QString)),this,SLOT(enableUpdateButton()));
-    connect(ui->listenPortEdit,SIGNAL(textChanged(QString)),this,SLOT(enableUpdateButton()));
-    connect(ui->updateButton,SIGNAL(clicked()),this,SLOT(updateConfig()));
+    connect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
+    connect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
+    connect(ui->lineEdit_targetIP, SIGNAL(textChanged(QString)), this, SLOT(enableUpdateButton()));
+    connect(ui->lineEdit_targetPort, SIGNAL(textChanged(QString)), this, SLOT(enableUpdateButton()));
+    connect(ui->lineEdit_listenPort, SIGNAL(textChanged(QString)), this, SLOT(enableUpdateButton()));
+    connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(updateConfig()));
 
-    myudp=new MyUDP;
-    connect(myudp,SIGNAL(newMessage(QString,QString)),this,SLOT(appendMessage(QString,QString)));
-    connect(myudp,SIGNAL(bindSuccess(bool)),this,SLOT(udpBinded(bool)));
-    myudp->bindPort(localAddr,ui->listenPortEdit->text().toInt());
+    myudp = new MyUDP;
+    connect(myudp, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
+    connect(myudp, SIGNAL(bindSuccess(bool)), this, SLOT(udpBinded(bool)));
+    myudp->bindPort(localAddr, ui->lineEdit_listenPort->text().toInt());
 }
 
 MainWindow::~MainWindow()
@@ -54,14 +53,14 @@ MainWindow::~MainWindow()
 void MainWindow::initUI()
 {
     QString rule = "(?:[0-1]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])";
-    ui->targetIPEdit->setValidator(new QRegExpValidator(QRegExp("^" + rule + "\\." + rule + "\\." + rule + "\\." + rule + "$"), this));
-    ui->targetPortEdit->setValidator(new QIntValidator(0, 65535, this));
-    ui->listenPortEdit->setValidator(new QIntValidator(0, 65535, this));
+    ui->lineEdit_targetIP->setValidator(new QRegExpValidator(QRegExp("^" + rule + "\\." + rule + "\\." + rule + "\\." + rule + "$"), this));
+    ui->lineEdit_targetPort->setValidator(new QIntValidator(0, 65535, this));
+    ui->lineEdit_listenPort->setValidator(new QIntValidator(0, 65535, this));
 
-    ui->messageBrowser->setFocusPolicy(Qt::NoFocus);
+    ui->textBrowser_message->setFocusPolicy(Qt::NoFocus);
 
-    ui->sendEdit->setFocusPolicy(Qt::StrongFocus);
-    ui->sendEdit->setFocus();
+    ui->lineEdit_send->setFocusPolicy(Qt::StrongFocus);
+    ui->lineEdit_send->setFocus();
 
     tableFormat.setBorder(0);
 
@@ -73,35 +72,38 @@ void MainWindow::appendMessage(const QString &from, const QString &message)
     if (from.isEmpty() || message.isEmpty())
         return;
 
-    QTextCursor cursor(ui->messageBrowser->textCursor());
+    QTextCursor cursor(ui->textBrowser_message->textCursor());
     cursor.movePosition(QTextCursor::End);
 
     QTextTable *table = cursor.insertTable(1, 2, tableFormat);
     table->cellAt(0, 0).firstCursorPosition().insertText('<' + from + "> ");
     table->cellAt(0, 1).firstCursorPosition().insertText(message);
-    QScrollBar *bar = ui->messageBrowser->verticalScrollBar();
+    QScrollBar *bar = ui->textBrowser_message->verticalScrollBar();
     bar->setValue(bar->maximum());
 }
 
 void MainWindow::sendMessage()
 {
-    QString text = ui->sendEdit->text();
+    QString text = ui->lineEdit_send->text();
     if (text.isEmpty())
         return;
 
-    if (text.startsWith(QChar('/'))) {
-        QColor color = ui->messageBrowser->textColor();
-        ui->messageBrowser->setTextColor(Qt::red);
-        ui->messageBrowser->append(tr("! Unknown command: %1")
-                                   .arg(text.left(text.indexOf(' '))));
-        ui->messageBrowser->setTextColor(color);
-    } else {
-        myudp->sendMessage(targetAddr,targetPort,text);
+    if (text.startsWith(QChar('/')))
+    {
+        QColor color = ui->textBrowser_message->textColor();
+        ui->textBrowser_message->setTextColor(Qt::red);
+        ui->textBrowser_message->append(tr("! Unknown command: %1")
+                                        .arg(text.left(text.indexOf(' '))));
+        ui->textBrowser_message->setTextColor(color);
+    }
+    else
+    {
+        myudp->sendMessage(targetAddr, targetPort, text);
         appendMessage("client", text);
         //myudp->sendMessage(text);
     }
 
-    ui->sendEdit->clear();
+    ui->lineEdit_send->clear();
 }
 
 void MainWindow::udpBinded(bool isBinded)
@@ -116,17 +118,17 @@ void MainWindow::enableUpdateButton()
 
 void MainWindow::updateConfig()
 {
-    disconnect(this,SLOT(appendMessage(QString,QString)));
-    disconnect(this,SLOT(udpBinded(bool)));
-    targetAddr.setAddress(ui->targetIPEdit->text());
-    targetPort=ui->targetPortEdit->text().toInt();
-    localAddr.setAddress(ui->localIPBox->currentText());
+    disconnect(this, SLOT(appendMessage(QString, QString)));
+    disconnect(this, SLOT(udpBinded(bool)));
+    targetAddr.setAddress(ui->lineEdit_targetIP->text());
+    targetPort = ui->lineEdit_targetPort->text().toInt();
+    localAddr.setAddress(ui->comboBox_localIP->currentText());
     myudp->unBind();
     delete myudp;
-    myudp=new MyUDP;
-    connect(myudp,SIGNAL(newMessage(QString,QString)),this,SLOT(appendMessage(QString,QString)));
-    connect(myudp,SIGNAL(bindSuccess(bool)),this,SLOT(udpBinded(bool)));
-    myudp->bindPort(localAddr,ui->listenPortEdit->text().toInt());
+    myudp = new MyUDP;
+    connect(myudp, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
+    connect(myudp, SIGNAL(bindSuccess(bool)), this, SLOT(udpBinded(bool)));
+    myudp->bindPort(localAddr, ui->lineEdit_listenPort->text().toInt());
     saveSettings();
 }
 
@@ -134,50 +136,51 @@ void MainWindow::loadSettings()
 {
     settingsFileDir = QApplication::applicationDirPath() + "/config.ini";
     QSettings settings(settingsFileDir, QSettings::IniFormat);
-    ui->targetIPEdit->setText(settings.value("targetIP", "127.0.0.1").toString());
-    ui->targetPortEdit->setText(settings.value("targetPort", 1234).toString());
-    ui->listenPortEdit->setText(settings.value("listenPort", 1234).toString());
+    ui->lineEdit_targetIP->setText(settings.value("targetIP", "127.0.0.1").toString());
+    ui->lineEdit_targetPort->setText(settings.value("targetPort", 1234).toString());
+    ui->lineEdit_listenPort->setText(settings.value("listenPort", 1234).toString());
 }
 
 void MainWindow::saveSettings()
 {
     QSettings settings(settingsFileDir, QSettings::IniFormat);
-    settings.setValue("targetIP", ui->targetIPEdit->text());
-    settings.setValue("targetPort", ui->targetPortEdit->text());
-    settings.setValue("listenPort", ui->listenPortEdit->text());
+    settings.setValue("targetIP", ui->lineEdit_targetIP->text());
+    settings.setValue("targetPort", ui->lineEdit_targetPort->text());
+    settings.setValue("listenPort", ui->lineEdit_listenPort->text());
+    settings.setValue("localIPIndex", ui->comboBox_localIP->currentIndex());
     settings.sync();
 }
 
 void MainWindow::findLocalIPs()
 {
     QList<QNetworkInterface> listInterface = QNetworkInterface::allInterfaces();
-    for (int i=0;i<listInterface.size();++i) {
-        if(listInterface.at(i).humanReadableName().contains("Wi-Fi"))
+    for (int i = 0; i < listInterface.size(); ++i)
+    {
+        if (listInterface.at(i).humanReadableName().contains("Wi-Fi"))
         {
             wifiList.append(listInterface.at(i));
         }
     }
 
-    if(wifiList.isEmpty()){
+    if (wifiList.isEmpty())
+    {
         // TODO
     }
-    else if(wifiList.size()==1)
+    else if (wifiList.size() == 1)
     {
-        for (int i = 0; i < wifiList.at(0).addressEntries().size(); ++i) {
+        for (int i = 0; i < wifiList.at(0).addressEntries().size(); ++i)
+        {
             if (wifiList.at(0).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
             {
-                ui->localIPBox->addItem(wifiList.at(0).addressEntries().at(i).ip().toString());
-                ui->localIPBox->setDisabled(true);
+                ui->comboBox_localIP->addItem(wifiList.at(0).addressEntries().at(i).ip().toString());
+                ui->comboBox_localIP->setDisabled(true);
                 //qDebug() << wifiList.at(0).allAddresses().at(i).toString();
                 //qDebug() << wifiList.at(0).humanReadableName();
             }
-
-            //if (wifiList.at(0).allAddresses().at(i).protocol() == QAbstractSocket::IPv4Protocol&&wifiList.at(0).allAddresses().at(i)!= QHostAddress(QHostAddress::LocalHost))
-            //{
-            //qDebug() << wifiList.at(0).addressEntries().at(0).ip().toString();
-            //qDebug() << wifiList.at(0).humanReadableName();
-            //}
         }
     }
-    //qDebug() << ui->localIPBox->currentText();
+    else
+    {
+        // TODO comboBox_localIP index
+    }
 }

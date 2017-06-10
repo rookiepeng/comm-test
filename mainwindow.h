@@ -30,7 +30,8 @@
 
 #define ROLE 1 // 0 server, 1 client
 
-namespace Ui {
+namespace Ui
+{
 class MainWindow;
 }
 

@@ -22,12 +22,12 @@
 
 #include <QUdpSocket>
 
-class MyUDP: public QUdpSocket
+class MyUDP : public QUdpSocket
 {
     Q_OBJECT
 public:
     MyUDP(QObject *parent = 0);
-    void bindPort(QHostAddress addr,qint16 port);
+    void bindPort(QHostAddress addr, qint16 port);
     void unBind();
 
 signals:

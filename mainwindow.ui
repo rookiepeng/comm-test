@@ -24,7 +24,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <widget class="QLabel" name="label">
+       <widget class="QLabel" name="label_targetIP">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -49,7 +49,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="targetIPEdit">
+       <widget class="QLineEdit" name="lineEdit_targetIP">
         <property name="minimumSize">
          <size>
           <width>200</width>
@@ -65,7 +65,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="label_2">
+       <widget class="QLabel" name="label_targetPort">
         <property name="minimumSize">
          <size>
           <width>100</width>
@@ -78,7 +78,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="targetPortEdit">
+       <widget class="QLineEdit" name="lineEdit_targetPort">
         <property name="minimumSize">
          <size>
           <width>80</width>
@@ -111,7 +111,7 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
-       <widget class="QLabel" name="label_4">
+       <widget class="QLabel" name="label_localIP">
         <property name="enabled">
          <bool>true</bool>
         </property>
@@ -139,7 +139,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="localIPBox">
+       <widget class="QComboBox" name="comboBox_localIP">
         <property name="minimumSize">
          <size>
           <width>200</width>
@@ -155,7 +155,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLabel" name="label_3">
+       <widget class="QLabel" name="label_listenPort">
         <property name="minimumSize">
          <size>
           <width>100</width>
@@ -168,7 +168,7 @@
        </widget>
       </item>
       <item>
-       <widget class="QLineEdit" name="listenPortEdit">
+       <widget class="QLineEdit" name="lineEdit_listenPort">
         <property name="minimumSize">
          <size>
           <width>80</width>
@@ -230,15 +230,15 @@
      </widget>
     </item>
     <item>
-     <widget class="QTextBrowser" name="messageBrowser"/>
+     <widget class="QTextBrowser" name="textBrowser_message"/>
     </item>
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout">
       <item>
-       <widget class="QLineEdit" name="sendEdit"/>
+       <widget class="QLineEdit" name="lineEdit_send"/>
       </item>
       <item>
-       <widget class="QPushButton" name="pushButton">
+       <widget class="QPushButton" name="pushButton_send">
         <property name="text">
          <string>Send</string>
         </property>

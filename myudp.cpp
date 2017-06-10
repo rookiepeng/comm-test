@@ -31,14 +31,14 @@ MyUDP::MyUDP(QObject *parent)
     //     quint16 port = 0, BindMode mode = DefaultForPlatform)
 }
 
-void MyUDP::bindPort(QHostAddress addr,qint16 port)
+void MyUDP::bindPort(QHostAddress addr, qint16 port)
 {
-    isBinded=socket->bind(addr, port);
+    isBinded = socket->bind(addr, port);
     emit bindSuccess(isBinded);
     connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
 }
 
-void MyUDP::sendMessage(QHostAddress sender,quint16 senderPort,QString string)
+void MyUDP::sendMessage(QHostAddress sender, quint16 senderPort, QString string)
 {
     QByteArray Data;
     Data.append(string);
@@ -79,7 +79,7 @@ void MyUDP::unBind()
 {
     socket->close();
 
-    if(!socket->isOpen())
+    if (!socket->isOpen())
     {
         qDebug() << "socket closed";
     }
