@@ -19,8 +19,7 @@
 
 #include "myudp.h"
 
-MyUDP::MyUDP(QObject *parent)
-    : QUdpSocket(parent)
+MyUDP::MyUDP(QObject *parent) : QUdpSocket(parent)
 {
     socket = new QUdpSocket(this);
     //QHostAddress Addr("127.0.0.1");
