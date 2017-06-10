@@ -87,6 +87,23 @@
     <item>
      <layout class="QHBoxLayout" name="horizontalLayout_3">
       <item>
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Local IP:</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QComboBox" name="localIPBox">
+        <property name="minimumSize">
+         <size>
+          <width>300</width>
+          <height>0</height>
+         </size>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QLabel" name="label_3">
         <property name="text">
          <string>Listen port:</string>

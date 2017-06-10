@@ -63,6 +63,7 @@ private:
     QHostAddress targetAddr;
     quint16 targetPort;
     QString settingsFileDir;
+    QList<QNetworkInterface> wifiList;
 };
 
 #endif // MAINWINDOW_H

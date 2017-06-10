@@ -148,27 +148,34 @@ void MainWindow::saveSettings()
 
 void MainWindow::findLocalIPs()
 {
-    QNetworkInterface *inter = new QNetworkInterface();
-    QList<QHostAddress> list;
-
     QList<QNetworkInterface> listInterface = QNetworkInterface::allInterfaces();
-    list=inter->allAddresses();
-    QString str;
+    for (int i=0;i<listInterface.size();++i) {
+        if(listInterface.at(i).humanReadableName().contains("Wi-Fi"))
+        {
+            wifiList.append(listInterface.at(i));
+        }
+    }
 
-//    for (int i = 0; i < list.size(); ++i) {
-//        if (list.at(i).protocol() == QAbstractSocket::IPv4Protocol && list.at(i) != QHostAddress(QHostAddress::LocalHost))
-//        {
-//            qDebug() << list.at(i).toString();
-//        }
+    if(wifiList.isEmpty()){
+        // TODO
+    }
+    else if(wifiList.size()==1)
+    {
+        for (int i = 0; i < wifiList.at(0).addressEntries().size(); ++i) {
+            if (wifiList.at(0).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
+            {
+                ui->localIPBox->addItem(wifiList.at(0).addressEntries().at(i).ip().toString());
+                ui->localIPBox->setDisabled(true);
+                //qDebug() << wifiList.at(0).allAddresses().at(i).toString();
+                //qDebug() << wifiList.at(0).humanReadableName();
+            }
 
-//        //str = list.at(i).toString();
-//        //qDebug() << str;
-//    }
-
-//    foreach (QNetworkInterface iface, listInterface)  // this should print all interfaces' names
-//    {
-//        //qDebug() << iface.humanReadableName();
-//    }
-    qDebug() << listInterface.at(2).humanReadableName();
-    qDebug() << listInterface.at(2).allAddresses();
+            //if (wifiList.at(0).allAddresses().at(i).protocol() == QAbstractSocket::IPv4Protocol&&wifiList.at(0).allAddresses().at(i)!= QHostAddress(QHostAddress::LocalHost))
+            //{
+            //qDebug() << wifiList.at(0).addressEntries().at(0).ip().toString();
+            //qDebug() << wifiList.at(0).humanReadableName();
+            //}
+        }
+    }
+    //qDebug() << ui->localIPBox->currentText();
 }
