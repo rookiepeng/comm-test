@@ -27,6 +27,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui->setupUi(this);
     initUI();
     findLocalIPs();
+    loadSettings();
 
     targetAddr.setAddress(ui->lineEdit_targetIP->text());
     targetPort = ui->lineEdit_targetPort->text().toInt();
@@ -34,9 +35,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
     connect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
     connect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
-    connect(ui->lineEdit_targetIP, SIGNAL(textChanged(QString)), this, SLOT(enableUpdateButton()));
-    connect(ui->lineEdit_targetPort, SIGNAL(textChanged(QString)), this, SLOT(enableUpdateButton()));
-    connect(ui->lineEdit_listenPort, SIGNAL(textChanged(QString)), this, SLOT(enableUpdateButton()));
     connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(updateConfig()));
 
     myudp = new MyUDP;
@@ -62,9 +60,23 @@ void MainWindow::initUI()
     ui->lineEdit_send->setFocusPolicy(Qt::StrongFocus);
     ui->lineEdit_send->setFocus();
 
+    QStringList socketList;
+    socketList<<"TCP"<<"UDP";
+    ui->comboBox_TCPUDP->addItems(socketList);
+
+    QStringList roleList;
+    roleList<<"Server"<<"Client";
+    ui->comboBox_serverClient->addItems(roleList);
+    //ui->comboBox_serverClient->setVisible(false);
+
     tableFormat.setBorder(0);
 
-    loadSettings();
+    connect(ui->lineEdit_targetIP, SIGNAL(textChanged(QString)), this, SLOT(enableUpdateButton()));
+    connect(ui->lineEdit_targetPort, SIGNAL(textChanged(QString)), this, SLOT(enableUpdateButton()));
+    connect(ui->lineEdit_listenPort, SIGNAL(textChanged(QString)), this, SLOT(enableUpdateButton()));
+    connect(ui->comboBox_TCPUDP,SIGNAL(currentIndexChanged(int)),this,SLOT(enableUpdateButton()));
+    connect(ui->comboBox_serverClient,SIGNAL(currentIndexChanged(int)),this,SLOT(enableUpdateButton()));
+    connect(ui->comboBox_TCPUDP,SIGNAL(currentIndexChanged(int)),this,SLOT(disableComboBox(int)));
 }
 
 void MainWindow::appendMessage(const QString &from, const QString &message)
@@ -139,6 +151,11 @@ void MainWindow::loadSettings()
     ui->lineEdit_targetIP->setText(settings.value("targetIP", "127.0.0.1").toString());
     ui->lineEdit_targetPort->setText(settings.value("targetPort", 1234).toString());
     ui->lineEdit_listenPort->setText(settings.value("listenPort", 1234).toString());
+    //qDebug()<<ui->comboBox_localIP->count();
+    if(ui->comboBox_localIP->count()>=settings.value("localIPIndex", 0).toInt())
+    {
+        ui->comboBox_localIP->setCurrentIndex(settings.value("localIPIndex", 0).toInt());
+    }
 }
 
 void MainWindow::saveSettings()
@@ -183,4 +200,9 @@ void MainWindow::findLocalIPs()
     {
         // TODO comboBox_localIP index
     }
+}
+
+void MainWindow::disableComboBox(int index)
+{
+        ui->comboBox_serverClient->setDisabled(index==1);
 }

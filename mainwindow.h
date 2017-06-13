@@ -47,6 +47,7 @@ private slots:
     void udpBinded(bool isBinded);
     void enableUpdateButton();
     void updateConfig();
+    void disableComboBox(int index);
 
 public:
     explicit MainWindow(QWidget *parent = 0);

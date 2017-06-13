@@ -37,10 +37,10 @@
        </widget>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox"/>
+       <widget class="QComboBox" name="comboBox_TCPUDP"/>
       </item>
       <item>
-       <widget class="QComboBox" name="comboBox_2"/>
+       <widget class="QComboBox" name="comboBox_serverClient"/>
       </item>
       <item>
        <spacer name="horizontalSpacer_4">
