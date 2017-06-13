@@ -156,6 +156,9 @@ void MainWindow::loadSettings()
     {
         ui->comboBox_localIP->setCurrentIndex(settings.value("localIPIndex", 0).toInt());
     }
+    ui->comboBox_TCPUDP->setCurrentIndex(settings.value("TCPorUDP",0).toInt());
+    ui->comboBox_serverClient->setCurrentIndex(settings.value("serverClient",0).toInt());
+    ui->comboBox_serverClient->setDisabled(settings.value("TCPorUDP",0).toInt()==1);
 }
 
 void MainWindow::saveSettings()
@@ -165,6 +168,8 @@ void MainWindow::saveSettings()
     settings.setValue("targetPort", ui->lineEdit_targetPort->text());
     settings.setValue("listenPort", ui->lineEdit_listenPort->text());
     settings.setValue("localIPIndex", ui->comboBox_localIP->currentIndex());
+    settings.setValue("TCPorUDP",ui->comboBox_TCPUDP->currentIndex());
+    settings.setValue("serverClient",ui->comboBox_serverClient->currentIndex());
     settings.sync();
 }
 
@@ -204,5 +209,5 @@ void MainWindow::findLocalIPs()
 
 void MainWindow::disableComboBox(int index)
 {
-        ui->comboBox_serverClient->setDisabled(index==1);
+    ui->comboBox_serverClient->setDisabled(index==1);
 }
