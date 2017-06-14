@@ -27,6 +27,7 @@
 #include <QNetworkInterface>
 
 #include "myudp.h"
+#include "mytcp.h"
 
 #define ROLE 1 // 0 server, 1 client
 
@@ -62,11 +63,13 @@ private:
 
     QTextTableFormat tableFormat;
     MyUDP *myudp;
+    MyTCP *mytcp;
     QHostAddress targetAddr;
     QHostAddress localAddr;
     quint16 targetPort;
     QString settingsFileDir;
     QList<QNetworkInterface> wifiList;
+    quint16 protocol;
 };
 
 #endif // MAINWINDOW_H

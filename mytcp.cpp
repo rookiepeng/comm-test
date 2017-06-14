@@ -26,7 +26,7 @@ MyTCP::MyTCP(QObject *parent) : QTcpSocket(parent)
 
 void MyTCP::doConnect()
 {
-    tcpSocket = new QTcpSocket(this);
+    //tcpSocket = new QTcpSocket(this);
 
     connect(tcpSocket, SIGNAL(connected()),this, SLOT(connected()));
     connect(tcpSocket, SIGNAL(disconnected()),this, SLOT(disconnected()));
