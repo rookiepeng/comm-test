@@ -1,5 +1,5 @@
 /*
-//    mytcp.h
+//    mytcpserver.h
 //
 //    Copyright (C) 2017  Zach (Zhengyu) Peng, https://zpeng.me
 //
@@ -17,28 +17,26 @@
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef MYTCP_H
-#define MYTCP_H
+#ifndef MYTCPSERVER_H
+#define MYTCPSERVER_H
 
 #include <QTcpSocket>
+#include <QTcpServer>
 
-class MyTCP : public QTcpSocket
+class MyTCPServer : public QTcpServer
 {
     Q_OBJECT
 public:
-    explicit MyTCP(QObject *parent = nullptr);
-    void doConnect();
+    explicit MyTCPServer(QObject *parent = nullptr);
+    void listen(QHostAddress addr, quint16 port);
 
 signals:
 
 public slots:
-    void connected();
-    void disconnected();
-    void bytesWritten(qint64 bytes);
-    void readyRead();
 
 private:
     QTcpSocket *tcpSocket;
+    QTcpServer *tcpServer;
 };
 
-#endif // MYTCP_H
+#endif // MYTCPSERVER_H

@@ -27,10 +27,10 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += main.cpp\
         mainwindow.cpp \
     myudp.cpp \
-    mytcp.cpp
+    mytcpserver.cpp
 
 HEADERS  += mainwindow.h \
     myudp.h \
-    mytcp.h
+    mytcpserver.h
 
 FORMS    += mainwindow.ui

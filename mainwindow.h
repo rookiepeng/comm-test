@@ -27,7 +27,7 @@
 #include <QNetworkInterface>
 
 #include "myudp.h"
-#include "mytcp.h"
+#include "mytcpserver.h"
 
 #define ROLE 1 // 0 server, 1 client
 
@@ -63,7 +63,7 @@ private:
 
     QTextTableFormat tableFormat;
     MyUDP *myudp;
-    MyTCP *mytcp;
+    MyTCPServer *mytcpserver;
     QHostAddress targetAddr;
     QHostAddress localAddr;
     quint16 targetPort;

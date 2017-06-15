@@ -38,8 +38,8 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
     if (protocol == 0)
     {
-        mytcp = new MyTCP;
-        mytcp->doConnect();
+        mytcpserver = new MyTCPServer;
+        mytcpserver->listen(localAddr, ui->lineEdit_listenPort->text().toInt());
     }
     else if (protocol == 1)
     {
@@ -154,8 +154,8 @@ void MainWindow::updateConfig()
 
     if (protocol == 0)
     {
-        mytcp = new MyTCP;
-        mytcp->doConnect();
+        mytcpserver = new MyTCPServer;
+        mytcpserver->listen(localAddr, ui->lineEdit_listenPort->text().toInt());
     }
     else if (protocol == 1)
     {
