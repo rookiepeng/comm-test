@@ -32,7 +32,10 @@ public:
 
 signals:
 
-public slots:
+private slots:
+    void clientConnection();
+    void clientDisconnected();
+    void messageReady();
 
 private:
     QTcpSocket *tcpSocket;

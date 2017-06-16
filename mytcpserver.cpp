@@ -29,24 +29,35 @@ void MyTCPServer::listen(QHostAddress addr, quint16 port)
     tcpServer=new QTcpServer(this);
     if(tcpServer->listen(addr,port))
     {
+        connect(tcpServer, SIGNAL(newConnection()), this, SLOT(clientConnection()));
         qDebug()<<"listern to port:"<<port;
     }
 }
 
-//void MyTCPServer::on_newConnection()
-//{
-//    socket = server->nextPendingConnection();
+void MyTCPServer::clientConnection()
+{
+    tcpSocket=tcpServer->nextPendingConnection();
+    if(tcpSocket->state() == QTcpSocket::ConnectedState)
+    {
+        //printf("New connection established.\n");
+        qDebug()<<"New connection: "<<tcpSocket->peerAddress();
+    }
+    connect(tcpSocket, SIGNAL(disconnected()),this, SLOT(clientDisconnected()));
+    connect(tcpSocket, SIGNAL(readyRead()),this, SLOT(messageReady()));
+}
 
-//    if(socket->state() == QTcpSocket::ConnectedState)
-//    {
-//        printf("New connection established.\n");
-//        qDebug()<<socket->peerAddress();
-//    }
-//    connect(socket, SIGNAL(disconnected()),
-//    this, SLOT(on_disconnected()));
-//    connect(socket, SIGNAL(readyRead()),
-//    this, SLOT(on_readyRead()));
-//}
+void MyTCPServer::clientDisconnected()
+{
+    disconnect(tcpSocket, SIGNAL(disconnected()));
+    disconnect(tcpSocket, SIGNAL(readyRead()));
+    tcpSocket->close();
+    tcpSocket->deleteLater();
+}
+
+void MyTCPServer::messageReady()
+{
+
+}
 
 //void MyTCPServer::on_readyRead()
 //{
@@ -63,10 +74,3 @@ void MyTCPServer::listen(QHostAddress addr, quint16 port)
 //    }
 //}
 
-//void MyTCPServer::on_disconnected()
-//{
-//    printf("Connection disconnected.\n");
-//    disconnect(socket, SIGNAL(disconnected()));
-//    disconnect(socket, SIGNAL(readyRead()));
-//    socket->deleteLater();
-//}
