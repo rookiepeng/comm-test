@@ -46,6 +46,24 @@ void MyTCPServer::clientConnection()
     connect(tcpSocket, SIGNAL(readyRead()),this, SLOT(messageReady()));
 }
 
+void MyTCPServer::messageReady()
+{
+    array = tcpSocket->readAll();
+//    while(tcpSocket->canReadLine())
+//    {
+//        QByteArray ba = tcpSocket->readLine();
+
+//        //            if(strcmp(ba.constData(), "!exit\n") == 0)
+//        //            {
+//        //                socket->disconnectFromHost();
+//        //                break;
+//        //            }
+//        qDebug()<<ba.constData();
+//        //printf(">> %s", ba.constData());
+//    }
+    qDebug()<<array;
+}
+
 void MyTCPServer::clientDisconnected()
 {
     disconnect(tcpSocket, SIGNAL(disconnected()));
@@ -53,24 +71,3 @@ void MyTCPServer::clientDisconnected()
     tcpSocket->close();
     tcpSocket->deleteLater();
 }
-
-void MyTCPServer::messageReady()
-{
-
-}
-
-//void MyTCPServer::on_readyRead()
-//{
-//    while(socket->canReadLine())
-//    {
-//        QByteArray ba = socket->readLine();
-
-//        if(strcmp(ba.constData(), "!exit\n") == 0)
-//        {
-//            socket->disconnectFromHost();
-//            break;
-//        }
-//        printf(">> %s", ba.constData());
-//    }
-//}
-

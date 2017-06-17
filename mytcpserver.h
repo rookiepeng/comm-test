@@ -40,6 +40,7 @@ private slots:
 private:
     QTcpSocket *tcpSocket;
     QTcpServer *tcpServer;
+    QByteArray array;
 };
 
 #endif // MYTCPSERVER_H
