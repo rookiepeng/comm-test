@@ -80,7 +80,8 @@ void MainWindow::setupConnection()
         }
         else if(getRoleValue()==CLIENT)
         {
-
+            mytcpclient=new MyTCPClient;
+            mytcpclient->connectTo(targetAddr,targetPort);
         }
     }
     else if (getProtocolValue() == UDP)
@@ -125,7 +126,6 @@ void MainWindow::sendMessage()
     {
         myudp->sendMessage(targetAddr, targetPort, text);
         appendMessage("client", text);
-        //myudp->sendMessage(text);
     }
 
     ui->lineEdit_send->clear();
@@ -143,31 +143,24 @@ void MainWindow::enableUpdateButton()
 
 void MainWindow::updateConfig()
 {
-    if (getProtocolValue() == 1)
+
+    disconnect(this, SLOT(appendMessage(QString, QString)));
+    disconnect(this, SLOT(udpBinded(bool)));
+    if (myudp)
     {
-        disconnect(this, SLOT(appendMessage(QString, QString)));
-        disconnect(this, SLOT(udpBinded(bool)));
-        targetAddr.setAddress(ui->lineEdit_targetIP->text());
-        targetPort = ui->lineEdit_targetPort->text().toInt();
-        localAddr.setAddress(ui->comboBox_localIP->currentText());
         myudp->unBind();
         delete myudp;
     }
-
-    //protocol = ui->comboBox_TCPUDP->currentIndex();
-
-    if (getProtocolValue() == TCP)
+    if (mytcpserver)
     {
-        mytcpserver = new MyTCPServer;
-        mytcpserver->listen(localAddr, ui->lineEdit_listenPort->text().toInt());
+
     }
-    else if (getProtocolValue() == UDP)
-    {
-        myudp = new MyUDP;
-        connect(myudp, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
-        connect(myudp, SIGNAL(bindSuccess(bool)), this, SLOT(udpBinded(bool)));
-        myudp->bindPort(localAddr, ui->lineEdit_listenPort->text().toInt());
-    }
+
+    targetAddr.setAddress(ui->lineEdit_targetIP->text());
+    targetPort = ui->lineEdit_targetPort->text().toInt();
+    localAddr.setAddress(ui->comboBox_localIP->currentText());
+
+    setupConnection();
 
     saveSettings();
 }

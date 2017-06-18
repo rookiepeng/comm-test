@@ -28,6 +28,7 @@
 
 #include "myudp.h"
 #include "mytcpserver.h"
+#include "mytcpclient.h"
 
 #define TCP 0
 #define UDP 1
@@ -73,6 +74,7 @@ private:
     QTextTableFormat tableFormat;
     MyUDP *myudp;
     MyTCPServer *mytcpserver;
+    MyTCPClient *mytcpclient;
     QHostAddress targetAddr;
     QHostAddress localAddr;
     quint16 targetPort;
