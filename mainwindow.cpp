@@ -36,12 +36,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     connect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
     connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(updateConfig()));
 
-    if (protocol == 0)
+    if (getProtocolValue() == TCP)
     {
         mytcpserver = new MyTCPServer;
         mytcpserver->listen(localAddr, ui->lineEdit_listenPort->text().toInt());
     }
-    else if (protocol == 1)
+    else if (getProtocolValue() == UDP)
     {
         myudp = new MyUDP;
         connect(myudp, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
@@ -67,16 +67,9 @@ void MainWindow::initUI()
     ui->lineEdit_send->setFocusPolicy(Qt::StrongFocus);
     ui->lineEdit_send->setFocus();
 
-    QStringList socketList;
-    socketList << "TCP"
-               << "UDP";
-    ui->comboBox_TCPUDP->addItems(socketList);
+    ui->comboBox_TCPUDP->addItems(TCPUDPComboList);
 
-    QStringList roleList;
-    roleList << "Server"
-             << "Client";
-    ui->comboBox_serverClient->addItems(roleList);
-    //ui->comboBox_serverClient->setVisible(false);
+    ui->comboBox_serverClient->addItems(ServerClientComboList);
 
     tableFormat.setBorder(0);
 
@@ -139,7 +132,7 @@ void MainWindow::enableUpdateButton()
 
 void MainWindow::updateConfig()
 {
-    if (protocol == 1)
+    if (getProtocolValue() == 1)
     {
         disconnect(this, SLOT(appendMessage(QString, QString)));
         disconnect(this, SLOT(udpBinded(bool)));
@@ -150,14 +143,14 @@ void MainWindow::updateConfig()
         delete myudp;
     }
 
-    protocol = ui->comboBox_TCPUDP->currentIndex();
+    //protocol = ui->comboBox_TCPUDP->currentIndex();
 
-    if (protocol == 0)
+    if (getProtocolValue() == TCP)
     {
         mytcpserver = new MyTCPServer;
         mytcpserver->listen(localAddr, ui->lineEdit_listenPort->text().toInt());
     }
-    else if (protocol == 1)
+    else if (getProtocolValue() == UDP)
     {
         myudp = new MyUDP;
         connect(myudp, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
@@ -175,13 +168,13 @@ void MainWindow::loadSettings()
     ui->lineEdit_targetIP->setText(settings.value("targetIP", "127.0.0.1").toString());
     ui->lineEdit_targetPort->setText(settings.value("targetPort", 1234).toString());
     ui->lineEdit_listenPort->setText(settings.value("listenPort", 1234).toString());
-    //qDebug()<<ui->comboBox_localIP->count();
+
     if (ui->comboBox_localIP->count() >= settings.value("localIPIndex", 0).toInt())
     {
         ui->comboBox_localIP->setCurrentIndex(settings.value("localIPIndex", 0).toInt());
     }
-    protocol = settings.value("TCPorUDP", 0).toInt();
-    ui->comboBox_TCPUDP->setCurrentIndex(protocol);
+
+    ui->comboBox_TCPUDP->setCurrentIndex(settings.value("TCPorUDP", 0).toInt());
     ui->comboBox_serverClient->setCurrentIndex(settings.value("serverClient", 0).toInt());
     ui->comboBox_serverClient->setDisabled(settings.value("TCPorUDP", 0).toInt() == 1);
 }
@@ -235,4 +228,14 @@ void MainWindow::findLocalIPs()
 void MainWindow::disableComboBox(int index)
 {
     ui->comboBox_serverClient->setDisabled(index == 1);
+}
+
+qint16 MainWindow::getProtocolValue()
+{
+    return ui->comboBox_TCPUDP->currentIndex();
+}
+
+qint16 MainWindow::getRoleValue()
+{
+    return ui->comboBox_serverClient->currentIndex();
 }

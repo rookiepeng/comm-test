@@ -29,7 +29,10 @@
 #include "myudp.h"
 #include "mytcpserver.h"
 
-#define ROLE 1 // 0 server, 1 client
+#define TCP 0
+#define UDP 1
+#define SERVER 0
+#define CLIENT 1
 
 namespace Ui
 {
@@ -60,6 +63,11 @@ private:
     void loadSettings();
     void saveSettings();
     void findLocalIPs();
+    qint16 getProtocolValue();
+    qint16 getRoleValue();
+
+    QList<QString> TCPUDPComboList=QList<QString>()<< "TCP"<< "UDP";
+    QList<QString> ServerClientComboList=QList<QString>()<< "Server"<< "Client";
 
     QTextTableFormat tableFormat;
     MyUDP *myudp;
@@ -69,7 +77,7 @@ private:
     quint16 targetPort;
     QString settingsFileDir;
     QList<QNetworkInterface> wifiList;
-    quint16 protocol;
+    //quint16 protocol;
 };
 
 #endif // MAINWINDOW_H
