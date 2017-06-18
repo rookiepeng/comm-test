@@ -21,33 +21,13 @@
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
-                                          ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     initUI();
     findLocalIPs();
     loadSettings();
-
-    targetAddr.setAddress(ui->lineEdit_targetIP->text());
-    targetPort = ui->lineEdit_targetPort->text().toInt();
-    localAddr.setAddress(ui->comboBox_localIP->currentText());
-
-    connect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
-    connect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
-    connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(updateConfig()));
-
-    if (getProtocolValue() == TCP)
-    {
-        mytcpserver = new MyTCPServer;
-        mytcpserver->listen(localAddr, ui->lineEdit_listenPort->text().toInt());
-    }
-    else if (getProtocolValue() == UDP)
-    {
-        myudp = new MyUDP;
-        connect(myudp, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
-        connect(myudp, SIGNAL(bindSuccess(bool)), this, SLOT(udpBinded(bool)));
-        myudp->bindPort(localAddr, ui->lineEdit_listenPort->text().toInt());
-    }
+    setupConnection();
 }
 
 MainWindow::~MainWindow()
@@ -81,6 +61,37 @@ void MainWindow::initUI()
     connect(ui->comboBox_TCPUDP, SIGNAL(currentIndexChanged(int)), this, SLOT(disableComboBox(int)));
 }
 
+void MainWindow::setupConnection()
+{
+    targetAddr.setAddress(ui->lineEdit_targetIP->text());
+    targetPort = ui->lineEdit_targetPort->text().toInt();
+    localAddr.setAddress(ui->comboBox_localIP->currentText());
+
+    connect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
+    connect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
+    connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(updateConfig()));
+
+    if (getProtocolValue() == TCP)
+    {
+        if(getRoleValue()==SERVER)
+        {
+            mytcpserver = new MyTCPServer;
+            mytcpserver->listen(localAddr, ui->lineEdit_listenPort->text().toInt());
+        }
+        else if(getRoleValue()==CLIENT)
+        {
+
+        }
+    }
+    else if (getProtocolValue() == UDP)
+    {
+        myudp = new MyUDP;
+        connect(myudp, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
+        connect(myudp, SIGNAL(bindSuccess(bool)), this, SLOT(udpBinded(bool)));
+        myudp->bindPort(localAddr, ui->lineEdit_listenPort->text().toInt());
+    }
+}
+
 void MainWindow::appendMessage(const QString &from, const QString &message)
 {
     if (from.isEmpty() || message.isEmpty())
@@ -107,7 +118,7 @@ void MainWindow::sendMessage()
         QColor color = ui->textBrowser_message->textColor();
         ui->textBrowser_message->setTextColor(Qt::red);
         ui->textBrowser_message->append(tr("! Unknown command: %1")
-                                            .arg(text.left(text.indexOf(' '))));
+                                        .arg(text.left(text.indexOf(' '))));
         ui->textBrowser_message->setTextColor(color);
     }
     else
@@ -161,36 +172,6 @@ void MainWindow::updateConfig()
     saveSettings();
 }
 
-void MainWindow::loadSettings()
-{
-    settingsFileDir = QApplication::applicationDirPath() + "/config.ini";
-    QSettings settings(settingsFileDir, QSettings::IniFormat);
-    ui->lineEdit_targetIP->setText(settings.value("targetIP", "127.0.0.1").toString());
-    ui->lineEdit_targetPort->setText(settings.value("targetPort", 1234).toString());
-    ui->lineEdit_listenPort->setText(settings.value("listenPort", 1234).toString());
-
-    if (ui->comboBox_localIP->count() >= settings.value("localIPIndex", 0).toInt())
-    {
-        ui->comboBox_localIP->setCurrentIndex(settings.value("localIPIndex", 0).toInt());
-    }
-
-    ui->comboBox_TCPUDP->setCurrentIndex(settings.value("TCPorUDP", 0).toInt());
-    ui->comboBox_serverClient->setCurrentIndex(settings.value("serverClient", 0).toInt());
-    ui->comboBox_serverClient->setDisabled(settings.value("TCPorUDP", 0).toInt() == 1);
-}
-
-void MainWindow::saveSettings()
-{
-    QSettings settings(settingsFileDir, QSettings::IniFormat);
-    settings.setValue("targetIP", ui->lineEdit_targetIP->text());
-    settings.setValue("targetPort", ui->lineEdit_targetPort->text());
-    settings.setValue("listenPort", ui->lineEdit_listenPort->text());
-    settings.setValue("localIPIndex", ui->comboBox_localIP->currentIndex());
-    settings.setValue("TCPorUDP", ui->comboBox_TCPUDP->currentIndex());
-    settings.setValue("serverClient", ui->comboBox_serverClient->currentIndex());
-    settings.sync();
-}
-
 void MainWindow::findLocalIPs()
 {
     QList<QNetworkInterface> listInterface = QNetworkInterface::allInterfaces();
@@ -238,4 +219,34 @@ qint16 MainWindow::getProtocolValue()
 qint16 MainWindow::getRoleValue()
 {
     return ui->comboBox_serverClient->currentIndex();
+}
+
+void MainWindow::loadSettings()
+{
+    settingsFileDir = QApplication::applicationDirPath() + "/config.ini";
+    QSettings settings(settingsFileDir, QSettings::IniFormat);
+    ui->lineEdit_targetIP->setText(settings.value("targetIP", "127.0.0.1").toString());
+    ui->lineEdit_targetPort->setText(settings.value("targetPort", 1234).toString());
+    ui->lineEdit_listenPort->setText(settings.value("listenPort", 1234).toString());
+
+    if (ui->comboBox_localIP->count() >= settings.value("localIPIndex", 0).toInt())
+    {
+        ui->comboBox_localIP->setCurrentIndex(settings.value("localIPIndex", 0).toInt());
+    }
+
+    ui->comboBox_TCPUDP->setCurrentIndex(settings.value("TCPorUDP", 0).toInt());
+    ui->comboBox_serverClient->setCurrentIndex(settings.value("serverClient", 0).toInt());
+    ui->comboBox_serverClient->setDisabled(settings.value("TCPorUDP", 0).toInt() == 1);
+}
+
+void MainWindow::saveSettings()
+{
+    QSettings settings(settingsFileDir, QSettings::IniFormat);
+    settings.setValue("targetIP", ui->lineEdit_targetIP->text());
+    settings.setValue("targetPort", ui->lineEdit_targetPort->text());
+    settings.setValue("listenPort", ui->lineEdit_listenPort->text());
+    settings.setValue("localIPIndex", ui->comboBox_localIP->currentIndex());
+    settings.setValue("TCPorUDP", ui->comboBox_TCPUDP->currentIndex());
+    settings.setValue("serverClient", ui->comboBox_serverClient->currentIndex());
+    settings.sync();
 }

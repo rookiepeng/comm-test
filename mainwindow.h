@@ -63,6 +63,7 @@ private:
     void loadSettings();
     void saveSettings();
     void findLocalIPs();
+    void setupConnection();
     qint16 getProtocolValue();
     qint16 getRoleValue();
 
@@ -77,7 +78,6 @@ private:
     quint16 targetPort;
     QString settingsFileDir;
     QList<QNetworkInterface> wifiList;
-    //quint16 protocol;
 };
 
 #endif // MAINWINDOW_H
