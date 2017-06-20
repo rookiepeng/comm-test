@@ -29,6 +29,7 @@ class MyTCPServer : public QTcpServer
 public:
     explicit MyTCPServer(QObject *parent = nullptr);
     void listen(QHostAddress addr, quint16 port);
+    void sendMessage(QString string);
 
 signals:
     void newMessage(const QString &from, const QString &message);
@@ -42,6 +43,8 @@ private:
     QTcpSocket *tcpSocket;
     QTcpServer *tcpServer;
     QByteArray array;
+    QHostAddress clientAddr;
+    qint16 clientPort;
 };
 
 #endif // MYTCPSERVER_H

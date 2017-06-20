@@ -30,7 +30,7 @@ void MyTCPServer::listen(QHostAddress addr, quint16 port)
     if(tcpServer->listen(addr,port))
     {
         connect(tcpServer, SIGNAL(newConnection()), this, SLOT(clientConnection()));
-        qDebug()<<"listern to port:"<<port;
+        qDebug()<<"TCP Server: Listern to port "<<port;
     }
 }
 
@@ -39,28 +39,40 @@ void MyTCPServer::clientConnection()
     tcpSocket=tcpServer->nextPendingConnection();
     if(tcpSocket->state() == QTcpSocket::ConnectedState)
     {
-        //printf("New connection established.\n");
-        qDebug()<<"New connection: "<<tcpSocket->peerAddress();
+        clientAddr=tcpSocket->peerAddress();
+        clientPort=tcpSocket->peerPort();
+        connect(tcpSocket, SIGNAL(disconnected()),this, SLOT(clientDisconnected()));
+        connect(tcpSocket, SIGNAL(readyRead()),this, SLOT(messageReady()));
+        qDebug()<<"TCP Server: New connection from "<<tcpSocket->peerAddress().toString();
     }
-    connect(tcpSocket, SIGNAL(disconnected()),this, SLOT(clientDisconnected()));
-    connect(tcpSocket, SIGNAL(readyRead()),this, SLOT(messageReady()));
+}
+
+void MyTCPServer::sendMessage(QString string)
+{
+    QByteArray Data;
+    Data.append(string);
+    if(tcpSocket->state() == QTcpSocket::ConnectedState)
+    {
+        tcpSocket->write(Data);
+        tcpSocket->flush();
+    }
 }
 
 void MyTCPServer::messageReady()
 {
     array = tcpSocket->readAll();
-//    while(tcpSocket->canReadLine())
-//    {
-//        QByteArray ba = tcpSocket->readLine();
+    //    while(tcpSocket->canReadLine())
+    //    {
+    //        QByteArray ba = tcpSocket->readLine();
 
-//        //            if(strcmp(ba.constData(), "!exit\n") == 0)
-//        //            {
-//        //                socket->disconnectFromHost();
-//        //                break;
-//        //            }
-//        qDebug()<<ba.constData();
-//        //printf(">> %s", ba.constData());
-//    }
+    //        //            if(strcmp(ba.constData(), "!exit\n") == 0)
+    //        //            {
+    //        //                socket->disconnectFromHost();
+    //        //                break;
+    //        //            }
+    //        qDebug()<<ba.constData();
+    //        //printf(">> %s", ba.constData());
+    //    }
     emit newMessage(tcpSocket->peerAddress().toString(),array);
     qDebug()<<array;
 }

@@ -114,19 +114,19 @@ void MainWindow::sendMessage()
     if (text.isEmpty())
         return;
 
-    if (text.startsWith(QChar('/')))
-    {
-        QColor color = ui->textBrowser_message->textColor();
-        ui->textBrowser_message->setTextColor(Qt::red);
-        ui->textBrowser_message->append(tr("! Unknown command: %1")
-                                        .arg(text.left(text.indexOf(' '))));
-        ui->textBrowser_message->setTextColor(color);
-    }
-    else
-    {
-        myudp->sendMessage(targetAddr, targetPort, text);
-        appendMessage("client", text);
-    }
+    //    if (text.startsWith(QChar('/')))
+    //    {
+    //        QColor color = ui->textBrowser_message->textColor();
+    //        ui->textBrowser_message->setTextColor(Qt::red);
+    //        ui->textBrowser_message->append(tr("! Unknown command: %1")
+    //                                        .arg(text.left(text.indexOf(' '))));
+    //        ui->textBrowser_message->setTextColor(color);
+    //    }
+    //    else
+    //    {
+    myudp->sendMessage(targetAddr, targetPort, text);
+    appendMessage("client", text);
+    //}
 
     ui->lineEdit_send->clear();
 }
