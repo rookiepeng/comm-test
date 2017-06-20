@@ -31,6 +31,7 @@ public:
     void listen(QHostAddress addr, quint16 port);
 
 signals:
+    void newMessage(const QString &from, const QString &message);
 
 private slots:
     void clientConnection();

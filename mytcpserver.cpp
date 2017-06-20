@@ -61,6 +61,7 @@ void MyTCPServer::messageReady()
 //        qDebug()<<ba.constData();
 //        //printf(">> %s", ba.constData());
 //    }
+    emit newMessage(tcpSocket->peerAddress().toString(),array);
     qDebug()<<array;
 }
 
