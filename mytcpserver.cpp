@@ -43,6 +43,7 @@ void MyTCPServer::clientConnection()
         clientPort=tcpSocket->peerPort();
         connect(tcpSocket, SIGNAL(disconnected()),this, SLOT(clientDisconnected()));
         connect(tcpSocket, SIGNAL(readyRead()),this, SLOT(messageReady()));
+        emit clientConnected(tcpSocket->peerAddress().toString(),tcpSocket->peerPort());
         qDebug()<<"TCP Server: New connection from "<<tcpSocket->peerAddress().toString();
     }
 }
@@ -81,6 +82,7 @@ void MyTCPServer::clientDisconnected()
 {
     disconnect(tcpSocket, SIGNAL(disconnected()));
     disconnect(tcpSocket, SIGNAL(readyRead()));
+    emit clientDisconnect();
     tcpSocket->close();
     tcpSocket->deleteLater();
 }

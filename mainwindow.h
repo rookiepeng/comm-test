@@ -46,6 +46,7 @@ class MainWindow : public QMainWindow
 
 public slots:
     void appendMessage(const QString &from, const QString &message);
+        void newTCPServerConnection(const QString &from,qint16 port);
 
 private slots:
     void sendMessage();
@@ -53,6 +54,8 @@ private slots:
     void enableUpdateButton();
     void updateConfig();
     void disableComboBox(int index);
+
+    void TCPServerDisconnected();
 
 public:
     explicit MainWindow(QWidget *parent = 0);

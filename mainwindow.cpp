@@ -77,6 +77,8 @@ void MainWindow::setupConnection()
         {
             mytcpserver = new MyTCPServer;
             mytcpserver->listen(localAddr, ui->lineEdit_listenPort->text().toInt());
+            connect(mytcpserver,SIGNAL(clientConnected(QString,qint16)),this,SLOT(newTCPServerConnection(QString,qint16)));
+            connect(mytcpserver,SIGNAL(clientDisconnect()),this,SLOT(TCPServerDisconnected()));
         }
         else if(getRoleValue()==CLIENT)
         {
@@ -91,6 +93,16 @@ void MainWindow::setupConnection()
         connect(myudp, SIGNAL(bindSuccess(bool)), this, SLOT(udpBinded(bool)));
         myudp->bindPort(localAddr, ui->lineEdit_listenPort->text().toInt());
     }
+}
+
+void MainWindow::newTCPServerConnection(const QString &from,qint16 port)
+{
+    connect(mytcpserver,SIGNAL(newMessage(QString, QString)),this,SLOT(appendMessage(QString, QString)));
+}
+
+void MainWindow::TCPServerDisconnected()
+{
+    disconnect(mytcpserver,SIGNAL(newMessage(QString, QString)));
 }
 
 void MainWindow::appendMessage(const QString &from, const QString &message)
