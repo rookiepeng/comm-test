@@ -34,22 +34,22 @@ void MyTCPClient::connectTo(QHostAddress addr, qint16 port)
 void MyTCPClient::onConnected()
 {
     //printf("Connection established.\n");
-    char buffer[1024];
-    forever
-    {
-        while(tcpSocket->canReadLine())
-        {
-            QByteArray ba = tcpSocket->readLine();
-            //printf("from server: %s", ba.constData());
-        }
-        //printf(">> ");
-        gets(buffer);
-        int len = strlen(buffer);
-        buffer[len] = '\n';
-        buffer[len+1] = '\0';
-        tcpSocket->write(buffer);
-        tcpSocket->flush();
-    }
+//    char buffer[1024];
+//    forever
+//    {
+//        while(tcpSocket->canReadLine())
+//        {
+//            QByteArray ba = tcpSocket->readLine();
+//            //printf("from server: %s", ba.constData());
+//        }
+//        //printf(">> ");
+//        gets(buffer);
+//        int len = strlen(buffer);
+//        buffer[len] = '\n';
+//        buffer[len+1] = '\0';
+//        tcpSocket->write(buffer);
+//        tcpSocket->flush();
+//    }
 
     connect(tcpSocket, SIGNAL(disconnected()),this, SLOT(onDisconnected()));
     connect(tcpSocket, SIGNAL(readyRead()),this, SLOT(messageReady()));
@@ -66,5 +66,16 @@ void MyTCPClient::onDisconnected()
 void MyTCPClient::messageReady()
 {
 
+}
+
+void MyTCPClient::sendMessage(QString string)
+{
+    QByteArray Data;
+    Data.append(string);
+    if(tcpSocket->state() == QTcpSocket::ConnectedState)
+    {
+        tcpSocket->write(Data);
+        tcpSocket->flush();
+    }
 }
 

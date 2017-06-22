@@ -29,6 +29,7 @@ class MyTCPClient : public QTcpSocket
 public:
     explicit MyTCPClient(QObject *parent = nullptr);
     void connectTo(QHostAddress addr, qint16 port);
+    void sendMessage(QString string);
 
 private slots:
     void onConnected();
