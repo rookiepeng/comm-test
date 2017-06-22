@@ -46,7 +46,7 @@ class MainWindow : public QMainWindow
 
 public slots:
     void appendMessage(const QString &from, const QString &message);
-        void newTCPServerConnection(const QString &from,qint16 port);
+    void newTCPServerConnection(const QString &from,qint16 port);
 
 private slots:
     void sendMessage();
