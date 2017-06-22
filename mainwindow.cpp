@@ -84,6 +84,7 @@ void MainWindow::setupConnection()
         {
             mytcpclient=new MyTCPClient;
             mytcpclient->connectTo(targetAddr,targetPort);
+
         }
     }
     else if (getProtocolValue() == UDP)

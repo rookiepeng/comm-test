@@ -51,5 +51,20 @@ void MyTCPClient::onConnected()
         tcpSocket->flush();
     }
 
+    connect(tcpSocket, SIGNAL(disconnected()),this, SLOT(onDisconnected()));
+    connect(tcpSocket, SIGNAL(readyRead()),this, SLOT(messageReady()));
+}
+
+void MyTCPClient::onDisconnected()
+{
+    disconnect(tcpSocket, SIGNAL(disconnected()));
+    disconnect(tcpSocket, SIGNAL(readyRead()));
+    tcpSocket->close();
+    tcpSocket->deleteLater();
+}
+
+void MyTCPClient::messageReady()
+{
+
 }
 

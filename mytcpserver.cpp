@@ -29,19 +29,19 @@ void MyTCPServer::listen(QHostAddress addr, quint16 port)
     tcpServer=new QTcpServer(this);
     if(tcpServer->listen(addr,port))
     {
-        connect(tcpServer, SIGNAL(newConnection()), this, SLOT(clientConnection()));
+        connect(tcpServer, SIGNAL(newConnection()), this, SLOT(onConnected()));
         qDebug()<<"TCP Server: Listern to port "<<port;
     }
 }
 
-void MyTCPServer::clientConnection()
+void MyTCPServer::onConnected()
 {
     tcpSocket=tcpServer->nextPendingConnection();
     if(tcpSocket->state() == QTcpSocket::ConnectedState)
     {
         clientAddr=tcpSocket->peerAddress();
         clientPort=tcpSocket->peerPort();
-        connect(tcpSocket, SIGNAL(disconnected()),this, SLOT(clientDisconnected()));
+        connect(tcpSocket, SIGNAL(disconnected()),this, SLOT(onDisconnected()));
         connect(tcpSocket, SIGNAL(readyRead()),this, SLOT(messageReady()));
         emit clientConnected(tcpSocket->peerAddress().toString(),tcpSocket->peerPort());
         qDebug()<<"TCP Server: New connection from "<<tcpSocket->peerAddress().toString();
@@ -78,7 +78,7 @@ void MyTCPServer::messageReady()
     qDebug()<<array;
 }
 
-void MyTCPServer::clientDisconnected()
+void MyTCPServer::onDisconnected()
 {
     disconnect(tcpSocket, SIGNAL(disconnected()));
     disconnect(tcpSocket, SIGNAL(readyRead()));

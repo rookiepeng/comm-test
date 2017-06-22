@@ -32,6 +32,8 @@ public:
 
 private slots:
     void onConnected();
+    void onDisconnected();
+    void messageReady();
 
 private:
     QTcpSocket *tcpSocket;

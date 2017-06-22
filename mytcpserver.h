@@ -37,8 +37,8 @@ signals:
     void clientDisconnect();
 
 private slots:
-    void clientConnection();
-    void clientDisconnected();
+    void onConnected();
+    void onDisconnected();
     void messageReady();
 
 private:
