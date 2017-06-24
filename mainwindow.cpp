@@ -78,8 +78,8 @@ void MainWindow::setupConnection()
         {
             mytcpserver = new MyTCPServer;
             mytcpserver->listen(localAddr, ui->lineEdit_listenPort->text().toInt());
-            connect(mytcpserver,SIGNAL(clientConnected(QString,qint16)),this,SLOT(newTCPServerConnection(QString,qint16)));
-            connect(mytcpserver,SIGNAL(clientDisconnect()),this,SLOT(TCPServerDisconnected()));
+            connect(mytcpserver,SIGNAL(myServerConnected(QString,qint16)),this,SLOT(newTCPServerConnection(QString,qint16)));
+            connect(mytcpserver,SIGNAL(myServerDisconnected()),this,SLOT(TCPServerDisconnected()));
         }
         else if(getRoleValue()==CLIENT)
         {
@@ -173,7 +173,7 @@ void MainWindow::updateConfig()
 
     if (myudp!=nullptr)
     {
-        qDebug()<<"mydup is not null";
+        qDebug()<<"delete mydup";
         disconnect(this, SLOT(udpBinded(bool)));
         myudp->unBind();
         //delete myudp;
@@ -181,7 +181,17 @@ void MainWindow::updateConfig()
     }
     if (mytcpserver)
     {
-
+        qDebug()<<"delete mytcpserver";
+        mytcpserver->close();
+        mytcpserver->deleteLater();
+        mytcpserver=nullptr;
+    }
+    if(mytcpclient)
+    {
+        qDebug()<<"delete mytcpclient";
+        mytcpclient->close();
+        mytcpclient->deleteLater();
+        mytcpclient=nullptr;
     }
 
     targetAddr.setAddress(ui->lineEdit_targetIP->text());

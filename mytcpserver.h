@@ -33,8 +33,8 @@ public:
 
 signals:
     void newMessage(const QString &from, const QString &message);
-    void clientConnected(const QString &from,qint16 port);
-    void clientDisconnect();
+    void myServerConnected(const QString &from,qint16 port);
+    void myServerDisconnected();
 
 private slots:
     void onConnected();
