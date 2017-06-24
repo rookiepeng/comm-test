@@ -85,4 +85,6 @@ void MyTCPServer::onDisconnected()
     emit clientDisconnect();
     tcpSocket->close();
     tcpSocket->deleteLater();
+    tcpServer->close();
+    tcpServer->deleteLater();
 }

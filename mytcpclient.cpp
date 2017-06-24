@@ -53,6 +53,7 @@ void MyTCPClient::onConnected()
 
     connect(tcpSocket, SIGNAL(disconnected()),this, SLOT(onDisconnected()));
     connect(tcpSocket, SIGNAL(readyRead()),this, SLOT(messageReady()));
+    emit myClientConnected(tcpSocket->peerAddress().toString(),tcpSocket->peerPort());
 }
 
 void MyTCPClient::onDisconnected()
@@ -61,6 +62,7 @@ void MyTCPClient::onDisconnected()
     disconnect(tcpSocket, SIGNAL(readyRead()));
     tcpSocket->close();
     tcpSocket->deleteLater();
+    emit myClientDisconnected();
 }
 
 void MyTCPClient::messageReady()

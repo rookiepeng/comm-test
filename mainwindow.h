@@ -47,6 +47,7 @@ class MainWindow : public QMainWindow
 public slots:
     void appendMessage(const QString &from, const QString &message);
     void newTCPServerConnection(const QString &from,qint16 port);
+    void newTCPClientConnection(const QString &from,qint16 port);
 
 private slots:
     void sendMessage();
@@ -56,6 +57,8 @@ private slots:
     void disableComboBox(int index);
 
     void TCPServerDisconnected();
+    void TCPClientDisconnected();
+
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -75,9 +78,9 @@ private:
     QList<QString> ServerClientComboList=QList<QString>()<< "Server"<< "Client";
 
     QTextTableFormat tableFormat;
-    MyUDP *myudp;
-    MyTCPServer *mytcpserver;
-    MyTCPClient *mytcpclient;
+    MyUDP *myudp=nullptr;
+    MyTCPServer *mytcpserver=nullptr;
+    MyTCPClient *mytcpclient=nullptr;
     QHostAddress targetAddr;
     QHostAddress localAddr;
     quint16 targetPort;

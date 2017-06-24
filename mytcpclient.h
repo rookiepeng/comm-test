@@ -31,6 +31,11 @@ public:
     void connectTo(QHostAddress addr, qint16 port);
     void sendMessage(QString string);
 
+signals:
+    void newMessage(const QString &from, const QString &message);
+    void myClientConnected(const QString &from,qint16 port);
+    void myClientDisconnected();
+
 private slots:
     void onConnected();
     void onDisconnected();

@@ -25,6 +25,11 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 {
     ui->setupUi(this);
     initUI();
+
+    connect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
+    connect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
+    connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(updateConfig()));
+
     findLocalIPs();
     loadSettings();
     setupConnection();
@@ -67,10 +72,6 @@ void MainWindow::setupConnection()
     targetPort = ui->lineEdit_targetPort->text().toInt();
     localAddr.setAddress(ui->comboBox_localIP->currentText());
 
-    connect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
-    connect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
-    connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(updateConfig()));
-
     if (getProtocolValue() == TCP)
     {
         if(getRoleValue()==SERVER)
@@ -84,7 +85,8 @@ void MainWindow::setupConnection()
         {
             mytcpclient=new MyTCPClient;
             mytcpclient->connectTo(targetAddr,targetPort);
-
+            connect(mytcpclient,SIGNAL(myClientConnected(QString,qint16)),this,SLOT(newTCPClientConnection(QString,qint16)));
+            connect(mytcpclient,SIGNAL(myClientDisconnected()),this,SLOT(TCPClientDisconnected()));
         }
     }
     else if (getProtocolValue() == UDP)
@@ -101,9 +103,19 @@ void MainWindow::newTCPServerConnection(const QString &from,qint16 port)
     connect(mytcpserver,SIGNAL(newMessage(QString, QString)),this,SLOT(appendMessage(QString, QString)));
 }
 
+void MainWindow::newTCPClientConnection(const QString &from,qint16 port)
+{
+    connect(mytcpclient,SIGNAL(newMessage(QString, QString)),this,SLOT(appendMessage(QString, QString)));
+}
+
 void MainWindow::TCPServerDisconnected()
 {
     disconnect(mytcpserver,SIGNAL(newMessage(QString, QString)));
+}
+
+void MainWindow::TCPClientDisconnected()
+{
+    disconnect(mytcpclient,SIGNAL(newMessage(QString, QString)));
 }
 
 void MainWindow::appendMessage(const QString &from, const QString &message)
@@ -157,12 +169,15 @@ void MainWindow::enableUpdateButton()
 void MainWindow::updateConfig()
 {
 
-    disconnect(this, SLOT(appendMessage(QString, QString)));
-    disconnect(this, SLOT(udpBinded(bool)));
-    if (myudp)
+    //disconnect(this, SLOT(appendMessage(QString, QString)));
+
+    if (myudp!=nullptr)
     {
+        qDebug()<<"mydup is not null";
+        disconnect(this, SLOT(udpBinded(bool)));
         myudp->unBind();
-        delete myudp;
+        //delete myudp;
+        myudp=nullptr;
     }
     if (mytcpserver)
     {
