@@ -26,8 +26,6 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     ui->setupUi(this);
     initUI();
 
-    connect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
-    connect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
     connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onConnectButton()));
 
     findLocalIPs();
@@ -97,6 +95,8 @@ void MainWindow::setupConnection()
     else if (getProtocolValue() == UDP)
     {
         myudp = new MyUDP;
+        connect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
+        connect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
         connect(myudp, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
         connect(myudp, SIGNAL(bindSuccess(bool)), this, SLOT(udpBinded(bool)));
         QString temp = "UDP socket is listening to: ";
@@ -108,21 +108,27 @@ void MainWindow::setupConnection()
 void MainWindow::newTCPServerConnection(const QString &from, qint16 port)
 {
     connect(mytcpserver, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
+    connect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
+    connect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
 }
 
 void MainWindow::newTCPClientConnection(const QString &from, qint16 port)
 {
     connect(mytcpclient, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
+    connect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
+    connect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
 }
 
 void MainWindow::TCPServerDisconnected()
 {
     disconnect(mytcpserver, SIGNAL(newMessage(QString, QString)));
+    disconnect(this, SLOT(sendMessage()));
 }
 
 void MainWindow::TCPClientDisconnected()
 {
     disconnect(mytcpclient, SIGNAL(newMessage(QString, QString)));
+    disconnect(this, SLOT(sendMessage()));
 }
 
 void MainWindow::appendMessage(const QString &from, const QString &message)
@@ -154,23 +160,27 @@ void MainWindow::sendMessage()
 {
     QString text = ui->lineEdit_send->text();
     if (text.isEmpty())
+    {
         return;
+    }
 
     if (getProtocolValue() == TCP)
     {
         if (getRoleValue() == SERVER)
         {
+            mytcpserver->sendMessage(text);
         }
         else if (getRoleValue() == CLIENT)
         {
+            mytcpclient->sendMessage(text);
         }
     }
     else if (getProtocolValue() == UDP)
     {
         myudp->sendMessage(targetAddr, targetPort, text);
     }
-    appendMessage("client", text);
 
+    appendMessage("client", text);
     ui->lineEdit_send->clear();
 }
 
@@ -186,13 +196,16 @@ void MainWindow::enableUpdateButton()
 
 void MainWindow::onConnectButton()
 {
-
-    //disconnect(this, SLOT(appendMessage(QString, QString)));
+    //disconnect(this, SLOT(sendMessage()));
+    disconnect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
+    disconnect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
 
     if (myudp != nullptr)
     {
         qDebug() << "Delete UDP";
+        //disconnect(this, SLOT(sendMessage()));
         disconnect(this, SLOT(udpBinded(bool)));
+
         myudp->unBind();
         //delete myudp;
         myudp = nullptr;
@@ -211,10 +224,6 @@ void MainWindow::onConnectButton()
         mytcpclient->deleteLater();
         mytcpclient = nullptr;
     }
-
-    targetAddr.setAddress(ui->lineEdit_targetIP->text());
-    targetPort = ui->lineEdit_targetPort->text().toInt();
-    localAddr.setAddress(ui->comboBox_localIP->currentText());
 
     setupConnection();
 
