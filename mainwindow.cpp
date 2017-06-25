@@ -28,7 +28,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 
     connect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
     connect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
-    connect(ui->updateButton, SIGNAL(clicked()), this, SLOT(updateConfig()));
+    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onConnectButton()));
 
     findLocalIPs();
     loadSettings();
@@ -78,6 +78,8 @@ void MainWindow::setupConnection()
         {
             mytcpserver = new MyTCPServer;
             mytcpserver->listen(localAddr, ui->lineEdit_listenPort->text().toInt());
+            QString temp="TCP server is listening to port: ";
+            appendMessage("System",temp.append( QString::number(targetPort)));
             connect(mytcpserver,SIGNAL(myServerConnected(QString,qint16)),this,SLOT(newTCPServerConnection(QString,qint16)));
             connect(mytcpserver,SIGNAL(myServerDisconnected()),this,SLOT(TCPServerDisconnected()));
         }
@@ -85,6 +87,8 @@ void MainWindow::setupConnection()
         {
             mytcpclient=new MyTCPClient;
             mytcpclient->connectTo(targetAddr,targetPort);
+            QString temp="TCP client is connecting to: ";
+            appendMessage("System",temp.append(targetAddr.toString()).append(":").append( QString::number(targetPort)));
             connect(mytcpclient,SIGNAL(myClientConnected(QString,qint16)),this,SLOT(newTCPClientConnection(QString,qint16)));
             connect(mytcpclient,SIGNAL(myClientDisconnected()),this,SLOT(TCPClientDisconnected()));
         }
@@ -94,6 +98,7 @@ void MainWindow::setupConnection()
         myudp = new MyUDP;
         connect(myudp, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
         connect(myudp, SIGNAL(bindSuccess(bool)), this, SLOT(udpBinded(bool)));
+        appendMessage("System","UDP socket is listening to:");
         myudp->bindPort(localAddr, ui->lineEdit_listenPort->text().toInt());
     }
 }
@@ -126,9 +131,19 @@ void MainWindow::appendMessage(const QString &from, const QString &message)
     QTextCursor cursor(ui->textBrowser_message->textCursor());
     cursor.movePosition(QTextCursor::End);
 
-    QTextTable *table = cursor.insertTable(1, 2, tableFormat);
-    table->cellAt(0, 0).firstCursorPosition().insertText('<' + from + "> ");
-    table->cellAt(0, 1).firstCursorPosition().insertText(message);
+    if (from=="System")
+    {
+        QColor color = ui->textBrowser_message->textColor();
+        ui->textBrowser_message->setTextColor(Qt::gray);
+        ui->textBrowser_message->append(message);
+        ui->textBrowser_message->setTextColor(color);
+    }
+    else
+    {
+        QTextTable *table = cursor.insertTable(1, 2, tableFormat);
+        table->cellAt(0, 0).firstCursorPosition().insertText('<' + from + "> ");
+        table->cellAt(0, 1).firstCursorPosition().insertText(message);
+    }
     QScrollBar *bar = ui->textBrowser_message->verticalScrollBar();
     bar->setValue(bar->maximum());
 }
@@ -139,34 +154,23 @@ void MainWindow::sendMessage()
     if (text.isEmpty())
         return;
 
-    //    if (text.startsWith(QChar('/')))
-    //    {
-    //        QColor color = ui->textBrowser_message->textColor();
-    //        ui->textBrowser_message->setTextColor(Qt::red);
-    //        ui->textBrowser_message->append(tr("! Unknown command: %1")
-    //                                        .arg(text.left(text.indexOf(' '))));
-    //        ui->textBrowser_message->setTextColor(color);
-    //    }
-    //    else
-    //    {
     myudp->sendMessage(targetAddr, targetPort, text);
     appendMessage("client", text);
-    //}
 
     ui->lineEdit_send->clear();
 }
 
 void MainWindow::udpBinded(bool isBinded)
 {
-    ui->updateButton->setDisabled(isBinded);
+    ui->connectButton->setDisabled(isBinded);
 }
 
 void MainWindow::enableUpdateButton()
 {
-    ui->updateButton->setDisabled(false);
+    ui->connectButton->setDisabled(false);
 }
 
-void MainWindow::updateConfig()
+void MainWindow::onConnectButton()
 {
 
     //disconnect(this, SLOT(appendMessage(QString, QString)));

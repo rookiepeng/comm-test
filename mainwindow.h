@@ -53,7 +53,7 @@ private slots:
     void sendMessage();
     void udpBinded(bool isBinded);
     void enableUpdateButton();
-    void updateConfig();
+    void onConnectButton();
     void disableComboBox(int index);
 
     void TCPServerDisconnected();
@@ -84,6 +84,7 @@ private:
     QHostAddress targetAddr;
     QHostAddress localAddr;
     quint16 targetPort;
+    quint16 listenPort;
     QString settingsFileDir;
     QList<QNetworkInterface> wifiList;
 };
