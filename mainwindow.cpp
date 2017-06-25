@@ -21,7 +21,7 @@
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
-                                          ui(new Ui::MainWindow)
+    ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     initUI();
@@ -107,6 +107,8 @@ void MainWindow::setupConnection()
 
 void MainWindow::newTCPServerConnection(const QString &from, qint16 port)
 {
+    QString temp="New connection from: ";
+    appendMessage("System", temp.append(from).append(":").append(QString::number(port)));
     connect(mytcpserver, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
     connect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
     connect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
@@ -114,6 +116,8 @@ void MainWindow::newTCPServerConnection(const QString &from, qint16 port)
 
 void MainWindow::newTCPClientConnection(const QString &from, qint16 port)
 {
+    QString temp="Connected to: ";
+    appendMessage("System", temp.append(from).append(":").append(QString::number(port)));
     connect(mytcpclient, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
     connect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
     connect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
