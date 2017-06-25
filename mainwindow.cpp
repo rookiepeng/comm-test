@@ -21,7 +21,7 @@
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
-    ui(new Ui::MainWindow)
+                                          ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     initUI();
@@ -71,26 +71,27 @@ void MainWindow::setupConnection()
     targetAddr.setAddress(ui->lineEdit_targetIP->text());
     targetPort = ui->lineEdit_targetPort->text().toInt();
     localAddr.setAddress(ui->comboBox_localIP->currentText());
+    listenPort = ui->lineEdit_listenPort->text().toInt();
 
     if (getProtocolValue() == TCP)
     {
-        if(getRoleValue()==SERVER)
+        if (getRoleValue() == SERVER)
         {
             mytcpserver = new MyTCPServer;
-            mytcpserver->listen(localAddr, ui->lineEdit_listenPort->text().toInt());
-            QString temp="TCP server is listening to port: ";
-            appendMessage("System",temp.append( QString::number(targetPort)));
-            connect(mytcpserver,SIGNAL(myServerConnected(QString,qint16)),this,SLOT(newTCPServerConnection(QString,qint16)));
-            connect(mytcpserver,SIGNAL(myServerDisconnected()),this,SLOT(TCPServerDisconnected()));
+            mytcpserver->listen(localAddr, listenPort);
+            QString temp = "TCP server is listening to port: ";
+            appendMessage("System", temp.append(QString::number(listenPort)));
+            connect(mytcpserver, SIGNAL(myServerConnected(QString, qint16)), this, SLOT(newTCPServerConnection(QString, qint16)));
+            connect(mytcpserver, SIGNAL(myServerDisconnected()), this, SLOT(TCPServerDisconnected()));
         }
-        else if(getRoleValue()==CLIENT)
+        else if (getRoleValue() == CLIENT)
         {
-            mytcpclient=new MyTCPClient;
-            mytcpclient->connectTo(targetAddr,targetPort);
-            QString temp="TCP client is connecting to: ";
-            appendMessage("System",temp.append(targetAddr.toString()).append(":").append( QString::number(targetPort)));
-            connect(mytcpclient,SIGNAL(myClientConnected(QString,qint16)),this,SLOT(newTCPClientConnection(QString,qint16)));
-            connect(mytcpclient,SIGNAL(myClientDisconnected()),this,SLOT(TCPClientDisconnected()));
+            mytcpclient = new MyTCPClient;
+            mytcpclient->connectTo(targetAddr, targetPort);
+            QString temp = "TCP client is connecting to: ";
+            appendMessage("System", temp.append(targetAddr.toString()).append(":").append(QString::number(targetPort)));
+            connect(mytcpclient, SIGNAL(myClientConnected(QString, qint16)), this, SLOT(newTCPClientConnection(QString, qint16)));
+            connect(mytcpclient, SIGNAL(myClientDisconnected()), this, SLOT(TCPClientDisconnected()));
         }
     }
     else if (getProtocolValue() == UDP)
@@ -98,29 +99,30 @@ void MainWindow::setupConnection()
         myudp = new MyUDP;
         connect(myudp, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
         connect(myudp, SIGNAL(bindSuccess(bool)), this, SLOT(udpBinded(bool)));
-        appendMessage("System","UDP socket is listening to:");
-        myudp->bindPort(localAddr, ui->lineEdit_listenPort->text().toInt());
+        QString temp = "UDP socket is listening to: ";
+        appendMessage("System", temp.append(QString::number(listenPort)));
+        myudp->bindPort(localAddr, listenPort);
     }
 }
 
-void MainWindow::newTCPServerConnection(const QString &from,qint16 port)
+void MainWindow::newTCPServerConnection(const QString &from, qint16 port)
 {
-    connect(mytcpserver,SIGNAL(newMessage(QString, QString)),this,SLOT(appendMessage(QString, QString)));
+    connect(mytcpserver, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
 }
 
-void MainWindow::newTCPClientConnection(const QString &from,qint16 port)
+void MainWindow::newTCPClientConnection(const QString &from, qint16 port)
 {
-    connect(mytcpclient,SIGNAL(newMessage(QString, QString)),this,SLOT(appendMessage(QString, QString)));
+    connect(mytcpclient, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
 }
 
 void MainWindow::TCPServerDisconnected()
 {
-    disconnect(mytcpserver,SIGNAL(newMessage(QString, QString)));
+    disconnect(mytcpserver, SIGNAL(newMessage(QString, QString)));
 }
 
 void MainWindow::TCPClientDisconnected()
 {
-    disconnect(mytcpclient,SIGNAL(newMessage(QString, QString)));
+    disconnect(mytcpclient, SIGNAL(newMessage(QString, QString)));
 }
 
 void MainWindow::appendMessage(const QString &from, const QString &message)
@@ -131,7 +133,7 @@ void MainWindow::appendMessage(const QString &from, const QString &message)
     QTextCursor cursor(ui->textBrowser_message->textCursor());
     cursor.movePosition(QTextCursor::End);
 
-    if (from=="System")
+    if (from == "System")
     {
         QColor color = ui->textBrowser_message->textColor();
         ui->textBrowser_message->setTextColor(Qt::gray);
@@ -154,7 +156,19 @@ void MainWindow::sendMessage()
     if (text.isEmpty())
         return;
 
-    myudp->sendMessage(targetAddr, targetPort, text);
+    if (getProtocolValue() == TCP)
+    {
+        if (getRoleValue() == SERVER)
+        {
+        }
+        else if (getRoleValue() == CLIENT)
+        {
+        }
+    }
+    else if (getProtocolValue() == UDP)
+    {
+        myudp->sendMessage(targetAddr, targetPort, text);
+    }
     appendMessage("client", text);
 
     ui->lineEdit_send->clear();
@@ -175,27 +189,27 @@ void MainWindow::onConnectButton()
 
     //disconnect(this, SLOT(appendMessage(QString, QString)));
 
-    if (myudp!=nullptr)
+    if (myudp != nullptr)
     {
-        qDebug()<<"delete mydup";
+        qDebug() << "Delete UDP";
         disconnect(this, SLOT(udpBinded(bool)));
         myudp->unBind();
         //delete myudp;
-        myudp=nullptr;
+        myudp = nullptr;
     }
     if (mytcpserver)
     {
-        qDebug()<<"delete mytcpserver";
+        qDebug() << "Delete TCP Server";
         mytcpserver->close();
         mytcpserver->deleteLater();
-        mytcpserver=nullptr;
+        mytcpserver = nullptr;
     }
-    if(mytcpclient)
+    if (mytcpclient)
     {
-        qDebug()<<"delete mytcpclient";
+        qDebug() << "Delete TCP Client";
         mytcpclient->close();
         mytcpclient->deleteLater();
-        mytcpclient=nullptr;
+        mytcpclient = nullptr;
     }
 
     targetAddr.setAddress(ui->lineEdit_targetIP->text());

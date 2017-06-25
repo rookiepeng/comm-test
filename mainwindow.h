@@ -44,12 +44,12 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-public slots:
+  public slots:
     void appendMessage(const QString &from, const QString &message);
-    void newTCPServerConnection(const QString &from,qint16 port);
-    void newTCPClientConnection(const QString &from,qint16 port);
+    void newTCPServerConnection(const QString &from, qint16 port);
+    void newTCPClientConnection(const QString &from, qint16 port);
 
-private slots:
+  private slots:
     void sendMessage();
     void udpBinded(bool isBinded);
     void enableUpdateButton();
@@ -59,12 +59,11 @@ private slots:
     void TCPServerDisconnected();
     void TCPClientDisconnected();
 
-
-public:
+  public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-private:
+  private:
     Ui::MainWindow *ui;
     void initUI();
     void loadSettings();
@@ -74,13 +73,15 @@ private:
     qint16 getProtocolValue();
     qint16 getRoleValue();
 
-    QList<QString> TCPUDPComboList=QList<QString>()<< "TCP"<< "UDP";
-    QList<QString> ServerClientComboList=QList<QString>()<< "Server"<< "Client";
+    QList<QString> TCPUDPComboList = QList<QString>() << "TCP"
+                                                      << "UDP";
+    QList<QString> ServerClientComboList = QList<QString>() << "Server"
+                                                            << "Client";
 
     QTextTableFormat tableFormat;
-    MyUDP *myudp=nullptr;
-    MyTCPServer *mytcpserver=nullptr;
-    MyTCPClient *mytcpclient=nullptr;
+    MyUDP *myudp = nullptr;
+    MyTCPServer *mytcpserver = nullptr;
+    MyTCPClient *mytcpclient = nullptr;
     QHostAddress targetAddr;
     QHostAddress localAddr;
     quint16 targetPort;

@@ -26,22 +26,22 @@
 class MyTCPServer : public QTcpServer
 {
     Q_OBJECT
-public:
+  public:
     explicit MyTCPServer(QObject *parent = nullptr);
     void listen(QHostAddress addr, quint16 port);
     void sendMessage(QString string);
 
-signals:
+  signals:
     void newMessage(const QString &from, const QString &message);
-    void myServerConnected(const QString &from,qint16 port);
+    void myServerConnected(const QString &from, qint16 port);
     void myServerDisconnected();
 
-private slots:
+  private slots:
     void onConnected();
     void onDisconnected();
     void messageReady();
 
-private:
+  private:
     QTcpSocket *tcpSocket;
     QTcpServer *tcpServer;
     QByteArray array;

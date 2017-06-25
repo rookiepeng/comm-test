@@ -21,14 +21,13 @@
 
 MyTCPClient::MyTCPClient(QObject *parent) : QTcpSocket(parent)
 {
-
 }
 
 void MyTCPClient::connectTo(QHostAddress addr, qint16 port)
 {
-    tcpSocket=new QTcpSocket(this);
+    tcpSocket = new QTcpSocket(this);
     tcpSocket->connectToHost(addr, port);
-    connect(tcpSocket, SIGNAL(connected()),this, SLOT(onConnected()));
+    connect(tcpSocket, SIGNAL(connected()), this, SLOT(onConnected()));
 }
 
 void MyTCPClient::onConnected()
@@ -51,9 +50,9 @@ void MyTCPClient::onConnected()
     //        tcpSocket->flush();
     //    }
 
-    connect(tcpSocket, SIGNAL(disconnected()),this, SLOT(onDisconnected()));
-    connect(tcpSocket, SIGNAL(readyRead()),this, SLOT(messageReady()));
-    emit myClientConnected(tcpSocket->peerAddress().toString(),tcpSocket->peerPort());
+    connect(tcpSocket, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
+    connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(messageReady()));
+    emit myClientConnected(tcpSocket->peerAddress().toString(), tcpSocket->peerPort());
 }
 
 void MyTCPClient::onDisconnected()
@@ -67,17 +66,15 @@ void MyTCPClient::onDisconnected()
 
 void MyTCPClient::messageReady()
 {
-
 }
 
 void MyTCPClient::sendMessage(QString string)
 {
     QByteArray Data;
     Data.append(string);
-    if(tcpSocket->state() == QTcpSocket::ConnectedState)
+    if (tcpSocket->state() == QTcpSocket::ConnectedState)
     {
         tcpSocket->write(Data);
         tcpSocket->flush();
     }
 }
-

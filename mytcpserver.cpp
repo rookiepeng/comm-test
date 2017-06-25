@@ -26,25 +26,25 @@ MyTCPServer::MyTCPServer(QObject *parent) : QTcpServer(parent)
 
 void MyTCPServer::listen(QHostAddress addr, quint16 port)
 {
-    tcpServer=new QTcpServer(this);
-    if(tcpServer->listen(addr,port))
+    tcpServer = new QTcpServer(this);
+    if (tcpServer->listen(addr, port))
     {
         connect(tcpServer, SIGNAL(newConnection()), this, SLOT(onConnected()));
-        qDebug()<<"TCP Server: Listern to port "<<port;
+        qDebug() << "TCP Server: Listern to port " << port;
     }
 }
 
 void MyTCPServer::onConnected()
 {
-    tcpSocket=tcpServer->nextPendingConnection();
-    if(tcpSocket->state() == QTcpSocket::ConnectedState)
+    tcpSocket = tcpServer->nextPendingConnection();
+    if (tcpSocket->state() == QTcpSocket::ConnectedState)
     {
-        clientAddr=tcpSocket->peerAddress();
-        clientPort=tcpSocket->peerPort();
-        connect(tcpSocket, SIGNAL(disconnected()),this, SLOT(onDisconnected()));
-        connect(tcpSocket, SIGNAL(readyRead()),this, SLOT(messageReady()));
-        emit myServerConnected(tcpSocket->peerAddress().toString(),tcpSocket->peerPort());
-        qDebug()<<"TCP Server: New connection from "<<tcpSocket->peerAddress().toString();
+        clientAddr = tcpSocket->peerAddress();
+        clientPort = tcpSocket->peerPort();
+        connect(tcpSocket, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
+        connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(messageReady()));
+        emit myServerConnected(tcpSocket->peerAddress().toString(), tcpSocket->peerPort());
+        qDebug() << "TCP Server: New connection from " << tcpSocket->peerAddress().toString();
     }
 }
 
@@ -52,7 +52,7 @@ void MyTCPServer::sendMessage(QString string)
 {
     QByteArray Data;
     Data.append(string);
-    if(tcpSocket->state() == QTcpSocket::ConnectedState)
+    if (tcpSocket->state() == QTcpSocket::ConnectedState)
     {
         tcpSocket->write(Data);
         tcpSocket->flush();
@@ -74,8 +74,8 @@ void MyTCPServer::messageReady()
     //        qDebug()<<ba.constData();
     //        //printf(">> %s", ba.constData());
     //    }
-    emit newMessage(tcpSocket->peerAddress().toString(),array);
-    qDebug()<<array;
+    emit newMessage(tcpSocket->peerAddress().toString(), array);
+    qDebug() << array;
 }
 
 void MyTCPServer::onDisconnected()
