@@ -66,6 +66,8 @@ void MyTCPClient::onDisconnected()
 
 void MyTCPClient::messageReady()
 {
+    array = tcpSocket->readAll();
+    emit newMessage(tcpSocket->peerAddress().toString(), array);
 }
 
 void MyTCPClient::sendMessage(QString string)

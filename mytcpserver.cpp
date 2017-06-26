@@ -21,7 +21,6 @@
 
 MyTCPServer::MyTCPServer(QObject *parent) : QTcpServer(parent)
 {
-    //tcpSocket=new QTcpSocket(this);
 }
 
 void MyTCPServer::listen(QHostAddress addr, quint16 port)

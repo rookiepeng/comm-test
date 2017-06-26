@@ -26,20 +26,20 @@ class MyUDP : public QUdpSocket
 {
     Q_OBJECT
 
-  public:
+public:
     explicit MyUDP(QObject *parent = nullptr);
     void bindPort(QHostAddress addr, qint16 port);
     void unBind();
 
-  signals:
+signals:
     void newMessage(const QString &from, const QString &message);
     void bindSuccess(bool isBinded);
 
-  public slots:
+public slots:
     void readyRead();
     void sendMessage(QHostAddress sender, quint16 senderPort, QString string);
 
-  private:
+private:
     QUdpSocket *socket;
     bool isBinded;
 };

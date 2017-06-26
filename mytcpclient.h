@@ -26,23 +26,24 @@
 class MyTCPClient : public QTcpSocket
 {
     Q_OBJECT
-  public:
+public:
     explicit MyTCPClient(QObject *parent = nullptr);
     void connectTo(QHostAddress addr, qint16 port);
     void sendMessage(QString string);
 
-  signals:
+signals:
     void newMessage(const QString &from, const QString &message);
     void myClientConnected(const QString &from, qint16 port);
     void myClientDisconnected();
 
-  private slots:
+private slots:
     void onConnected();
     void onDisconnected();
     void messageReady();
 
-  private:
+private:
     QTcpSocket *tcpSocket;
+    QByteArray array;
 };
 
 #endif // MYTCPCLIENT_H

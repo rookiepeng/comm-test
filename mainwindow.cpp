@@ -125,20 +125,26 @@ void MainWindow::newTCPClientConnection(const QString &from, qint16 port)
 
 void MainWindow::TCPServerDisconnected()
 {
-    disconnect(mytcpserver, SIGNAL(newMessage(QString, QString)));
-    disconnect(this, SLOT(sendMessage()));
+    appendMessage("System", "TCP disconnected");
+    disconnect(mytcpserver, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
+    disconnect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
+    disconnect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
+    //disconnect(this, SLOT(sendMessage()));
 }
 
 void MainWindow::TCPClientDisconnected()
 {
-    disconnect(mytcpclient, SIGNAL(newMessage(QString, QString)));
-    disconnect(this, SLOT(sendMessage()));
+    disconnect(mytcpclient, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
+    disconnect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
+    disconnect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
 }
 
 void MainWindow::appendMessage(const QString &from, const QString &message)
 {
     if (from.isEmpty() || message.isEmpty())
+    {
         return;
+    }
 
     QTextCursor cursor(ui->textBrowser_message->textCursor());
     cursor.movePosition(QTextCursor::End);
@@ -214,14 +220,14 @@ void MainWindow::onConnectButton()
         //delete myudp;
         myudp = nullptr;
     }
-    if (mytcpserver)
+    if (mytcpserver != nullptr)
     {
         qDebug() << "Delete TCP Server";
         mytcpserver->close();
         mytcpserver->deleteLater();
         mytcpserver = nullptr;
     }
-    if (mytcpclient)
+    if (mytcpclient != nullptr)
     {
         qDebug() << "Delete TCP Client";
         mytcpclient->close();

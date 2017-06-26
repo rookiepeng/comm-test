@@ -44,12 +44,12 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-  public slots:
+public slots:
     void appendMessage(const QString &from, const QString &message);
     void newTCPServerConnection(const QString &from, qint16 port);
     void newTCPClientConnection(const QString &from, qint16 port);
 
-  private slots:
+private slots:
     void sendMessage();
     void udpBinded(bool isBinded);
     void enableUpdateButton();
@@ -59,11 +59,11 @@ class MainWindow : public QMainWindow
     void TCPServerDisconnected();
     void TCPClientDisconnected();
 
-  public:
+public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
 
-  private:
+private:
     Ui::MainWindow *ui;
     void initUI();
     void loadSettings();
