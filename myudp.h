@@ -28,7 +28,7 @@ class MyUDP : public QUdpSocket
 
 public:
     explicit MyUDP(QObject *parent = nullptr);
-    void bindPort(QHostAddress addr, qint16 port);
+    bool bindPort(QHostAddress addr, qint16 port);
     void unBind();
 
 signals:
@@ -41,7 +41,7 @@ public slots:
 
 private:
     QUdpSocket *socket;
-    bool isBinded;
+    //bool isBinded;
 };
 
 #endif // MYUDP_H

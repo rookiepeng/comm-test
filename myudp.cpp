@@ -30,11 +30,15 @@ MyUDP::MyUDP(QObject *parent) : QUdpSocket(parent)
     //     quint16 port = 0, BindMode mode = DefaultForPlatform)
 }
 
-void MyUDP::bindPort(QHostAddress addr, qint16 port)
+bool MyUDP::bindPort(QHostAddress addr, qint16 port)
 {
-    isBinded = socket->bind(addr, port);
-    emit bindSuccess(isBinded);
-    connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
+    bool isBinded = socket->bind(addr, port);
+    //emit bindSuccess(isBinded);
+    if(isBinded)
+    {
+        connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
+    }
+    return isBinded;
 }
 
 void MyUDP::sendMessage(QHostAddress sender, quint16 senderPort, QString string)

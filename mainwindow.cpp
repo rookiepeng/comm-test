@@ -25,12 +25,28 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 {
     ui->setupUi(this);
     initUI();
+    findLocalIPs();
+    loadSettings();
+
+    if (getProtocolValue() == TCP)
+    {
+        if (getRoleValue() == SERVER)
+        {
+            ui->connectButton->setText("Listen");
+        }
+        else if (getRoleValue() == CLIENT)
+        {
+            ui->connectButton->setText("Connect");
+        }
+    }
+    else if (getProtocolValue() == UDP)
+    {
+        ui->connectButton->setText("Listen");
+    }
 
     connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onConnectButton()));
 
-    findLocalIPs();
-    loadSettings();
-    setupConnection();
+    //setupConnection();
 }
 
 MainWindow::~MainWindow()
@@ -54,18 +70,23 @@ void MainWindow::initUI()
 
     ui->comboBox_serverClient->addItems(ServerClientComboList);
 
+    ui->pushButton_send->setDisabled(true);
+    ui->lineEdit_send->setDisabled(true);
+    ui->textBrowser_message->setDisabled(true);
+
     tableFormat.setBorder(0);
 
-    connect(ui->lineEdit_targetIP, SIGNAL(textChanged(QString)), this, SLOT(enableUpdateButton()));
-    connect(ui->lineEdit_targetPort, SIGNAL(textChanged(QString)), this, SLOT(enableUpdateButton()));
-    connect(ui->lineEdit_listenPort, SIGNAL(textChanged(QString)), this, SLOT(enableUpdateButton()));
-    connect(ui->comboBox_TCPUDP, SIGNAL(currentIndexChanged(int)), this, SLOT(enableUpdateButton()));
-    connect(ui->comboBox_serverClient, SIGNAL(currentIndexChanged(int)), this, SLOT(enableUpdateButton()));
+    //connect(ui->lineEdit_targetIP, SIGNAL(textChanged(QString)), this, SLOT(enableUpdateButton()));
+    //connect(ui->lineEdit_targetPort, SIGNAL(textChanged(QString)), this, SLOT(enableUpdateButton()));
+    //connect(ui->lineEdit_listenPort, SIGNAL(textChanged(QString)), this, SLOT(enableUpdateButton()));
+    //connect(ui->comboBox_TCPUDP, SIGNAL(currentIndexChanged(int)), this, SLOT(enableUpdateButton()));
+    //connect(ui->comboBox_serverClient, SIGNAL(currentIndexChanged(int)), this, SLOT(enableUpdateButton()));
     connect(ui->comboBox_TCPUDP, SIGNAL(currentIndexChanged(int)), this, SLOT(disableComboBox(int)));
 }
 
-void MainWindow::setupConnection()
+bool MainWindow::setupConnection()
 {
+    bool isSuccess;
     targetAddr.setAddress(ui->lineEdit_targetIP->text());
     targetPort = ui->lineEdit_targetPort->text().toInt();
     localAddr.setAddress(ui->comboBox_localIP->currentText());
@@ -98,11 +119,12 @@ void MainWindow::setupConnection()
         connect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
         connect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
         connect(myudp, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
-        connect(myudp, SIGNAL(bindSuccess(bool)), this, SLOT(udpBinded(bool)));
+        //connect(myudp, SIGNAL(bindSuccess(bool)), this, SLOT(udpBinded(bool)));
         QString temp = "UDP socket is listening to: ";
         appendMessage("System", temp.append(QString::number(listenPort)));
-        myudp->bindPort(localAddr, listenPort);
+        isSuccess=myudp->bindPort(localAddr, listenPort);
     }
+    return isSuccess;
 }
 
 void MainWindow::newTCPServerConnection(const QString &from, qint16 port)
@@ -129,7 +151,6 @@ void MainWindow::TCPServerDisconnected()
     disconnect(mytcpserver, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
     disconnect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
     disconnect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
-    //disconnect(this, SLOT(sendMessage()));
 }
 
 void MainWindow::TCPClientDisconnected()
@@ -206,9 +227,78 @@ void MainWindow::enableUpdateButton()
 
 void MainWindow::onConnectButton()
 {
-    //disconnect(this, SLOT(sendMessage()));
-    disconnect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
-    disconnect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
+    disconnect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onConnectButton()));
+    ui->connectButton->setDisabled(true);
+    //disconnect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
+    //disconnect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
+
+    //    if (myudp != nullptr)
+    //    {
+    //        qDebug() << "Delete UDP";
+    //        //disconnect(this, SLOT(sendMessage()));
+    //        disconnect(this, SLOT(udpBinded(bool)));
+
+    //        myudp->unBind();
+    //        //delete myudp;
+    //        myudp = nullptr;
+    //    }
+    //    if (mytcpserver != nullptr)
+    //    {
+    //        qDebug() << "Delete TCP Server";
+    //        mytcpserver->close();
+    //        mytcpserver->deleteLater();
+    //        mytcpserver = nullptr;
+    //    }
+    //    if (mytcpclient != nullptr)
+    //    {
+    //        qDebug() << "Delete TCP Client";
+    //        mytcpclient->close();
+    //        mytcpclient->deleteLater();
+    //        mytcpclient = nullptr;
+    //    }
+
+    if(setupConnection())
+    {
+        connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onCancelButton()));
+        ui->connectButton->setText("Cancel");
+        ui->connectButton->setDisabled(false);
+
+        ui->pushButton_send->setDisabled(false);
+        ui->lineEdit_send->setDisabled(false);
+        ui->textBrowser_message->setDisabled(false);
+        ui->comboBox_TCPUDP->setDisabled(true);
+        //ui->comboBox_serverClient->setDisabled(false);
+        ui->lineEdit_targetIP->setDisabled(true);
+        ui->lineEdit_targetPort->setDisabled(true);
+        ui->lineEdit_listenPort->setDisabled(true);
+    }
+    else
+    {
+        connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onConnectButton()));
+        ui->connectButton->setDisabled(false);
+        ui->comboBox_TCPUDP->setDisabled(false);
+        ui->comboBox_serverClient->setDisabled(false);
+        ui->lineEdit_targetIP->setDisabled(false);
+        ui->lineEdit_targetPort->setDisabled(false);
+        ui->lineEdit_listenPort->setDisabled(false);
+    }
+
+    saveSettings();
+}
+
+void MainWindow::onCancelButton()
+{
+    disconnect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onCancelButton()));
+    ui->connectButton->setText("Listen");
+    ui->pushButton_send->setDisabled(true);
+    ui->lineEdit_send->setDisabled(true);
+    ui->textBrowser_message->setDisabled(true);
+
+    ui->comboBox_TCPUDP->setDisabled(false);
+    //ui->comboBox_serverClient->setDisabled(false);
+    ui->lineEdit_targetIP->setDisabled(false);
+    ui->lineEdit_targetPort->setDisabled(false);
+    ui->lineEdit_listenPort->setDisabled(false);
 
     if (myudp != nullptr)
     {
@@ -234,10 +324,7 @@ void MainWindow::onConnectButton()
         mytcpclient->deleteLater();
         mytcpclient = nullptr;
     }
-
-    setupConnection();
-
-    saveSettings();
+    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onConnectButton()));
 }
 
 void MainWindow::findLocalIPs()

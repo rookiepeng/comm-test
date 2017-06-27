@@ -54,6 +54,7 @@ private slots:
     void udpBinded(bool isBinded);
     void enableUpdateButton();
     void onConnectButton();
+    void onCancelButton();
     void disableComboBox(int index);
 
     void TCPServerDisconnected();
@@ -69,7 +70,7 @@ private:
     void loadSettings();
     void saveSettings();
     void findLocalIPs();
-    void setupConnection();
+    bool setupConnection();
     qint16 getProtocolValue();
     qint16 getRoleValue();
 

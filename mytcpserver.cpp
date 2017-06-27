@@ -35,6 +35,7 @@ void MyTCPServer::listen(QHostAddress addr, quint16 port)
 
 void MyTCPServer::onConnected()
 {
+
     tcpSocket = tcpServer->nextPendingConnection();
     if (tcpSocket->state() == QTcpSocket::ConnectedState)
     {
@@ -45,6 +46,7 @@ void MyTCPServer::onConnected()
         emit myServerConnected(tcpSocket->peerAddress().toString(), tcpSocket->peerPort());
         qDebug() << "TCP Server: New connection from " << tcpSocket->peerAddress().toString();
     }
+    //}
 }
 
 void MyTCPServer::sendMessage(QString string)
@@ -84,6 +86,7 @@ void MyTCPServer::onDisconnected()
     emit myServerDisconnected();
     tcpSocket->close();
     tcpSocket->deleteLater();
+    //tcpSocket=nullptr;
     //tcpServer->close();
     //tcpServer->deleteLater();
 }

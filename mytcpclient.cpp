@@ -59,6 +59,7 @@ void MyTCPClient::onDisconnected()
 {
     disconnect(tcpSocket, SIGNAL(disconnected()));
     disconnect(tcpSocket, SIGNAL(readyRead()));
+    //tcpSocket->disconnectFromHost();
     tcpSocket->close();
     tcpSocket->deleteLater();
     emit myClientDisconnected();
