@@ -28,8 +28,9 @@ class MyTCPServer : public QTcpServer
     Q_OBJECT
 public:
     explicit MyTCPServer(QObject *parent = nullptr);
-    void listen(QHostAddress addr, quint16 port);
+    bool listen(QHostAddress addr, quint16 port);
     void sendMessage(QString string);
+    void disconnectCurrentConnection();
 
 signals:
     void newMessage(const QString &from, const QString &message);

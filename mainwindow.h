@@ -34,6 +34,9 @@
 #define UDP 1
 #define SERVER 0
 #define CLIENT 1
+#define TCPSERVER 10
+#define TCPCLIENT 20
+#define UDPSERVER 30
 
 namespace Ui
 {
@@ -54,11 +57,19 @@ private slots:
     void udpBinded(bool isBinded);
     void enableUpdateButton();
     void onConnectButton();
-    void onCancelButton();
+    void onUDPCancelButton();
+    void onTCPCancelButton();
+    void onDisconnectButton();
+    void onTCPDisconnectButton();
     void disableComboBox(int index);
 
     void TCPServerDisconnected();
     void TCPClientDisconnected();
+
+
+    void TCPUDPComboChanged(int index);
+    void ServerClientComboChanged(int index);
+
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -74,10 +85,10 @@ private:
     qint16 getProtocolValue();
     qint16 getRoleValue();
 
-    QList<QString> TCPUDPComboList = QList<QString>() << "TCP"
-                                                      << "UDP";
-    QList<QString> ServerClientComboList = QList<QString>() << "Server"
-                                                            << "Client";
+    QList<QString> TCPUDPComboList = QList<QString>() << "TCP" // #define TCP 0
+                                                      << "UDP"; // #define UDP 1
+    QList<QString> ServerClientComboList = QList<QString>() << "Server" // #define SERVER 0
+                                                            << "Client"; // #define CLIENT 1
 
     QTextTableFormat tableFormat;
     MyUDP *myudp = nullptr;
@@ -89,6 +100,7 @@ private:
     quint16 listenPort;
     QString settingsFileDir;
     QList<QNetworkInterface> wifiList;
+    quint8 type;
 };
 
 #endif // MAINWINDOW_H
