@@ -34,7 +34,7 @@ bool MyUDP::bindPort(QHostAddress addr, qint16 port)
 {
     bool isBinded = socket->bind(addr, port);
     //emit bindSuccess(isBinded);
-    if(isBinded)
+    if (isBinded)
     {
         connect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
     }

@@ -66,10 +66,8 @@ private slots:
     void TCPServerDisconnected();
     void TCPClientDisconnected();
 
-
     void TCPUDPComboChanged(int index);
     void ServerClientComboChanged(int index);
-
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -85,9 +83,9 @@ private:
     qint16 getProtocolValue();
     qint16 getRoleValue();
 
-    QList<QString> TCPUDPComboList = QList<QString>() << "TCP" // #define TCP 0
-                                                      << "UDP"; // #define UDP 1
-    QList<QString> ServerClientComboList = QList<QString>() << "Server" // #define SERVER 0
+    QList<QString> TCPUDPComboList = QList<QString>() << "TCP"           // #define TCP 0
+                                                      << "UDP";          // #define UDP 1
+    QList<QString> ServerClientComboList = QList<QString>() << "Server"  // #define SERVER 0
                                                             << "Client"; // #define CLIENT 1
 
     QTextTableFormat tableFormat;
