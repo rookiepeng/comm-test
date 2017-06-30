@@ -54,8 +54,7 @@ public slots:
 
 private slots:
     void sendMessage();
-    void udpBinded(bool isBinded);
-    void enableUpdateButton();
+
     void onConnectButton();
     void onUDPCancelButton();
     void onTCPCancelButton();

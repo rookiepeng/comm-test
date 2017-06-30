@@ -33,24 +33,6 @@ void MyTCPClient::connectTo(QHostAddress addr, qint16 port)
 
 void MyTCPClient::onConnected()
 {
-    //printf("Connection established.\n");
-    //    char buffer[1024];
-    //    forever
-    //    {
-    //        while(tcpSocket->canReadLine())
-    //        {
-    //            QByteArray ba = tcpSocket->readLine();
-    //            //printf("from server: %s", ba.constData());
-    //        }
-    //        //printf(">> ");
-    //        gets(buffer);
-    //        int len = strlen(buffer);
-    //        buffer[len] = '\n';
-    //        buffer[len+1] = '\0';
-    //        tcpSocket->write(buffer);
-    //        tcpSocket->flush();
-    //    }
-
     disconnect(tcpSocket,SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onStateChanged(QAbstractSocket::SocketState)));
     connect(tcpSocket, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(messageReady()));
@@ -65,19 +47,25 @@ void MyTCPClient::onStateChanged(QAbstractSocket::SocketState state)
     {
     case QAbstractSocket::UnconnectedState:
         emit connectionFailed();
-        qDebug()<<"connecting timeout";
+        //qDebug()<<"connecting timeout";
         break;
     case QAbstractSocket::HostLookupState:
+        //qDebug()<<"HostLookupState";
         break;
     case QAbstractSocket::ConnectingState:
+        //qDebug()<<"ConnectingState";
         break;
     case QAbstractSocket::ConnectedState:
+        //qDebug()<<"ConnectedState";
         break;
     case QAbstractSocket::BoundState:
+        //qDebug()<<"BoundState";
         break;
     case QAbstractSocket::ListeningState:
+        //qDebug()<<"ListeningState";
         break;
     case QAbstractSocket::ClosingState:
+        //qDebug()<<"ClosingState";
         break;
     }
 }
@@ -86,7 +74,6 @@ void MyTCPClient::onDisconnected()
 {
     disconnect(tcpSocket, SIGNAL(disconnected()));
     disconnect(tcpSocket, SIGNAL(readyRead()));
-    //tcpSocket->disconnectFromHost();
     tcpSocket->close();
     tcpSocket->deleteLater();
     emit myClientDisconnected();
@@ -119,9 +106,4 @@ void MyTCPClient::disconnectCurrentConnection()
 {
     tcpSocket->disconnectFromHost();
     qDebug() << "disconnectCurrentConnection";
-    //    disconnect(tcpSocket, SIGNAL(disconnected()));
-    //    disconnect(tcpSocket, SIGNAL(readyRead()));
-    //    emit myServerDisconnected();
-    //    tcpSocket->close();
-    //    tcpSocket->deleteLater();
 }

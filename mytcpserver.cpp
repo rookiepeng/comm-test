@@ -26,7 +26,7 @@ MyTCPServer::MyTCPServer(QObject *parent) : QTcpServer(parent)
 bool MyTCPServer::listen(QHostAddress addr, quint16 port)
 {
     bool isSuccess;
-    tcpServer = new QTcpServer(this);
+    tcpServer = new QTcpServer();
     isSuccess = tcpServer->listen(addr, port);
     if (isSuccess)
     {
@@ -49,7 +49,6 @@ void MyTCPServer::onConnected()
         emit myServerConnected(tcpSocket->peerAddress().toString(), tcpSocket->peerPort());
         qDebug() << "TCP Server: New connection from " << tcpSocket->peerAddress().toString();
     }
-    //}
 }
 
 void MyTCPServer::sendMessage(QString string)
@@ -66,18 +65,6 @@ void MyTCPServer::sendMessage(QString string)
 void MyTCPServer::messageReady()
 {
     array = tcpSocket->readAll();
-    //    while(tcpSocket->canReadLine())
-    //    {
-    //        QByteArray ba = tcpSocket->readLine();
-
-    //        //            if(strcmp(ba.constData(), "!exit\n") == 0)
-    //        //            {
-    //        //                socket->disconnectFromHost();
-    //        //                break;
-    //        //            }
-    //        qDebug()<<ba.constData();
-    //        //printf(">> %s", ba.constData());
-    //    }
     emit newMessage(tcpSocket->peerAddress().toString(), array);
     qDebug() << array;
 }
@@ -99,9 +86,4 @@ void MyTCPServer::disconnectCurrentConnection()
 {
     tcpSocket->disconnectFromHost();
     qDebug() << "disconnectCurrentConnection";
-    //    disconnect(tcpSocket, SIGNAL(disconnected()));
-    //    disconnect(tcpSocket, SIGNAL(readyRead()));
-    //    emit myServerDisconnected();
-    //    tcpSocket->close();
-    //    tcpSocket->deleteLater();
 }

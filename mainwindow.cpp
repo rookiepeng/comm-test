@@ -289,16 +289,6 @@ void MainWindow::sendMessage()
     ui->lineEdit_send->clear();
 }
 
-void MainWindow::udpBinded(bool isBinded)
-{
-    ui->connectButton->setDisabled(isBinded);
-}
-
-void MainWindow::enableUpdateButton()
-{
-    ui->connectButton->setDisabled(false);
-}
-
 void MainWindow::onConnectButton()
 {
     disconnect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onConnectButton()));
@@ -401,28 +391,10 @@ void MainWindow::onUDPCancelButton()
 
     if (myudp != nullptr)
     {
-        qDebug() << "Delete UDP";
-        //disconnect(this, SLOT(sendMessage()));
-        disconnect(this, SLOT(udpBinded(bool)));
-
         myudp->unBind();
-        //delete myudp;
         myudp = nullptr;
     }
-    //    if (mytcpserver != nullptr)
-    //    {
-    //        qDebug() << "Delete TCP Server";
-    //        mytcpserver->close();
-    //        mytcpserver->deleteLater();
-    //        mytcpserver = nullptr;
-    //    }
-    //    if (mytcpclient != nullptr)
-    //    {
-    //        qDebug() << "Delete TCP Client";
-    //        mytcpclient->close();
-    //        mytcpclient->deleteLater();
-    //        mytcpclient = nullptr;
-    //    }
+
     connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onConnectButton()));
 }
 
