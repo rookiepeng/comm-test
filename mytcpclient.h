@@ -30,16 +30,20 @@ public:
     explicit MyTCPClient(QObject *parent = nullptr);
     void connectTo(QHostAddress addr, qint16 port);
     void sendMessage(QString string);
+    void disconnectCurrentConnection();
+    void cleanClient();
 
 signals:
     void newMessage(const QString &from, const QString &message);
     void myClientConnected(const QString &from, qint16 port);
     void myClientDisconnected();
+    void connectionFailed();
 
 private slots:
     void onConnected();
     void onDisconnected();
     void messageReady();
+    void onStateChanged(QAbstractSocket::SocketState state);
 
 private:
     QTcpSocket *tcpSocket;

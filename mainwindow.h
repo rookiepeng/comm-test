@@ -69,6 +69,8 @@ private slots:
     void TCPUDPComboChanged(int index);
     void ServerClientComboChanged(int index);
 
+    void tcpClientTimeOut();
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
