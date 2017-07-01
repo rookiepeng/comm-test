@@ -82,7 +82,7 @@ void MainWindow::initUI()
 
 bool MainWindow::setupConnection()
 {
-    bool isSuccess;
+    bool isSuccess = false;
     QString temp;
     targetAddr.setAddress(ui->lineEdit_targetIP->text());
     targetPort = ui->lineEdit_targetPort->text().toInt();
