@@ -92,7 +92,10 @@ bool MainWindow::setupConnection()
     switch (type)
     {
     case TCPSERVER:
-        mytcpserver = new MyTCPServer;
+        if(mytcpserver==nullptr)
+        {
+            mytcpserver = new MyTCPServer;
+        }
         isSuccess = mytcpserver->listen(localAddr, listenPort);
         temp = "TCP server is listening to port: ";
         appendMessage("System", temp.append(QString::number(listenPort)));
@@ -164,7 +167,7 @@ void MainWindow::onTcpDisconnectButtonClicked()
     ui->startButton->setDisabled(true);
     if(type==TCPSERVER)
     {
-        mytcpserver->disconnectCurrentConnection();
+        mytcpserver->stopConnection();
     }
     else if(type==TCPCLIENT)
     {
@@ -375,31 +378,26 @@ void MainWindow::onUdpStopButtonClicked()
 void MainWindow::onTcpStopButtonClicked()
 {
     disconnect(mytcpserver, SIGNAL(myServerConnected(QString, qint16)));
-    qDebug() << "disconnect(mytcpserver, SIGNAL(myServerConnected(QString, qint16)));";
+    //qDebug() << "disconnect(mytcpserver, SIGNAL(myServerConnected(QString, qint16)));";
     disconnect(ui->startButton, SIGNAL(clicked()), this, SLOT(onTcpStopButtonClicked()));
-    qDebug() << "disconnect(ui->startButton, SIGNAL(clicked()), this, SLOT(onTCPCancelButton()));";
+    //qDebug() << "disconnect(ui->startButton, SIGNAL(clicked()), this, SLOT(onTCPCancelButton()));";
     ui->startButton->setText("Start");
     ui->pushButton_send->setDisabled(true);
     ui->lineEdit_send->setDisabled(true);
     ui->textBrowser_message->setDisabled(true);
 
     ui->comboBox_TCPUDP->setDisabled(false);
-    //ui->comboBox_serverClient->setDisabled(false);
     ui->lineEdit_targetIP->setDisabled(false);
     ui->lineEdit_targetPort->setDisabled(false);
     ui->lineEdit_listenPort->setDisabled(false);
-    if (type != UDPSERVER)
-    {
-        ui->comboBox_serverClient->setDisabled(false);
-    }
+    ui->comboBox_serverClient->setDisabled(false);
 
-    if (mytcpserver != nullptr)
-    {
-        qDebug() << "Delete TCP Server";
-        mytcpserver->close();
-        mytcpserver->deleteLater();
-        mytcpserver = nullptr;
-    }
+    //if (mytcpserver != nullptr)
+    //{
+    //    qDebug() << "Delete TCP Server";
+    mytcpserver->stopListening();
+        //mytcpserver = nullptr;
+    //}
 
     connect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStartButtonClicked()));
 }

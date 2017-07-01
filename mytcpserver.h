@@ -30,7 +30,8 @@ public:
     explicit MyTCPServer(QObject *parent = nullptr);
     bool listen(QHostAddress addr, quint16 port);
     void sendMessage(QString string);
-    void disconnectCurrentConnection();
+    void stopConnection();
+    void stopListening();
 
 signals:
     void newMessage(const QString &from, const QString &message);

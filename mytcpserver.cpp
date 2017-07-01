@@ -21,12 +21,12 @@
 
 MyTCPServer::MyTCPServer(QObject *parent) : QTcpServer(parent)
 {
+    tcpServer = new QTcpServer();
 }
 
 bool MyTCPServer::listen(QHostAddress addr, quint16 port)
 {
-    bool isSuccess;
-    tcpServer = new QTcpServer();
+    bool isSuccess=false;
     isSuccess = tcpServer->listen(addr, port);
     if (isSuccess)
     {
@@ -38,7 +38,7 @@ bool MyTCPServer::listen(QHostAddress addr, quint16 port)
 
 void MyTCPServer::onConnected()
 {
-
+    disconnect(tcpServer, SIGNAL(newConnection()), this, SLOT(onConnected()));
     tcpSocket = tcpServer->nextPendingConnection();
     if (tcpSocket->state() == QTcpSocket::ConnectedState)
     {
@@ -77,13 +77,20 @@ void MyTCPServer::onDisconnected()
     qDebug() << "emit myServerDisconnected()";
     tcpSocket->close();
     tcpSocket->deleteLater();
-    //tcpSocket=nullptr;
-    //tcpServer->close();
-    //tcpServer->deleteLater();
 }
 
-void MyTCPServer::disconnectCurrentConnection()
+void MyTCPServer::stopConnection()
 {
     tcpSocket->disconnectFromHost();
     qDebug() << "disconnectCurrentConnection";
+}
+
+void MyTCPServer::stopListening()
+{
+    if (tcpServer->isListening())
+    {
+        disconnect(tcpServer, SIGNAL(newConnection()), this, SLOT(onConnected()));
+        tcpServer->close();
+        //tcpServer->deleteLater();
+    }
 }
