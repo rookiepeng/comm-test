@@ -309,7 +309,6 @@ void MainWindow::onStartButtonClicked()
             ui->lineEdit_targetPort->setDisabled(true);
             ui->lineEdit_listenPort->setDisabled(true);
             connect(mytcpserver, SIGNAL(myServerConnected(QString, qint16)), this, SLOT(onNewConnectionTcpServer(QString, qint16)));
-            //connect(mytcpserver, SIGNAL(myServerDisconnected()), this, SLOT(TCPServerDisconnected()));
         }
         else if (type == TCPCLIENT)
         {
@@ -318,7 +317,6 @@ void MainWindow::onStartButtonClicked()
             ui->lineEdit_targetIP->setDisabled(true);
             ui->lineEdit_targetPort->setDisabled(true);
             ui->lineEdit_listenPort->setDisabled(true);
-            //connect(ui->startButton, SIGNAL(clicked()), this, SLOT(onDisconnectButton()));
             connect(mytcpclient, SIGNAL(myClientConnected(QString, qint16)), this, SLOT(onNewConnectionTcpClient(QString, qint16)));
             connect(mytcpclient,SIGNAL(connectionFailed()),this,SLOT(onTimeOutTcpClient()));
         }
