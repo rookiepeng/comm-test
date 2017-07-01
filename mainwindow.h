@@ -55,12 +55,12 @@ public slots:
 private slots:
     void sendMessage();
 
-    void onConnectButtonClicked();
+    void onStartButtonClicked();
     void onTcpDisconnectButtonClicked();
 
     // TODO combine these two slots together
-    void onUdpCancelButtonClicked();
-    void onTcpCancelButtonClicked();
+    void onUdpStopButtonClicked();
+    void onTcpStopButtonClicked();
 
     void onDisconnectedTcpServer();
     void onDisconnectedTcpClient();
@@ -88,6 +88,7 @@ private:
                                                       << "UDP";          // #define UDP 1
     QList<QString> ServerClientComboList = QList<QString>() << "Server"  // #define SERVER 0
                                                             << "Client"; // #define CLIENT 1
+
     QTextTableFormat tableFormat;
 
     MyUDP *myudp = nullptr;
@@ -96,8 +97,10 @@ private:
 
     QHostAddress targetAddr;
     QHostAddress localAddr;
+
     quint16 targetPort;
     quint16 listenPort;
+
     QString settingsFileDir;
     QList<QNetworkInterface> wifiList;
     quint8 type;

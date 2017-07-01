@@ -256,9 +256,9 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="connectButton">
+          <widget class="QPushButton" name="startButton">
            <property name="text">
-            <string>Connect</string>
+            <string>Start</string>
            </property>
           </widget>
          </item>
