@@ -108,10 +108,10 @@ bool MainWindow::setupConnection()
         isSuccess=true;
         break;
     case UDPSERVER:
-        myudp = new MyUDP;
-        connect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
-        connect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
-        connect(myudp, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
+        if(myudp==nullptr)
+        {
+            myudp = new MyUDP;
+        }
         temp = "UDP socket is listening to: ";
         appendMessage("System", temp.append(QString::number(listenPort)));
         isSuccess = myudp->bindPort(localAddr, listenPort);
@@ -300,6 +300,9 @@ void MainWindow::onStartButtonClicked()
             ui->lineEdit_targetIP->setDisabled(true);
             ui->lineEdit_targetPort->setDisabled(true);
             ui->lineEdit_listenPort->setDisabled(true);
+            connect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
+            connect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
+            connect(myudp, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
         }
         else if (type == TCPSERVER)
         {
@@ -351,6 +354,9 @@ void MainWindow::onTimeOutTcpClient()
 void MainWindow::onUdpStopButtonClicked()
 {
     disconnect(ui->startButton, SIGNAL(clicked()), this, SLOT(onUdpStopButtonClicked()));
+    disconnect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
+    disconnect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
+    disconnect(myudp, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
     ui->startButton->setText("Start");
     ui->pushButton_send->setDisabled(true);
     ui->lineEdit_send->setDisabled(true);
@@ -366,11 +372,11 @@ void MainWindow::onUdpStopButtonClicked()
         ui->comboBox_serverClient->setDisabled(false);
     }
 
-    if (myudp != nullptr)
-    {
+    //if (myudp != nullptr)
+    //{
         myudp->unBind();
-        myudp = nullptr;
-    }
+        //myudp = nullptr;
+    //}
 
     connect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStartButtonClicked()));
 }
