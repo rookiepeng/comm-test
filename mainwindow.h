@@ -49,26 +49,26 @@ class MainWindow : public QMainWindow
 
 public slots:
     void appendMessage(const QString &from, const QString &message);
-    void newTCPServerConnection(const QString &from, qint16 port);
-    void newTCPClientConnection(const QString &from, qint16 port);
+    void onNewConnectionTcpServer(const QString &from, qint16 port);
+    void onNewConnectionTcpClient(const QString &from, qint16 port);
 
 private slots:
     void sendMessage();
 
-    void onConnectButton();
-    void onUDPCancelButton();
-    void onTCPCancelButton();
-    void onDisconnectButton();
-    void onTCPDisconnectButton();
-    void disableComboBox(int index);
+    void onConnectButtonClicked();
+    void onTcpDisconnectButtonClicked();
 
-    void TCPServerDisconnected();
-    void TCPClientDisconnected();
+    // TODO combine these two slots together
+    void onUdpCancelButtonClicked();
+    void onTcpCancelButtonClicked();
 
-    void TCPUDPComboChanged(int index);
-    void ServerClientComboChanged(int index);
+    void onDisconnectedTcpServer();
+    void onDisconnectedTcpClient();
 
-    void tcpClientTimeOut();
+    void onTcpUdpComboChanged(int index);
+    void onServerClientComboChanged(int index);
+
+    void onTimeOutTcpClient();
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -81,18 +81,19 @@ private:
     void saveSettings();
     void findLocalIPs();
     bool setupConnection();
-    qint16 getProtocolValue();
-    qint16 getRoleValue();
+    quint8 getProtocolValue();
+    quint8 getRoleValue();
 
     QList<QString> TCPUDPComboList = QList<QString>() << "TCP"           // #define TCP 0
                                                       << "UDP";          // #define UDP 1
     QList<QString> ServerClientComboList = QList<QString>() << "Server"  // #define SERVER 0
                                                             << "Client"; // #define CLIENT 1
-
     QTextTableFormat tableFormat;
+
     MyUDP *myudp = nullptr;
     MyTCPServer *mytcpserver = nullptr;
     MyTCPClient *mytcpclient = nullptr;
+
     QHostAddress targetAddr;
     QHostAddress localAddr;
     quint16 targetPort;

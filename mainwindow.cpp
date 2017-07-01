@@ -33,7 +33,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
         if (getRoleValue() == SERVER)
         {
             type = TCPSERVER;
-            ui->connectButton->setText("Listen");
+            ui->connectButton->setText("Start");
         }
         else if (getRoleValue() == CLIENT)
         {
@@ -44,14 +44,12 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     else if (getProtocolValue() == UDP)
     {
         type = UDPSERVER;
-        ui->connectButton->setText("Listen");
+        ui->connectButton->setText("Start");
     }
 
-    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onConnectButton()));
-    connect(ui->comboBox_TCPUDP, SIGNAL(currentIndexChanged(int)), this, SLOT(TCPUDPComboChanged(int)));
-    connect(ui->comboBox_serverClient, SIGNAL(currentIndexChanged(int)), this, SLOT(ServerClientComboChanged(int)));
-
-    //setupConnection();
+    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onConnectButtonClicked()));
+    connect(ui->comboBox_TCPUDP, SIGNAL(currentIndexChanged(int)), this, SLOT(onTcpUdpComboChanged(int)));
+    connect(ui->comboBox_serverClient, SIGNAL(currentIndexChanged(int)), this, SLOT(onServerClientComboChanged(int)));
 }
 
 MainWindow::~MainWindow()
@@ -80,8 +78,6 @@ void MainWindow::initUI()
     ui->textBrowser_message->setDisabled(true);
 
     tableFormat.setBorder(0);
-
-    connect(ui->comboBox_TCPUDP, SIGNAL(currentIndexChanged(int)), this, SLOT(disableComboBox(int)));
 }
 
 bool MainWindow::setupConnection()
@@ -100,7 +96,7 @@ bool MainWindow::setupConnection()
         isSuccess = mytcpserver->listen(localAddr, listenPort);
         temp = "TCP server is listening to port: ";
         appendMessage("System", temp.append(QString::number(listenPort)));
-        //connect(mytcpserver, SIGNAL(myServerConnected(QString, qint16)), this, SLOT(newTCPServerConnection(QString, qint16)));
+        //connect(mytcpserver, SIGNAL(myServerConnected(QString, qint16)), this, SLOT(onNewConnectionTcpServer(QString, qint16)));
         //connect(mytcpserver, SIGNAL(myServerDisconnected()), this, SLOT(TCPServerDisconnected()));
         break;
     case TCPCLIENT:
@@ -127,17 +123,17 @@ bool MainWindow::setupConnection()
     return isSuccess;
 }
 
-void MainWindow::newTCPServerConnection(const QString &from, qint16 port)
+void MainWindow::onNewConnectionTcpServer(const QString &from, qint16 port)
 {
     QString temp = "New connection from: ";
     appendMessage("System", temp.append(from).append(":").append(QString::number(port)));
-    disconnect(mytcpserver, SIGNAL(myServerConnected(QString, qint16)), this, SLOT(newTCPServerConnection(QString, qint16)));
+    disconnect(mytcpserver, SIGNAL(myServerConnected(QString, qint16)), this, SLOT(onNewConnectionTcpServer(QString, qint16)));
 
-    disconnect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onTCPCancelButton()));
+    disconnect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onTcpCancelButtonClicked()));
     ui->connectButton->setText("Disconnect");
-    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onTCPDisconnectButton()));
+    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onTcpDisconnectButtonClicked()));
 
-    connect(mytcpserver, SIGNAL(myServerDisconnected()), this, SLOT(TCPServerDisconnected()));
+    connect(mytcpserver, SIGNAL(myServerDisconnected()), this, SLOT(onDisconnectedTcpServer()));
     connect(mytcpserver, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
 
     ui->pushButton_send->setDisabled(false);
@@ -147,7 +143,7 @@ void MainWindow::newTCPServerConnection(const QString &from, qint16 port)
     connect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
 }
 
-void MainWindow::TCPServerDisconnected()
+void MainWindow::onDisconnectedTcpServer()
 {
     appendMessage("System", "TCP disconnected");
 
@@ -155,24 +151,22 @@ void MainWindow::TCPServerDisconnected()
     ui->lineEdit_send->setDisabled(true);
     ui->textBrowser_message->setDisabled(true);
 
-    //disconnect(ui->connectButton, SIGNAL(clicked()));
-    disconnect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onTCPDisconnectButton()));
-    disconnect(mytcpserver, SIGNAL(myServerDisconnected()), this, SLOT(TCPServerDisconnected()));
+    disconnect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onTcpDisconnectButtonClicked()));
+    disconnect(mytcpserver, SIGNAL(myServerDisconnected()), this, SLOT(onDisconnectedTcpServer()));
     disconnect(mytcpserver, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
     disconnect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
     disconnect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
 
-    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onTCPCancelButton()));
-    ui->connectButton->setText("Cancel");
+    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onTcpCancelButtonClicked()));
+    ui->connectButton->setText("Stop");
     ui->connectButton->setDisabled(false);
-    connect(mytcpserver, SIGNAL(myServerConnected(QString, qint16)), this, SLOT(newTCPServerConnection(QString, qint16)));
+    connect(mytcpserver, SIGNAL(myServerConnected(QString, qint16)), this, SLOT(onNewConnectionTcpServer(QString, qint16)));
 }
 
-void MainWindow::onTCPDisconnectButton()
+void MainWindow::onTcpDisconnectButtonClicked()
 {
     qDebug() << "onTCPDisconnectButton";
     ui->connectButton->setDisabled(true);
-    //disconnect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onTCPDisconnectButton()));
     if(type==TCPSERVER)
     {
         mytcpserver->disconnectCurrentConnection();
@@ -183,15 +177,14 @@ void MainWindow::onTCPDisconnectButton()
     }
 }
 
-void MainWindow::newTCPClientConnection(const QString &from, qint16 port)
+void MainWindow::onNewConnectionTcpClient(const QString &from, qint16 port)
 {
-    disconnect(mytcpclient, SIGNAL(myClientConnected(QString, qint16)), this, SLOT(newTCPClientConnection(QString, qint16)));
-    disconnect(mytcpclient,SIGNAL(connectionFailed()),this,SLOT(tcpClientTimeOut()));
-    connect(mytcpclient, SIGNAL(myClientDisconnected()), this, SLOT(TCPClientDisconnected()));
+    disconnect(mytcpclient, SIGNAL(myClientConnected(QString, qint16)), this, SLOT(onNewConnectionTcpClient(QString, qint16)));
+    disconnect(mytcpclient,SIGNAL(connectionFailed()),this,SLOT(onTimeOutTcpClient()));
+    connect(mytcpclient, SIGNAL(myClientDisconnected()), this, SLOT(onDisconnectedTcpClient()));
 
     ui->connectButton->setDisabled(false);
     ui->connectButton->setText("Disconnect");
-    //connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onTCPCancelButton()));
 
     ui->pushButton_send->setDisabled(false);
     ui->lineEdit_send->setDisabled(false);
@@ -199,20 +192,20 @@ void MainWindow::newTCPClientConnection(const QString &from, qint16 port)
 
     QString temp = "Connected to: ";
     appendMessage("System", temp.append(from).append(":").append(QString::number(port)));
-    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onTCPDisconnectButton()));
+    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onTcpDisconnectButtonClicked()));
 
     connect(mytcpclient, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
     connect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
     connect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
 }
 
-void MainWindow::TCPClientDisconnected()
+void MainWindow::onDisconnectedTcpClient()
 {
-    disconnect(mytcpclient, SIGNAL(myClientDisconnected()), this, SLOT(TCPClientDisconnected()));
+    disconnect(mytcpclient, SIGNAL(myClientDisconnected()), this, SLOT(onDisconnectedTcpClient()));
     disconnect(mytcpclient, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
     disconnect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
     disconnect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
-    disconnect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onTCPDisconnectButton()));
+    disconnect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onTcpDisconnectButtonClicked()));
     ui->connectButton->setText("Connect");
 
     ui->pushButton_send->setDisabled(true);
@@ -231,7 +224,7 @@ void MainWindow::TCPClientDisconnected()
     mytcpclient->deleteLater();
     mytcpclient=nullptr;
 
-    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onConnectButton()));
+    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onConnectButtonClicked()));
 }
 
 void MainWindow::appendMessage(const QString &from, const QString &message)
@@ -285,24 +278,20 @@ void MainWindow::sendMessage()
         myudp->sendMessage(targetAddr, targetPort, text);
     }
 
-    appendMessage("client", text);
+    appendMessage("Me", text);
     ui->lineEdit_send->clear();
 }
 
-void MainWindow::onConnectButton()
+void MainWindow::onConnectButtonClicked()
 {
-    disconnect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onConnectButton()));
-    ui->connectButton->setDisabled(true);
-    //disconnect(ui->pushButton_send, SIGNAL(clicked()), this, SLOT(sendMessage()));
-    //disconnect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
+    disconnect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onConnectButtonClicked()));
 
     if (setupConnection())
     {
         if (type == UDPSERVER)
         {
-            connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onUDPCancelButton()));
-            ui->connectButton->setText("Cancel");
-            ui->connectButton->setDisabled(false);
+            connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onUdpCancelButtonClicked()));
+            ui->connectButton->setText("Stop");
 
             ui->pushButton_send->setDisabled(false);
             ui->lineEdit_send->setDisabled(false);
@@ -316,48 +305,40 @@ void MainWindow::onConnectButton()
         }
         else if (type == TCPSERVER)
         {
-            connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onTCPCancelButton()));
-            ui->connectButton->setText("Cancel");
-            ui->connectButton->setDisabled(false);
-
-            //ui->pushButton_send->setDisabled(false);
-            //ui->lineEdit_send->setDisabled(false);
-            //ui->textBrowser_message->setDisabled(false);
+            connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onTcpCancelButtonClicked()));
+            ui->connectButton->setText("Stop");
 
             ui->comboBox_TCPUDP->setDisabled(true);
             ui->comboBox_serverClient->setDisabled(true);
             ui->lineEdit_targetIP->setDisabled(true);
             ui->lineEdit_targetPort->setDisabled(true);
             ui->lineEdit_listenPort->setDisabled(true);
-            connect(mytcpserver, SIGNAL(myServerConnected(QString, qint16)), this, SLOT(newTCPServerConnection(QString, qint16)));
+            connect(mytcpserver, SIGNAL(myServerConnected(QString, qint16)), this, SLOT(onNewConnectionTcpServer(QString, qint16)));
             //connect(mytcpserver, SIGNAL(myServerDisconnected()), this, SLOT(TCPServerDisconnected()));
         }
         else if (type == TCPCLIENT)
         {
-            ui->connectButton->setDisabled(true);
             ui->comboBox_TCPUDP->setDisabled(true);
             ui->comboBox_serverClient->setDisabled(true);
             ui->lineEdit_targetIP->setDisabled(true);
             ui->lineEdit_targetPort->setDisabled(true);
             ui->lineEdit_listenPort->setDisabled(true);
             //connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onDisconnectButton()));
-            connect(mytcpclient, SIGNAL(myClientConnected(QString, qint16)), this, SLOT(newTCPClientConnection(QString, qint16)));
-            connect(mytcpclient,SIGNAL(connectionFailed()),this,SLOT(tcpClientTimeOut()));
+            connect(mytcpclient, SIGNAL(myClientConnected(QString, qint16)), this, SLOT(onNewConnectionTcpClient(QString, qint16)));
+            connect(mytcpclient,SIGNAL(connectionFailed()),this,SLOT(onTimeOutTcpClient()));
         }
     }
     else
     {
-        ui->connectButton->setDisabled(false);
-        connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onConnectButton()));
+        connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onConnectButtonClicked()));
     }
-
     saveSettings();
 }
 
-void MainWindow::tcpClientTimeOut()
+void MainWindow::onTimeOutTcpClient()
 {
-    disconnect(mytcpclient, SIGNAL(myClientConnected(QString, qint16)), this, SLOT(newTCPClientConnection(QString, qint16)));
-    disconnect(mytcpclient,SIGNAL(connectionFailed()),this,SLOT(tcpClientTimeOut()));
+    disconnect(mytcpclient, SIGNAL(myClientConnected(QString, qint16)), this, SLOT(onNewConnectionTcpClient(QString, qint16)));
+    disconnect(mytcpclient,SIGNAL(connectionFailed()),this,SLOT(onTimeOutTcpClient()));
     ui->connectButton->setDisabled(false);
     ui->comboBox_TCPUDP->setDisabled(false);
     ui->comboBox_serverClient->setDisabled(false);
@@ -368,13 +349,13 @@ void MainWindow::tcpClientTimeOut()
     mytcpclient->close();
     mytcpclient->deleteLater();
     mytcpclient=nullptr;
-    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onConnectButton()));
+    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onConnectButtonClicked()));
 }
 
-void MainWindow::onUDPCancelButton()
+void MainWindow::onUdpCancelButtonClicked()
 {
-    disconnect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onUDPCancelButton()));
-    ui->connectButton->setText("Listen");
+    disconnect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onUdpCancelButtonClicked()));
+    ui->connectButton->setText("Start");
     ui->pushButton_send->setDisabled(true);
     ui->lineEdit_send->setDisabled(true);
     ui->textBrowser_message->setDisabled(true);
@@ -395,16 +376,16 @@ void MainWindow::onUDPCancelButton()
         myudp = nullptr;
     }
 
-    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onConnectButton()));
+    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onConnectButtonClicked()));
 }
 
-void MainWindow::onTCPCancelButton()
+void MainWindow::onTcpCancelButtonClicked()
 {
     disconnect(mytcpserver, SIGNAL(myServerConnected(QString, qint16)));
     qDebug() << "disconnect(mytcpserver, SIGNAL(myServerConnected(QString, qint16)));";
-    disconnect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onTCPCancelButton()));
+    disconnect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onTcpCancelButtonClicked()));
     qDebug() << "disconnect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onTCPCancelButton()));";
-    ui->connectButton->setText("Listen");
+    ui->connectButton->setText("Start");
     ui->pushButton_send->setDisabled(true);
     ui->lineEdit_send->setDisabled(true);
     ui->textBrowser_message->setDisabled(true);
@@ -427,12 +408,7 @@ void MainWindow::onTCPCancelButton()
         mytcpserver = nullptr;
     }
 
-    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onConnectButton()));
-}
-
-void MainWindow::onDisconnectButton()
-{
-    disconnect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onDisconnectButton()));
+    connect(ui->connectButton, SIGNAL(clicked()), this, SLOT(onConnectButtonClicked()));
 }
 
 void MainWindow::findLocalIPs()
@@ -469,17 +445,12 @@ void MainWindow::findLocalIPs()
     }
 }
 
-void MainWindow::disableComboBox(int index)
-{
-    ui->comboBox_serverClient->setDisabled(index == 1);
-}
-
-qint16 MainWindow::getProtocolValue()
+quint8 MainWindow::getProtocolValue()
 {
     return ui->comboBox_TCPUDP->currentIndex();
 }
 
-qint16 MainWindow::getRoleValue()
+quint8 MainWindow::getRoleValue()
 {
     return ui->comboBox_serverClient->currentIndex();
 }
@@ -514,7 +485,7 @@ void MainWindow::saveSettings()
     settings.sync();
 }
 
-void MainWindow::TCPUDPComboChanged(int index)
+void MainWindow::onTcpUdpComboChanged(int index)
 {
     int tcptype = getRoleValue();
     switch (index)
@@ -523,7 +494,7 @@ void MainWindow::TCPUDPComboChanged(int index)
         if (tcptype == SERVER)
         {
             type = TCPSERVER;
-            ui->connectButton->setText("Listen");
+            ui->connectButton->setText("Start");
         }
         else if (tcptype == CLIENT)
         {
@@ -534,19 +505,19 @@ void MainWindow::TCPUDPComboChanged(int index)
         break;
     case UDP:
         type = UDPSERVER;
-        ui->connectButton->setText("Listen");
+        ui->connectButton->setText("Start");
         ui->comboBox_serverClient->setDisabled(true);
         break;
     }
 }
 
-void MainWindow::ServerClientComboChanged(int index)
+void MainWindow::onServerClientComboChanged(int index)
 {
     switch (index)
     {
     case SERVER:
         type = TCPSERVER;
-        ui->connectButton->setText("Listen");
+        ui->connectButton->setText("Start");
         break;
     case CLIENT:
         type = TCPCLIENT;
