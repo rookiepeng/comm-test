@@ -101,7 +101,10 @@ bool MainWindow::setupConnection()
         appendMessage("System", temp.append(QString::number(listenPort)));
         break;
     case TCPCLIENT:
-        mytcpclient = new MyTCPClient;
+        if(mytcpclient==nullptr)
+        {
+            mytcpclient = new MyTCPClient;
+        }
         mytcpclient->connectTo(targetAddr, targetPort);
         temp = "TCP client is connecting to: ";
         appendMessage("System", temp.append(targetAddr.toString()).append(":").append(QString::number(targetPort)));
@@ -219,8 +222,6 @@ void MainWindow::onDisconnectedTcpClient()
 
     mytcpclient->cleanClient();
     mytcpclient->close();
-    mytcpclient->deleteLater();
-    mytcpclient=nullptr;
 
     connect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStartButtonClicked()));
 }
@@ -374,8 +375,8 @@ void MainWindow::onUdpStopButtonClicked()
 
     //if (myudp != nullptr)
     //{
-        myudp->unBind();
-        //myudp = nullptr;
+    myudp->unbindPort();
+    //myudp = nullptr;
     //}
 
     connect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStartButtonClicked()));
@@ -398,12 +399,7 @@ void MainWindow::onTcpStopButtonClicked()
     ui->lineEdit_listenPort->setDisabled(false);
     ui->comboBox_serverClient->setDisabled(false);
 
-    //if (mytcpserver != nullptr)
-    //{
-    //    qDebug() << "Delete TCP Server";
     mytcpserver->stopListening();
-        //mytcpserver = nullptr;
-    //}
 
     connect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStartButtonClicked()));
 }

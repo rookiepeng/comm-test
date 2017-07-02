@@ -21,11 +21,11 @@
 
 MyTCPClient::MyTCPClient(QObject *parent) : QTcpSocket(parent)
 {
+    tcpSocket = new QTcpSocket();
 }
 
 void MyTCPClient::connectTo(QHostAddress addr, qint16 port)
 {
-    tcpSocket = new QTcpSocket(this);
     tcpSocket->connectToHost(addr, port);
     connect(tcpSocket, SIGNAL(connected()), this, SLOT(onConnected()));
     connect(tcpSocket,SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onStateChanged(QAbstractSocket::SocketState)));
@@ -75,14 +75,14 @@ void MyTCPClient::onDisconnected()
     disconnect(tcpSocket, SIGNAL(disconnected()));
     disconnect(tcpSocket, SIGNAL(readyRead()));
     tcpSocket->close();
-    tcpSocket->deleteLater();
+    //tcpSocket->deleteLater();
     emit myClientDisconnected();
 }
 
 void MyTCPClient::cleanClient()
 {
     tcpSocket->close();
-    tcpSocket->deleteLater();
+    //tcpSocket->deleteLater();
 }
 
 void MyTCPClient::messageReady()

@@ -29,11 +29,10 @@ class MyUDP : public QUdpSocket
 public:
     explicit MyUDP(QObject *parent = nullptr);
     bool bindPort(QHostAddress addr, qint16 port);
-    void unBind();
+    void unbindPort();
 
 signals:
     void newMessage(const QString &from, const QString &message);
-    void bindSuccess(bool isBinded);
 
 public slots:
     void readyRead();
@@ -41,7 +40,6 @@ public slots:
 
 private:
     QUdpSocket *socket;
-    //bool isBinded;
 };
 
 #endif // MYUDP_H
