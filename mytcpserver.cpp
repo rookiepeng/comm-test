@@ -77,6 +77,7 @@ void MyTCPServer::onDisconnected()
     qDebug() << "emit myServerDisconnected()";
     tcpSocket->close();
     tcpSocket->deleteLater();
+    connect(tcpServer, SIGNAL(newConnection()), this, SLOT(onConnected()));
 }
 
 void MyTCPServer::stopConnection()

@@ -21,7 +21,7 @@
 
 MyUDP::MyUDP(QObject *parent) : QUdpSocket(parent)
 {
-    socket = new QUdpSocket(this);
+    socket = new QUdpSocket();
 }
 
 bool MyUDP::bindPort(QHostAddress addr, qint16 port)
