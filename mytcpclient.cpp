@@ -37,11 +37,12 @@ void MyTCPClient::onConnected()
     connect(tcpSocket, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(messageReady()));
     emit myClientConnected(tcpSocket->peerAddress().toString(), tcpSocket->peerPort());
+    qDebug()<<"Connected";
 }
 
 void MyTCPClient::onStateChanged(QAbstractSocket::SocketState state)
 {
-    disconnect(tcpSocket, SIGNAL(connected()), this, SLOT(onConnected()));
+    //disconnect(tcpSocket, SIGNAL(connected()), this, SLOT(onConnected()));
     disconnect(tcpSocket,SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onStateChanged(QAbstractSocket::SocketState)));
     switch(state)
     {
@@ -79,7 +80,7 @@ void MyTCPClient::onDisconnected()
     emit myClientDisconnected();
 }
 
-void MyTCPClient::cleanClient()
+void MyTCPClient::closeClient()
 {
     tcpSocket->close();
     //tcpSocket->deleteLater();

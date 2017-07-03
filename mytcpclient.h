@@ -31,7 +31,7 @@ public:
     void connectTo(QHostAddress addr, qint16 port);
     void sendMessage(QString string);
     void disconnectCurrentConnection();
-    void cleanClient();
+    void closeClient();
 
 signals:
     void newMessage(const QString &from, const QString &message);
