@@ -58,9 +58,7 @@ private slots:
     void onStartButtonClicked();
     void onTcpDisconnectButtonClicked();
 
-    // TODO combine these two slots together
-    void onUdpStopButtonClicked();
-    void onTcpStopButtonClicked();
+    void onStopButtonClicked();
 
     void onDisconnectedTcpServer();
     void onDisconnectedTcpClient();
@@ -104,6 +102,8 @@ private:
     QString settingsFileDir;
     QList<QNetworkInterface> wifiList;
     quint8 type;
+    QString messageUDP="<UDP> ";
+    QString messageTCP="<TCP> ";
 };
 
 #endif // MAINWINDOW_H
