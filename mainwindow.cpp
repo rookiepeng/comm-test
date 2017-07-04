@@ -166,9 +166,9 @@ void MainWindow::onTcpDisconnectButtonClicked()
     }
 }
 
-void MainWindow::onNewConnectionTcpClient(const QString &from, qint16 port)
+void MainWindow::onNewConnectionTcpClient(const QString &from, quint16 port)
 {
-    disconnect(mytcpclient, SIGNAL(myClientConnected(QString, qint16)), this, SLOT(onNewConnectionTcpClient(QString, qint16)));
+    disconnect(mytcpclient, SIGNAL(myClientConnected(QString, quint16)), this, SLOT(onNewConnectionTcpClient(QString, quint16)));
     disconnect(mytcpclient, SIGNAL(connectionFailed()), this, SLOT(onTimeOutTcpClient()));
     disconnect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStopButtonClicked()));
     connect(mytcpclient, SIGNAL(myClientDisconnected()), this, SLOT(onDisconnectedTcpClient()));
@@ -318,7 +318,7 @@ void MainWindow::onStartButtonClicked()
             ui->lineEdit_listenPort->setDisabled(true);
             ui->startButton->setText("Stop");
             connect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStopButtonClicked()));
-            connect(mytcpclient, SIGNAL(myClientConnected(QString, qint16)), this, SLOT(onNewConnectionTcpClient(QString, qint16)));
+            connect(mytcpclient, SIGNAL(myClientConnected(QString, quint16)), this, SLOT(onNewConnectionTcpClient(QString, quint16)));
             connect(mytcpclient, SIGNAL(connectionFailed()), this, SLOT(onTimeOutTcpClient()));
         }
     }
@@ -339,7 +339,7 @@ void MainWindow::onTimeOutTcpClient()
 {
     ui->statusBar->showMessage(messageTCP + "Connection time out", 2000);
     disconnect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStopButtonClicked()));
-    disconnect(mytcpclient, SIGNAL(myClientConnected(QString, qint16)), this, SLOT(onNewConnectionTcpClient(QString, qint16)));
+    disconnect(mytcpclient, SIGNAL(myClientConnected(QString, quint16)), this, SLOT(onNewConnectionTcpClient(QString, quint16)));
     disconnect(mytcpclient, SIGNAL(connectionFailed()), this, SLOT(onTimeOutTcpClient()));
 
     ui->startButton->setText("Connect");
@@ -366,11 +366,11 @@ void MainWindow::onStopButtonClicked()
     }
     else if (type == TCPCLIENT)
     {
-        disconnect(mytcpclient, SIGNAL(myClientConnected(QString, qint16)), this, SLOT(onNewConnectionTcpClient(QString, qint16)));
         ui->statusBar->showMessage(messageTCP + "Stopped", 2000);
+        disconnect(mytcpclient, SIGNAL(myClientConnected(QString, quint16)), this, SLOT(onNewConnectionTcpClient(QString, quint16)));
         disconnect(mytcpclient, SIGNAL(connectionFailed()), this, SLOT(onTimeOutTcpClient()));
         ui->startButton->setText("Connect");
-        mytcpclient->closeClient();
+        mytcpclient->abortConnection();
         ui->comboBox_serverClient->setDisabled(false);
     }
     else if (type == UDPSERVER)
