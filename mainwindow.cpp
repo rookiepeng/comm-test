@@ -83,7 +83,6 @@ void MainWindow::initUI()
 bool MainWindow::setupConnection()
 {
     bool isSuccess = false;
-    QString temp;
     targetAddr.setAddress(ui->lineEdit_targetIP->text());
     targetPort = ui->lineEdit_targetPort->text().toInt();
     localAddr.setAddress(ui->comboBox_localIP->currentText());
@@ -97,8 +96,7 @@ bool MainWindow::setupConnection()
             mytcpserver = new MyTCPServer;
         }
         isSuccess = mytcpserver->listen(localAddr, listenPort);
-        temp = "TCP server is listening to port: ";
-        appendMessage("System", temp.append(QString::number(listenPort)));
+        ui->statusBar->showMessage(messageTCP+"Listerning to "+localAddr.toString()+":"+QString::number(uint(listenPort)),0);
         break;
     case TCPCLIENT:
         if(mytcpclient==nullptr)
@@ -106,8 +104,7 @@ bool MainWindow::setupConnection()
             mytcpclient = new MyTCPClient;
         }
         mytcpclient->connectTo(targetAddr, targetPort);
-        temp = "TCP client is connecting to: ";
-        appendMessage("System", temp.append(targetAddr.toString()).append(":").append(QString::number(targetPort)));
+        ui->statusBar->showMessage(messageTCP+"Connecting to "+targetAddr.toString()+":"+QString::number(uint(targetPort)),0);
         isSuccess=true;
         break;
     case UDPSERVER:
@@ -115,19 +112,16 @@ bool MainWindow::setupConnection()
         {
             myudp = new MyUDP;
         }
-        temp = "UDP socket is listening to: ";
-        appendMessage("System", temp.append(QString::number(listenPort)));
         isSuccess = myudp->bindPort(localAddr, listenPort);
+        ui->statusBar->showMessage(messageUDP+"Listerning to "+localAddr.toString()+":"+QString::number(uint(listenPort)),0);
         break;
     }
-
     return isSuccess;
 }
 
 void MainWindow::onNewConnectionTcpServer(const QString &from, qint16 port)
 {
-    QString temp = "New connection from: ";
-    appendMessage("System", temp.append(from).append(":").append(QString::number(port)));
+    ui->statusBar->showMessage(messageTCP+"Connected with "+from+":"+QString::number(uint(port)),0);
     disconnect(mytcpserver, SIGNAL(myServerConnected(QString, qint16)), this, SLOT(onNewConnectionTcpServer(QString, qint16)));
 
     disconnect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStopButtonClicked()));
@@ -160,14 +154,13 @@ void MainWindow::onDisconnectedTcpServer()
 
     connect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStopButtonClicked()));
     ui->startButton->setText("Stop");
-    //ui->startButton->setDisabled(false);
     connect(mytcpserver, SIGNAL(myServerConnected(QString, qint16)), this, SLOT(onNewConnectionTcpServer(QString, qint16)));
 }
 
 void MainWindow::onTcpDisconnectButtonClicked()
 {
     qDebug() << "onTCPDisconnectButton";
-    //ui->startButton->setDisabled(true);
+
     if(type==TCPSERVER)
     {
         mytcpserver->stopConnection();
@@ -356,6 +349,7 @@ void MainWindow::onTimeOutTcpClient()
 
 void MainWindow::onStopButtonClicked()
 {
+    ui->statusBar->clearMessage();
     disconnect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStopButtonClicked()));
 
     if(type==TCPSERVER)
