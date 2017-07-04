@@ -47,11 +47,6 @@ class MainWindow : public QMainWindow
 {
     Q_OBJECT
 
-public slots:
-    void appendMessage(const QString &from, const QString &message);
-    void onNewConnectionTcpServer(const QString &from, quint16 port);
-    void onNewConnectionTcpClient(const QString &from, quint16 port);
-
 private slots:
     void sendMessage();
 
@@ -67,6 +62,11 @@ private slots:
     void onServerClientComboChanged(int index);
 
     void onTimeOutTcpClient();
+
+    void appendMessage(const QString &from, const QString &message);
+
+    void onNewConnectionTcpServer(const QString &from, quint16 port);
+    void onNewConnectionTcpClient(const QString &from, quint16 port);
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -102,8 +102,8 @@ private:
     QString settingsFileDir;
     QList<QNetworkInterface> wifiList;
     quint8 type;
-    QString messageUDP="<UDP> ";
-    QString messageTCP="<TCP> ";
+    QString messageUDP="[UDP] ";
+    QString messageTCP="[TCP] ";
 };
 
 #endif // MAINWINDOW_H

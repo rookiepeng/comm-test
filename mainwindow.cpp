@@ -118,7 +118,7 @@ bool MainWindow::setupConnection()
 
 void MainWindow::onNewConnectionTcpServer(const QString &from, quint16 port)
 {
-    ui->statusBar->showMessage(messageTCP + "Connected with " + from + ":" + QString::number(port), 0);
+    ui->statusBar->showMessage(messageTCP + "Connected with " + from + ": " + QString::number(port), 0);
     disconnect(mytcpserver, SIGNAL(myServerConnected(QString, quint16)), this, SLOT(onNewConnectionTcpServer(QString, quint16)));
 
     disconnect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStopButtonClicked()));
@@ -137,7 +137,7 @@ void MainWindow::onNewConnectionTcpServer(const QString &from, quint16 port)
 
 void MainWindow::onDisconnectedTcpServer()
 {
-    ui->statusBar->showMessage(messageTCP + "Client disconnected, listerning to " + localAddr.toString() + ":" + QString::number(listenPort), 0);
+    ui->statusBar->showMessage(messageTCP + "Client disconnected, listerning to " + localAddr.toString() + ": " + QString::number(listenPort), 0);
 
     ui->pushButton_send->setDisabled(true);
     ui->lineEdit_send->setDisabled(true);
@@ -180,7 +180,7 @@ void MainWindow::onNewConnectionTcpClient(const QString &from, quint16 port)
     ui->lineEdit_send->setDisabled(false);
     ui->textBrowser_message->setDisabled(false);
 
-    ui->statusBar->showMessage(messageTCP + "Connected to " + from + ":" + QString::number(port), 0);
+    ui->statusBar->showMessage(messageTCP + "Connected to " + from + ": " + QString::number(port), 0);
     connect(ui->startButton, SIGNAL(clicked()), this, SLOT(onTcpDisconnectButtonClicked()));
 
     connect(mytcpclient, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
@@ -278,7 +278,7 @@ void MainWindow::onStartButtonClicked()
     {
         if (type == UDPSERVER)
         {
-            ui->statusBar->showMessage(messageUDP + "Listerning to " + localAddr.toString() + ":" + QString::number(listenPort), 0);
+            ui->statusBar->showMessage(messageUDP + "Listerning to " + localAddr.toString() + ": " + QString::number(listenPort), 0);
             connect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStopButtonClicked()));
             ui->startButton->setText("Stop");
 
@@ -297,7 +297,7 @@ void MainWindow::onStartButtonClicked()
         }
         else if (type == TCPSERVER)
         {
-            ui->statusBar->showMessage(messageTCP + "Listerning to " + localAddr.toString() + ":" + QString::number(listenPort), 0);
+            ui->statusBar->showMessage(messageTCP + "Listerning to " + localAddr.toString() + ": " + QString::number(listenPort), 0);
             connect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStopButtonClicked()));
             ui->startButton->setText("Stop");
 
@@ -310,7 +310,7 @@ void MainWindow::onStartButtonClicked()
         }
         else if (type == TCPCLIENT)
         {
-            ui->statusBar->showMessage(messageTCP + "Connecting to " + targetAddr.toString() + ":" + QString::number(targetPort), 0);
+            ui->statusBar->showMessage(messageTCP + "Connecting to " + targetAddr.toString() + ": " + QString::number(targetPort), 0);
             ui->comboBox_TCPUDP->setDisabled(true);
             ui->comboBox_serverClient->setDisabled(true);
             ui->lineEdit_targetIP->setDisabled(true);
@@ -324,12 +324,12 @@ void MainWindow::onStartButtonClicked()
     }
     else if (type == TCPSERVER)
     {
-        ui->statusBar->showMessage(messageTCP + "Failed to listen to: " + localAddr.toString() + ":" + QString::number(listenPort), 2000);
+        ui->statusBar->showMessage(messageTCP + "Failed to listen to: " + localAddr.toString() + ": " + QString::number(listenPort), 2000);
         connect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStartButtonClicked()));
     }
     else if (type == UDPSERVER)
     {
-        ui->statusBar->showMessage(messageUDP + "Failed to listen to: " + localAddr.toString() + ":" + QString::number(listenPort), 2000);
+        ui->statusBar->showMessage(messageUDP + "Failed to listen to: " + localAddr.toString() + ": " + QString::number(listenPort), 2000);
         connect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStartButtonClicked()));
     }
     saveSettings();
