@@ -35,7 +35,7 @@ public:
 
 signals:
     void newMessage(const QString &from, const QString &message);
-    void myServerConnected(const QString &from, qint16 port);
+    void myServerConnected(const QString &from, quint16 port);
     void myServerDisconnected();
 
 private slots:
@@ -48,7 +48,7 @@ private:
     QTcpServer *tcpServer;
     QByteArray array;
     QHostAddress clientAddr;
-    qint16 clientPort;
+    quint16 clientPort;
 };
 
 #endif // MYTCPSERVER_H

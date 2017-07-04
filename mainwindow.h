@@ -49,7 +49,7 @@ class MainWindow : public QMainWindow
 
 public slots:
     void appendMessage(const QString &from, const QString &message);
-    void onNewConnectionTcpServer(const QString &from, qint16 port);
+    void onNewConnectionTcpServer(const QString &from, quint16 port);
     void onNewConnectionTcpClient(const QString &from, qint16 port);
 
 private slots:

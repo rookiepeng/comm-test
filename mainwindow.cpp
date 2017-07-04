@@ -119,7 +119,7 @@ bool MainWindow::setupConnection()
     return isSuccess;
 }
 
-void MainWindow::onNewConnectionTcpServer(const QString &from, qint16 port)
+void MainWindow::onNewConnectionTcpServer(const QString &from, quint16 port)
 {
     ui->statusBar->showMessage(messageTCP+"Connected with "+from+":"+QString::number(uint(port)),0);
     disconnect(mytcpserver, SIGNAL(myServerConnected(QString, qint16)), this, SLOT(onNewConnectionTcpServer(QString, qint16)));
@@ -309,7 +309,7 @@ void MainWindow::onStartButtonClicked()
             ui->lineEdit_targetIP->setDisabled(true);
             ui->lineEdit_targetPort->setDisabled(true);
             ui->lineEdit_listenPort->setDisabled(true);
-            connect(mytcpserver, SIGNAL(myServerConnected(QString, qint16)), this, SLOT(onNewConnectionTcpServer(QString, qint16)));
+            connect(mytcpserver, SIGNAL(myServerConnected(QString, quint16)), this, SLOT(onNewConnectionTcpServer(QString, quint16)));
         }
         else if (type == TCPCLIENT)
         {
@@ -354,7 +354,7 @@ void MainWindow::onStopButtonClicked()
 
     if(type==TCPSERVER)
     {
-        disconnect(mytcpserver, SIGNAL(myServerConnected(QString, qint16)));
+        disconnect(mytcpserver, SIGNAL(myServerConnected(QString, quint16)));
         mytcpserver->stopListening();
         ui->startButton->setText("Start");
         ui->comboBox_serverClient->setDisabled(false);
