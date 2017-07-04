@@ -28,14 +28,15 @@ class MyTCPClient : public QTcpSocket
     Q_OBJECT
 public:
     explicit MyTCPClient(QObject *parent = nullptr);
-    void connectTo(QHostAddress addr, qint16 port);
+    void connectTo(QHostAddress addr, quint16 port);
     void sendMessage(QString string);
     void disconnectCurrentConnection();
     void closeClient();
+    void abortConnection();
 
 signals:
     void newMessage(const QString &from, const QString &message);
-    void myClientConnected(const QString &from, qint16 port);
+    void myClientConnected(const QString &from, quint16 port);
     void myClientDisconnected();
     void connectionFailed();
 

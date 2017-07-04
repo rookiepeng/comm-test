@@ -24,7 +24,7 @@ MyTCPClient::MyTCPClient(QObject *parent) : QTcpSocket(parent)
     tcpSocket = new QTcpSocket();
 }
 
-void MyTCPClient::connectTo(QHostAddress addr, qint16 port)
+void MyTCPClient::connectTo(QHostAddress addr, quint16 port)
 {
     tcpSocket->connectToHost(addr, port);
     connect(tcpSocket, SIGNAL(connected()), this, SLOT(onConnected()));
@@ -80,7 +80,11 @@ void MyTCPClient::onDisconnected()
 void MyTCPClient::closeClient()
 {
     tcpSocket->close();
-    //tcpSocket->deleteLater();
+}
+
+void MyTCPClient::abortConnection()
+{
+    tcpSocket->abort();
 }
 
 void MyTCPClient::messageReady()
