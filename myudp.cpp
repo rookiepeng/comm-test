@@ -67,9 +67,4 @@ void MyUDP::unbindPort()
 {
     disconnect(socket, SIGNAL(readyRead()), this, SLOT(readyRead()));
     socket->close();
-
-    if (!socket->isOpen())
-    {
-        qDebug() << "socket closed";
-    }
 }

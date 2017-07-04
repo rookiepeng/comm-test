@@ -31,7 +31,6 @@ bool MyTCPServer::listen(QHostAddress addr, quint16 port)
     if (isSuccess)
     {
         connect(tcpServer, SIGNAL(newConnection()), this, SLOT(onConnected()));
-        qDebug() << "TCP Server: Listern to port " << port;
     }
     return isSuccess;
 }
@@ -47,7 +46,6 @@ void MyTCPServer::onConnected()
         connect(tcpSocket, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
         connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(messageReady()));
         emit myServerConnected(tcpSocket->peerAddress().toString(), tcpSocket->peerPort());
-        qDebug() << "TCP Server: New connection from " << tcpSocket->peerAddress().toString();
     }
 }
 
@@ -66,7 +64,6 @@ void MyTCPServer::messageReady()
 {
     array = tcpSocket->readAll();
     emit newMessage(tcpSocket->peerAddress().toString(), array);
-    qDebug() << array;
 }
 
 void MyTCPServer::onDisconnected()
@@ -74,7 +71,6 @@ void MyTCPServer::onDisconnected()
     disconnect(tcpSocket, SIGNAL(disconnected()));
     disconnect(tcpSocket, SIGNAL(readyRead()));
     emit myServerDisconnected();
-    qDebug() << "emit myServerDisconnected()";
     tcpSocket->close();
     tcpSocket->deleteLater();
     connect(tcpServer, SIGNAL(newConnection()), this, SLOT(onConnected()));
@@ -83,7 +79,6 @@ void MyTCPServer::onDisconnected()
 void MyTCPServer::stopConnection()
 {
     tcpSocket->disconnectFromHost();
-    qDebug() << "disconnectCurrentConnection";
 }
 
 void MyTCPServer::stopListening()
@@ -92,6 +87,5 @@ void MyTCPServer::stopListening()
     {
         disconnect(tcpServer, SIGNAL(newConnection()), this, SLOT(onConnected()));
         tcpServer->close();
-        //tcpServer->deleteLater();
     }
 }
