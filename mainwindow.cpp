@@ -119,7 +119,7 @@ bool MainWindow::setupConnection()
 void MainWindow::onNewConnectionTcpServer(const QString &from, quint16 port)
 {
     ui->statusBar->showMessage(messageTCP + "Connected with " + from + ":" + QString::number(port), 0);
-    disconnect(mytcpserver, SIGNAL(myServerConnected(QString, qint16)), this, SLOT(onNewConnectionTcpServer(QString, qint16)));
+    disconnect(mytcpserver, SIGNAL(myServerConnected(QString, quint16)), this, SLOT(onNewConnectionTcpServer(QString, quint16)));
 
     disconnect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStopButtonClicked()));
     ui->startButton->setText("Disconnect");
