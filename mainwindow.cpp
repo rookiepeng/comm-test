@@ -57,6 +57,9 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
+/*
+ * UI initialization
+ */
 void MainWindow::initUI()
 {
     QString rule = "(?:[0-1]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])";
@@ -80,6 +83,9 @@ void MainWindow::initUI()
     tableFormat.setBorder(0);
 }
 
+/*
+ * Setup connections
+ */
 bool MainWindow::setupConnection()
 {
     bool isSuccess = false;
@@ -116,6 +122,9 @@ bool MainWindow::setupConnection()
     return isSuccess;
 }
 
+/*
+ * TCP server has a new connection
+ */
 void MainWindow::onNewConnectionTcpServer(const QString &from, quint16 port)
 {
     ui->statusBar->showMessage(messageTCP + "Connected with " + from + ": " + QString::number(port), 0);
@@ -135,6 +144,9 @@ void MainWindow::onNewConnectionTcpServer(const QString &from, quint16 port)
     connect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
 }
 
+/*
+ * TCP server disconnected
+ */
 void MainWindow::onDisconnectedTcpServer()
 {
     ui->statusBar->showMessage(messageTCP + "Client disconnected, listerning to " + localAddr.toString() + ": " + QString::number(listenPort), 0);
@@ -154,6 +166,9 @@ void MainWindow::onDisconnectedTcpServer()
     connect(mytcpserver, SIGNAL(myServerConnected(QString, quint16)), this, SLOT(onNewConnectionTcpServer(QString, quint16)));
 }
 
+/*
+ * Disconnet button clicked
+ */
 void MainWindow::onTcpDisconnectButtonClicked()
 {
     if (type == TCPSERVER)
@@ -166,6 +181,9 @@ void MainWindow::onTcpDisconnectButtonClicked()
     }
 }
 
+/*
+ * TCP client has a new connection
+ */
 void MainWindow::onNewConnectionTcpClient(const QString &from, quint16 port)
 {
     disconnect(mytcpclient, SIGNAL(myClientConnected(QString, quint16)), this, SLOT(onNewConnectionTcpClient(QString, quint16)));
@@ -188,6 +206,9 @@ void MainWindow::onNewConnectionTcpClient(const QString &from, quint16 port)
     connect(ui->lineEdit_send, SIGNAL(returnPressed()), this, SLOT(sendMessage()));
 }
 
+/*
+ * TCP client disconnected
+ */
 void MainWindow::onDisconnectedTcpClient()
 {
     ui->statusBar->showMessage(messageTCP + "Disconnected from server", 2000);
@@ -215,6 +236,9 @@ void MainWindow::onDisconnectedTcpClient()
     connect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStartButtonClicked()));
 }
 
+/*
+ * Append message to the message browser
+ */
 void MainWindow::appendMessage(const QString &from, const QString &message)
 {
     if (from.isEmpty() || message.isEmpty())
@@ -242,6 +266,9 @@ void MainWindow::appendMessage(const QString &from, const QString &message)
     bar->setValue(bar->maximum());
 }
 
+/*
+ * Send message through Sockets
+ */
 void MainWindow::sendMessage()
 {
     QString text = ui->lineEdit_send->text();
@@ -270,6 +297,9 @@ void MainWindow::sendMessage()
     ui->lineEdit_send->clear();
 }
 
+/*
+ * The start button clicked
+ */
 void MainWindow::onStartButtonClicked()
 {
     disconnect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStartButtonClicked()));
@@ -335,6 +365,9 @@ void MainWindow::onStartButtonClicked()
     saveSettings();
 }
 
+/*
+ * TCP client connection time out
+ */
 void MainWindow::onTimeOutTcpClient()
 {
     ui->statusBar->showMessage(messageTCP + "Connection time out", 2000);
@@ -352,6 +385,9 @@ void MainWindow::onTimeOutTcpClient()
     connect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStartButtonClicked()));
 }
 
+/*
+ * The stop button clicked
+ */
 void MainWindow::onStopButtonClicked()
 {
     disconnect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStopButtonClicked()));
@@ -395,6 +431,9 @@ void MainWindow::onStopButtonClicked()
     connect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStartButtonClicked()));
 }
 
+/*
+ * Find IP of local WiFi connections
+ */
 void MainWindow::findLocalIPs()
 {
     QList<QNetworkInterface> listInterface = QNetworkInterface::allInterfaces();
@@ -429,16 +468,25 @@ void MainWindow::findLocalIPs()
     }
 }
 
+/*
+ * Get current protocol selection
+ */
 quint8 MainWindow::getProtocolValue()
 {
     return ui->comboBox_TCPUDP->currentIndex();
 }
 
+/*
+ * Get current TCP role selection
+ */
 quint8 MainWindow::getRoleValue()
 {
     return ui->comboBox_serverClient->currentIndex();
 }
 
+/*
+ * Load settings from local configuration file
+ */
 void MainWindow::loadSettings()
 {
     settingsFileDir = QApplication::applicationDirPath() + "/config.ini";
@@ -457,6 +505,9 @@ void MainWindow::loadSettings()
     ui->comboBox_serverClient->setDisabled(settings.value("TCPorUDP", 0).toInt() == 1);
 }
 
+/*
+ * Save settings to local configuration file
+ */
 void MainWindow::saveSettings()
 {
     QSettings settings(settingsFileDir, QSettings::IniFormat);
@@ -469,6 +520,9 @@ void MainWindow::saveSettings()
     settings.sync();
 }
 
+/*
+ * When TCP/UDP combo changed
+ */
 void MainWindow::onTcpUdpComboChanged(int index)
 {
     int tcptype = getRoleValue();
@@ -495,6 +549,9 @@ void MainWindow::onTcpUdpComboChanged(int index)
     }
 }
 
+/*
+ * When Server/Client combo changed
+ */
 void MainWindow::onServerClientComboChanged(int index)
 {
     switch (index)
