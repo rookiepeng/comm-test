@@ -102,6 +102,12 @@ private:
     QString settingsFileDir;
     QList<QNetworkInterface> wifiList;
     quint8 type;
+
+    QString targetIPString;
+    QString targetPortString;
+    QString localIPString;
+    QString listenPortString;
+
     QString messageUDP="[UDP] ";
     QString messageTCP="[TCP] ";
 };

@@ -28,17 +28,29 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     findLocalIPs();
     loadSettings();
 
+    targetIPString = ui->lineEdit_targetIP->text();
+    targetPortString = ui->lineEdit_targetPort->text();
+    listenPortString = ui->lineEdit_listenPort->text();
+
     if (getProtocolValue() == TCP)
     {
         if (getRoleValue() == SERVER)
         {
             type = TCPSERVER;
             ui->startButton->setText("Start");
+
+            ui->lineEdit_targetIP->clear();
+            ui->lineEdit_targetIP->setDisabled(true);
+            ui->lineEdit_targetPort->clear();
+            ui->lineEdit_targetPort->setDisabled(true);
         }
         else if (getRoleValue() == CLIENT)
         {
             type = TCPCLIENT;
             ui->startButton->setText("Connect");
+
+            ui->lineEdit_listenPort->clear();
+            ui->lineEdit_listenPort->setDisabled(true);
         }
     }
     else if (getProtocolValue() == UDP)
@@ -228,7 +240,7 @@ void MainWindow::onDisconnectedTcpClient()
     ui->comboBox_serverClient->setDisabled(false);
     ui->lineEdit_targetIP->setDisabled(false);
     ui->lineEdit_targetPort->setDisabled(false);
-    ui->lineEdit_listenPort->setDisabled(false);
+    //ui->lineEdit_listenPort->setDisabled(false);
 
     mytcpclient->closeClient();
     mytcpclient->close();
@@ -380,7 +392,7 @@ void MainWindow::onTimeOutTcpClient()
     ui->comboBox_serverClient->setDisabled(false);
     ui->lineEdit_targetIP->setDisabled(false);
     ui->lineEdit_targetPort->setDisabled(false);
-    ui->lineEdit_listenPort->setDisabled(false);
+    //ui->lineEdit_listenPort->setDisabled(false);
     mytcpclient->closeClient();
     connect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStartButtonClicked()));
 }
@@ -399,6 +411,7 @@ void MainWindow::onStopButtonClicked()
         mytcpserver->stopListening();
         ui->startButton->setText("Start");
         ui->comboBox_serverClient->setDisabled(false);
+        ui->lineEdit_listenPort->setDisabled(false);
     }
     else if (type == TCPCLIENT)
     {
@@ -408,6 +421,8 @@ void MainWindow::onStopButtonClicked()
         ui->startButton->setText("Connect");
         mytcpclient->abortConnection();
         ui->comboBox_serverClient->setDisabled(false);
+        ui->lineEdit_targetIP->setDisabled(false);
+        ui->lineEdit_targetPort->setDisabled(false);
     }
     else if (type == UDPSERVER)
     {
@@ -417,6 +432,9 @@ void MainWindow::onStopButtonClicked()
         disconnect(myudp, SIGNAL(newMessage(QString, QString)), this, SLOT(appendMessage(QString, QString)));
         ui->startButton->setText("Start");
         myudp->unbindPort();
+        ui->lineEdit_targetIP->setDisabled(false);
+        ui->lineEdit_targetPort->setDisabled(false);
+        ui->lineEdit_listenPort->setDisabled(false);
     }
 
     ui->pushButton_send->setDisabled(true);
@@ -424,9 +442,6 @@ void MainWindow::onStopButtonClicked()
     ui->textBrowser_message->setDisabled(true);
 
     ui->comboBox_TCPUDP->setDisabled(false);
-    ui->lineEdit_targetIP->setDisabled(false);
-    ui->lineEdit_targetPort->setDisabled(false);
-    ui->lineEdit_listenPort->setDisabled(false);
 
     connect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStartButtonClicked()));
 }
@@ -456,7 +471,7 @@ void MainWindow::findLocalIPs()
             if (wifiList.at(0).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
             {
                 ui->comboBox_localIP->addItem(wifiList.at(0).addressEntries().at(i).ip().toString());
-                ui->comboBox_localIP->setDisabled(true);
+                //ui->comboBox_localIP->setDisabled(true);
                 //qDebug() << wifiList.at(0).allAddresses().at(i).toString();
                 //qDebug() << wifiList.at(0).humanReadableName();
             }
@@ -511,9 +526,9 @@ void MainWindow::loadSettings()
 void MainWindow::saveSettings()
 {
     QSettings settings(settingsFileDir, QSettings::IniFormat);
-    settings.setValue("targetIP", ui->lineEdit_targetIP->text());
-    settings.setValue("targetPort", ui->lineEdit_targetPort->text());
-    settings.setValue("listenPort", ui->lineEdit_listenPort->text());
+    settings.setValue("targetIP", targetIPString);
+    settings.setValue("targetPort", targetPortString);
+    settings.setValue("listenPort", listenPortString);
     settings.setValue("localIPIndex", ui->comboBox_localIP->currentIndex());
     settings.setValue("TCPorUDP", ui->comboBox_TCPUDP->currentIndex());
     settings.setValue("serverClient", ui->comboBox_serverClient->currentIndex());
@@ -533,11 +548,31 @@ void MainWindow::onTcpUdpComboChanged(int index)
         {
             type = TCPSERVER;
             ui->startButton->setText("Start");
+
+            targetIPString = ui->lineEdit_targetIP->text();
+            targetPortString = ui->lineEdit_targetPort->text();
+
+            ui->lineEdit_targetIP->clear();
+            ui->lineEdit_targetIP->setDisabled(true);
+            ui->lineEdit_targetPort->clear();
+            ui->lineEdit_targetPort->setDisabled(true);
+
+            ui->lineEdit_listenPort->setText(listenPortString);
+            ui->lineEdit_listenPort->setDisabled(false);
         }
         else if (tcptype == CLIENT)
         {
             type = TCPCLIENT;
             ui->startButton->setText("Connect");
+
+            listenPortString = ui->lineEdit_listenPort->text();
+            ui->lineEdit_listenPort->clear();
+            ui->lineEdit_listenPort->setDisabled(true);
+
+            ui->lineEdit_targetIP->setText(targetIPString);
+            ui->lineEdit_targetIP->setDisabled(false);
+            ui->lineEdit_targetPort->setText(targetPortString);
+            ui->lineEdit_targetPort->setDisabled(false);
         }
         ui->comboBox_serverClient->setDisabled(false);
         break;
@@ -545,6 +580,12 @@ void MainWindow::onTcpUdpComboChanged(int index)
         type = UDPSERVER;
         ui->startButton->setText("Start");
         ui->comboBox_serverClient->setDisabled(true);
+        ui->lineEdit_listenPort->setText(listenPortString);
+        ui->lineEdit_listenPort->setDisabled(false);
+        ui->lineEdit_targetIP->setText(targetIPString);
+        ui->lineEdit_targetIP->setDisabled(false);
+        ui->lineEdit_targetPort->setText(targetPortString);
+        ui->lineEdit_targetPort->setDisabled(false);
         break;
     }
 }
@@ -559,10 +600,29 @@ void MainWindow::onServerClientComboChanged(int index)
     case SERVER:
         type = TCPSERVER;
         ui->startButton->setText("Start");
+
+        targetIPString = ui->lineEdit_targetIP->text();
+        targetPortString = ui->lineEdit_targetPort->text();
+
+        ui->lineEdit_targetIP->clear();
+        ui->lineEdit_targetIP->setDisabled(true);
+        ui->lineEdit_targetPort->clear();
+        ui->lineEdit_targetPort->setDisabled(true);
+
+        ui->lineEdit_listenPort->setText(listenPortString);
+        ui->lineEdit_listenPort->setDisabled(false);
         break;
     case CLIENT:
         type = TCPCLIENT;
         ui->startButton->setText("Connect");
+        listenPortString = ui->lineEdit_listenPort->text();
+        ui->lineEdit_listenPort->clear();
+        ui->lineEdit_listenPort->setDisabled(true);
+
+        ui->lineEdit_targetIP->setText(targetIPString);
+        ui->lineEdit_targetIP->setDisabled(false);
+        ui->lineEdit_targetPort->setText(targetPortString);
+        ui->lineEdit_targetPort->setDisabled(false);
         break;
     }
 }
