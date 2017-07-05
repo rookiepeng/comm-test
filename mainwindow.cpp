@@ -240,7 +240,6 @@ void MainWindow::onDisconnectedTcpClient()
     ui->comboBox_serverClient->setDisabled(false);
     ui->lineEdit_targetIP->setDisabled(false);
     ui->lineEdit_targetPort->setDisabled(false);
-    //ui->lineEdit_listenPort->setDisabled(false);
 
     mytcpclient->closeClient();
     mytcpclient->close();
@@ -392,7 +391,7 @@ void MainWindow::onTimeOutTcpClient()
     ui->comboBox_serverClient->setDisabled(false);
     ui->lineEdit_targetIP->setDisabled(false);
     ui->lineEdit_targetPort->setDisabled(false);
-    //ui->lineEdit_listenPort->setDisabled(false);
+
     mytcpclient->closeClient();
     connect(ui->startButton, SIGNAL(clicked()), this, SLOT(onStartButtonClicked()));
 }
