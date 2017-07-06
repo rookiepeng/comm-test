@@ -470,7 +470,6 @@ void MainWindow::findLocalIPs()
             if (wifiList.at(0).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
             {
                 ui->comboBox_localIP->addItem(wifiList.at(0).addressEntries().at(i).ip().toString());
-                //ui->comboBox_localIP->setDisabled(true);
                 //qDebug() << wifiList.at(0).allAddresses().at(i).toString();
                 //qDebug() << wifiList.at(0).humanReadableName();
             }
@@ -535,7 +534,7 @@ void MainWindow::saveSettings()
 }
 
 /*
- * When TCP/UDP combo changed
+ * TCP/UDP combo changed
  */
 void MainWindow::onTcpUdpComboChanged(int index)
 {
@@ -590,7 +589,7 @@ void MainWindow::onTcpUdpComboChanged(int index)
 }
 
 /*
- * When Server/Client combo changed
+ * Server/Client combo changed
  */
 void MainWindow::onServerClientComboChanged(int index)
 {
