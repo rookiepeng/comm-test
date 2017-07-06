@@ -1,4 +1,4 @@
-# TCP/UDP-QT
+# TCP/UDP-Demo
 
 A simple TCP/UDP demo interface built with QT5.
 
