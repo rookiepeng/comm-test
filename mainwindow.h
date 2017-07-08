@@ -30,10 +30,6 @@
 #include "mytcpserver.h"
 #include "mytcpclient.h"
 
-#define TCP 0
-#define UDP 1
-#define SERVER 0
-#define CLIENT 1
 #define TCPSERVER 10
 #define TCPCLIENT 20
 #define UDPSERVER 30
@@ -50,7 +46,9 @@ class MainWindow : public QMainWindow
 private slots:
 
     /******************************************************************************
+     *
      * TCP Client
+     *
      ******************************************************************************/
     void onTcpClientButtonClicked();
     void onTcpClientNewConnection(const QString &from, quint16 port);
@@ -62,7 +60,9 @@ private slots:
     void onTcpClientAppendMessage(const QString &from, const QString &message);
 
     /******************************************************************************
+     *
      * TCP Server
+     *
      ******************************************************************************/
     void onTcpServerButtonClicked();
     void onTcpServerNewConnection(const QString &from, quint16 port);
@@ -73,7 +73,9 @@ private slots:
     void onTcpServerAppendMessage(const QString &from, const QString &message);
 
     /******************************************************************************
+     *
      * UDP
+     *
      ******************************************************************************/
     void onUdpButtonClicked();
     void onUdpStopButtonClicked();
@@ -110,7 +112,7 @@ private:
     quint16 udpTargetPort;
 
     QString settingsFileDir;
-    QList<QNetworkInterface> wifiList;
+    QList<QNetworkInterface> interfaceList;
     quint8 type;
 
     QString messageUDP="[UDP] ";

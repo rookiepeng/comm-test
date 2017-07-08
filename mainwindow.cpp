@@ -41,12 +41,18 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
 }
 
 /******************************************************************************
- * TCP Client
+ ******************************************************************************
+ **
+ ** TCP Client
+ **
+ ******************************************************************************
  ******************************************************************************/
 
-/*
- * The start button clicked
- */
+/***********************************
+ *
+ * TCP client start button clicked
+ *
+ ***********************************/
 void MainWindow::onTcpClientButtonClicked()
 {
     disconnect(ui->button_tcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientButtonClicked()));
@@ -65,9 +71,11 @@ void MainWindow::onTcpClientButtonClicked()
     saveSettings();
 }
 
-/*
+/***********************************
+ *
  * TCP client has a new connection
- */
+ *
+ ***********************************/
 void MainWindow::onTcpClientNewConnection(const QString &from, quint16 port)
 {
     disconnect(mytcpclient, SIGNAL(myClientConnected(QString, quint16)), this, SLOT(onTcpClientNewConnection(QString, quint16)));
@@ -90,9 +98,11 @@ void MainWindow::onTcpClientNewConnection(const QString &from, quint16 port)
     connect(ui->lineEdit_TcpClientSend, SIGNAL(returnPressed()), this, SLOT(onTcpClientSendMessage()));
 }
 
-/*
- * The stop button clicked
- */
+/***********************************
+ *
+ * TCP client stop button clicked
+ *
+ ***********************************/
 void MainWindow::onTcpClientStopButtonClicked()
 {
     disconnect(ui->button_tcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientStopButtonClicked()));
@@ -112,9 +122,11 @@ void MainWindow::onTcpClientStopButtonClicked()
     connect(ui->button_tcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientButtonClicked()));
 }
 
-/*
+/***********************************
+ *
  * TCP client connection time out
- */
+ *
+ ***********************************/
 void MainWindow::onTcpClientTimeOut()
 {
     ui->statusBar->showMessage(messageTCP + "Connection time out", 2000);
@@ -130,17 +142,21 @@ void MainWindow::onTcpClientTimeOut()
     connect(ui->button_tcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientButtonClicked()));
 }
 
-/*
- * Disconnet button clicked
- */
+/***********************************
+ *
+ * TCP client diconnect button clicked
+ *
+ ***********************************/
 void MainWindow::onTcpClientDisconnectButtonClicked()
 {
     mytcpclient->disconnectCurrentConnection();
 }
 
-/*
+/***********************************
+ *
  * TCP client disconnected
- */
+ *
+ ***********************************/
 void MainWindow::onTcpClientDisconnected()
 {
     ui->statusBar->showMessage(messageTCP + "Disconnected from server", 2000);
@@ -165,9 +181,12 @@ void MainWindow::onTcpClientDisconnected()
     connect(ui->button_tcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientButtonClicked()));
 }
 
-/*
- * Append message to the message browser
- */
+/***********************************
+ *
+ * TCP client append a message
+ * to message browser
+ *
+ ***********************************/
 void MainWindow::onTcpClientAppendMessage(const QString &from, const QString &message)
 {
     if (from.isEmpty() || message.isEmpty())
@@ -195,9 +214,11 @@ void MainWindow::onTcpClientAppendMessage(const QString &from, const QString &me
     bar->setValue(bar->maximum());
 }
 
-/*
- * Send message through Sockets
- */
+/***********************************
+ *
+ * Send message through TCP client
+ *
+ ***********************************/
 void MainWindow::onTcpClientSendMessage()
 {
     QString text = ui->lineEdit_TcpClientSend->text();
@@ -212,13 +233,20 @@ void MainWindow::onTcpClientSendMessage()
     ui->lineEdit_TcpClientSend->clear();
 }
 
-
-
 /******************************************************************************
- * TCP Server
+ ******************************************************************************
+ **
+ ** TCP Server
+ **
+ ******************************************************************************
  ******************************************************************************/
 
 
+/***********************************
+ *
+ * TCP server listen button clicked
+ *
+ ***********************************/
 void MainWindow::onTcpServerButtonClicked()
 {
     disconnect(ui->button_TcpServer, SIGNAL(clicked()), this, SLOT(onTcpServerButtonClicked()));
@@ -240,9 +268,11 @@ void MainWindow::onTcpServerButtonClicked()
     saveSettings();
 }
 
-/*
+/***********************************
+ *
  * TCP server has a new connection
- */
+ *
+ ***********************************/
 void MainWindow::onTcpServerNewConnection(const QString &from, quint16 port)
 {
     ui->statusBar->showMessage(messageTCP + "Connected with " + from + ": " + QString::number(port), 0);
@@ -262,6 +292,11 @@ void MainWindow::onTcpServerNewConnection(const QString &from, quint16 port)
     connect(ui->lineEdit_TcpServerSend, SIGNAL(returnPressed()), this, SLOT(onTcpServerSendMessage()));
 }
 
+/***********************************
+ *
+ * TCP server stop button clicked
+ *
+ ***********************************/
 void MainWindow::onTcpServerStopButtonClicked()
 {
     disconnect(ui->button_TcpServer, SIGNAL(clicked()), this, SLOT(onTcpServerStopButtonClicked()));
@@ -280,14 +315,21 @@ void MainWindow::onTcpServerStopButtonClicked()
     connect(ui->button_TcpServer, SIGNAL(clicked()), this, SLOT(onTcpServerButtonClicked()));
 }
 
+/***********************************
+ *
+ * TCP server disconnect button clicked
+ *
+ ***********************************/
 void MainWindow::onTcpServerDisconnectButtonClicked()
 {
     mytcpserver->stopConnection();
 }
 
-/*
+/***********************************
+ *
  * TCP server disconnected
- */
+ *
+ ***********************************/
 void MainWindow::onTcpServerDisconnected()
 {
     ui->statusBar->showMessage(messageTCP + "Client disconnected, listerning to " + localAddr.toString() + ": " + QString::number(tcpServerListenPort), 0);
@@ -307,9 +349,12 @@ void MainWindow::onTcpServerDisconnected()
     connect(mytcpserver, SIGNAL(myServerConnected(QString, quint16)), this, SLOT(onTcpServerNewConnection(QString, quint16)));
 }
 
-/*
-  * Append message to the message browser
-  */
+/***********************************
+ *
+ * TCP server append a message
+ * to message browser
+ *
+ ***********************************/
 void MainWindow::onTcpServerAppendMessage(const QString &from, const QString &message)
 {
     if (from.isEmpty() || message.isEmpty())
@@ -337,9 +382,11 @@ void MainWindow::onTcpServerAppendMessage(const QString &from, const QString &me
     bar->setValue(bar->maximum());
 }
 
-/*
-  * Send message through Sockets
-  */
+/***********************************
+ *
+ * Send message through TCP server
+ *
+ ***********************************/
 void MainWindow::onTcpServerSendMessage()
 {
     QString text = ui->lineEdit_TcpServerSend->text();
@@ -354,11 +401,19 @@ void MainWindow::onTcpServerSendMessage()
     ui->lineEdit_TcpServerSend->clear();
 }
 
-
 /******************************************************************************
- * UDP
+ ******************************************************************************
+ **
+ ** UDP
+ **
+ ******************************************************************************
  ******************************************************************************/
 
+/***********************************
+ *
+ * UDP listen button clicked
+ *
+ ***********************************/
 void MainWindow::onUdpButtonClicked()
 {
     disconnect(ui->button_Udp, SIGNAL(clicked()), this, SLOT(onUdpButtonClicked()));
@@ -385,6 +440,11 @@ void MainWindow::onUdpButtonClicked()
     saveSettings();
 }
 
+/***********************************
+ *
+ * UDP stop button clicked
+ *
+ ***********************************/
 void MainWindow::onUdpStopButtonClicked()
 {
     disconnect(ui->button_Udp, SIGNAL(clicked()), this, SLOT(onUdpStopButtonClicked()));
@@ -398,9 +458,12 @@ void MainWindow::onUdpStopButtonClicked()
     connect(ui->button_Udp, SIGNAL(clicked()), this, SLOT(onUdpButtonClicked()));
 }
 
-/*
- * Append message to the message browser
- */
+/***********************************
+ *
+ * UDP append a message
+ * to message browser
+ *
+ ***********************************/
 void MainWindow::onUdpAppendMessage(const QString &from, const QString &message)
 {
     if (from.isEmpty() || message.isEmpty())
@@ -428,9 +491,11 @@ void MainWindow::onUdpAppendMessage(const QString &from, const QString &message)
     bar->setValue(bar->maximum());
 }
 
-/*
- * Send message through Sockets
- */
+/***********************************
+ *
+ * Send message through UDP
+ *
+ ***********************************/
 void MainWindow::onUdpSendMessage()
 {
     QString text = ui->lineEdit_UdpSend->text();
@@ -447,12 +512,17 @@ void MainWindow::onUdpSendMessage()
     ui->lineEdit_UdpSend->clear();
 }
 
-/******************************************************************************/
+/******************************************************************************
+ ******************************************************************************/
 
+/******************************************************************************
+ ******************************************************************************/
 
-/*
+/***********************************
+ *
  * UI initialization
- */
+ *
+ ***********************************/
 void MainWindow::initUI()
 {
     QString rule = "(?:[0-1]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])";
@@ -478,9 +548,11 @@ void MainWindow::initUI()
     tableFormat.setBorder(0);
 }
 
-/*
+/***********************************
+ *
  * Setup connections
- */
+ *
+ ***********************************/
 bool MainWindow::setupConnection(quint8 type)
 {
     bool isSuccess = false;
@@ -514,9 +586,11 @@ bool MainWindow::setupConnection(quint8 type)
     return isSuccess;
 }
 
-/*
+/***********************************
+ *
  * Find IP of local WiFi connections
- */
+ *
+ ***********************************/
 void MainWindow::findLocalIPs()
 {
     QList<QNetworkInterface> listInterface = QNetworkInterface::allInterfaces();
@@ -525,11 +599,11 @@ void MainWindow::findLocalIPs()
         //qDebug()<<listInterface.at(i).humanReadableName();
         if (listInterface.at(i).humanReadableName().contains("Wi-Fi"))
         {
-            wifiList.append(listInterface.at(i));
+            interfaceList.append(listInterface.at(i));
         }
     }
 
-    if (wifiList.isEmpty())
+    if (interfaceList.isEmpty())
     {
         // TODO wifilist is empty
     }
@@ -538,9 +612,9 @@ void MainWindow::findLocalIPs()
         // qDebug()<<wifiList.size();
         // qDebug()<<wifiList.at(0).addressEntries().at(0).ip();
         // qDebug()<<wifiList.at(0).addressEntries().at(1).ip();
-        for (int j=0; j < wifiList.size(); ++j)
+        for (int j=0; j < interfaceList.size(); ++j)
         {
-            ui->comboBox_Interface->addItem(wifiList.at(j).humanReadableName());
+            ui->comboBox_Interface->addItem(interfaceList.at(j).humanReadableName());
             //for (int i = 0; i < wifiList.at(j).addressEntries().size(); ++i)
             //{
             //if (wifiList.at(0).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
@@ -552,52 +626,67 @@ void MainWindow::findLocalIPs()
     }
 }
 
-/*
+/***********************************
+ *
  * Load settings from local configuration file
- */
+ *
+ ***********************************/
 void MainWindow::loadSettings()
 {
     settingsFileDir = QApplication::applicationDirPath() + "/config.ini";
     QSettings settings(settingsFileDir, QSettings::IniFormat);
-    ui->lineEdit_tcpClientTargetIP->setText(settings.value("targetIP", "127.0.0.1").toString());
-    ui->lineEdit_TcpClientTargetPort->setText(settings.value("targetPort", 1234).toString());
-    ui->lineEdit_TcpServerListenPort->setText(settings.value("listenPort", 1234).toString());
+    ui->lineEdit_tcpClientTargetIP->setText(settings.value("TCP_CLIENT_TARGET_IP", "127.0.0.1").toString());
+    ui->lineEdit_TcpClientTargetPort->setText(settings.value("TCP_CLIENT_TARGET_PORT", 1234).toString());
+
+    ui->lineEdit_TcpServerListenPort->setText(settings.value("TCP_SERVER_LISTEN_PORT", 1234).toString());
+
+    ui->lineEdit_UdpListenPort->setText(settings.value("UDP_LISTEN_PORT", 1234).toString());
+    ui->lineEdit_UdpTargetIP->setText(settings.value("UDP_TARGET_IP", "127.0.0.1").toString());
+    ui->lineEdit_UdpTargetPort->setText(settings.value("UDP_TARGET_PORT", 1234).toString());
 
     int index=settings.value("interfaceIndex", 0).toInt();
     if (ui->comboBox_Interface->count() >= index)
     {
         ui->comboBox_Interface->setCurrentIndex(index);
-        for (int i = 0; i < wifiList.at(index).addressEntries().size(); ++i)
+        for (int i = 0; i < interfaceList.at(index).addressEntries().size(); ++i)
         {
-            if (wifiList.at(index).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
+            if (interfaceList.at(index).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
             {
-                ui->label_LocalIP->setText(wifiList.at(index).addressEntries().at(i).ip().toString());
+                ui->label_LocalIP->setText(interfaceList.at(index).addressEntries().at(i).ip().toString());
             }
         }
     }
     else if(ui->comboBox_Interface->count()>0 && ui->comboBox_Interface->count() < index)
     {
         ui->comboBox_Interface->setCurrentIndex(0);
-        for (int i = 0; i < wifiList.at(0).addressEntries().size(); ++i)
+        for (int i = 0; i < interfaceList.at(0).addressEntries().size(); ++i)
         {
-            if (wifiList.at(0).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
+            if (interfaceList.at(0).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
             {
-                ui->label_LocalIP->setText(wifiList.at(0).addressEntries().at(i).ip().toString());
+                ui->label_LocalIP->setText(interfaceList.at(0).addressEntries().at(i).ip().toString());
             }
         }
     }
 }
 
-/*
+/***********************************
+ *
  * Save settings to local configuration file
- */
+ *
+ ***********************************/
 void MainWindow::saveSettings()
 {
     QSettings settings(settingsFileDir, QSettings::IniFormat);
-    //settings.setValue("targetIP", targetIPString);
-    //settings.setValue("targetPort", targetPortString);
-    //settings.setValue("listenPort", listenPortString);
-    settings.setValue("interfaceIndex", ui->comboBox_Interface->currentIndex());
+    settings.setValue("TCP_CLIENT_TARGET_IP", ui->lineEdit_tcpClientTargetIP->text());
+    settings.setValue("TCP_CLIENT_TARGET_PORT", ui->lineEdit_TcpClientTargetPort->text());
+
+    settings.setValue("TCP_SERVER_LISTEN_PORT", ui->lineEdit_TcpServerListenPort->text());
+
+    settings.setValue("UDP_LISTEN_PORT", ui->lineEdit_UdpListenPort->text());
+    settings.setValue("UDP_TARGET_IP", ui->lineEdit_UdpTargetIP->text());
+    settings.setValue("UDP_TARGET_PORT", ui->lineEdit_UdpTargetPort->text());
+
+    settings.setValue("INTERFACE_INDEX", ui->comboBox_Interface->currentIndex());
     settings.sync();
 }
 
