@@ -28,6 +28,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     findLocalIPs();
     loadSettings();
 
+    if (myudp == nullptr)
+    {
+        myudp = new MyUDP;
+    }
+    connect(ui->button_UdpSend, SIGNAL(clicked()), this, SLOT(onUdpSendMessage()));
+    connect(ui->lineEdit_UdpSend, SIGNAL(returnPressed()), this, SLOT(onUdpSendMessage()));
+
     connect(ui->button_tcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientButtonClicked()));
     connect(ui->button_TcpServer, SIGNAL(clicked()), this, SLOT(onTcpServerButtonClicked()));
     connect(ui->button_Udp, SIGNAL(clicked()), this, SLOT(onUdpButtonClicked()));
@@ -279,8 +286,8 @@ void MainWindow::onTcpServerDisconnectButtonClicked()
 }
 
 /*
-  * TCP server disconnected
-  */
+ * TCP server disconnected
+ */
 void MainWindow::onTcpServerDisconnected()
 {
     ui->statusBar->showMessage(messageTCP + "Client disconnected, listerning to " + localAddr.toString() + ": " + QString::number(tcpServerListenPort), 0);
@@ -349,8 +356,8 @@ void MainWindow::onTcpServerSendMessage()
 
 
 /******************************************************************************
-  * UDP
-  ******************************************************************************/
+ * UDP
+ ******************************************************************************/
 
 void MainWindow::onUdpButtonClicked()
 {
@@ -367,8 +374,6 @@ void MainWindow::onUdpButtonClicked()
         ui->textBrowser_UdpMessage->setDisabled(false);
 
         ui->lineEdit_UdpListenPort->setDisabled(true);
-        connect(ui->button_UdpSend, SIGNAL(clicked()), this, SLOT(onUdpSendMessage()));
-        connect(ui->lineEdit_UdpSend, SIGNAL(returnPressed()), this, SLOT(onUdpSendMessage()));
         connect(myudp, SIGNAL(newMessage(QString, QString)), this, SLOT(onUdpAppendMessage(QString, QString)));
     }
     else
@@ -385,16 +390,10 @@ void MainWindow::onUdpStopButtonClicked()
     disconnect(ui->button_Udp, SIGNAL(clicked()), this, SLOT(onUdpStopButtonClicked()));
 
     ui->statusBar->showMessage(messageUDP + "Stopped", 2000);
-    disconnect(ui->button_UdpSend, SIGNAL(clicked()), this, SLOT(onUdpSendMessage()));
-    disconnect(ui->lineEdit_UdpSend, SIGNAL(returnPressed()), this, SLOT(onUdpSendMessage()));
     disconnect(myudp, SIGNAL(newMessage(QString, QString)), this, SLOT(onUdpAppendMessage(QString, QString)));
     ui->button_Udp->setText("Start");
     myudp->unbindPort();
     ui->lineEdit_UdpListenPort->setDisabled(false);
-
-    ui->button_UdpSend->setDisabled(true);
-    ui->lineEdit_UdpSend->setDisabled(true);
-    ui->textBrowser_UdpMessage->setDisabled(true);
 
     connect(ui->button_Udp, SIGNAL(clicked()), this, SLOT(onUdpButtonClicked()));
 }
@@ -509,10 +508,6 @@ bool MainWindow::setupConnection(quint8 type)
         break;
     case UDPSERVER:
         udpListenPort = ui->lineEdit_UdpListenPort->text().toInt();
-        if (myudp == nullptr)
-        {
-            myudp = new MyUDP;
-        }
         isSuccess = myudp->bindPort(localAddr, udpListenPort);
         break;
     }

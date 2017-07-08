@@ -92,7 +92,6 @@ private:
     void findLocalIPs();
     bool setupConnection(quint8 type);
 
-
     QTextTableFormat tableFormat;
 
     MyUDP *myudp = nullptr;
