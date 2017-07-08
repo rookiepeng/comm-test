@@ -49,7 +49,9 @@ class MainWindow : public QMainWindow
 
 private slots:
 
-
+    /******************************************************************************
+     * TCP Client
+     ******************************************************************************/
     void onTcpClientButtonClicked();
     void onTcpClientNewConnection(const QString &from, quint16 port);
     void onTcpClientStopButtonClicked();
@@ -59,6 +61,9 @@ private slots:
     void onTcpClientSendMessage();
     void onTcpClientAppendMessage(const QString &from, const QString &message);
 
+    /******************************************************************************
+     * TCP Server
+     ******************************************************************************/
     void onTcpServerButtonClicked();
     void onTcpServerNewConnection(const QString &from, quint16 port);
     void onTcpServerStopButtonClicked();
@@ -67,23 +72,13 @@ private slots:
     void onTcpServerSendMessage();
     void onTcpServerAppendMessage(const QString &from, const QString &message);
 
-
-
-
-
-
-
-
-
-    //void onTcpUdpComboChanged(int index);
-    //void onServerClientComboChanged(int index);
-
-
-
-
-
-
-
+    /******************************************************************************
+     * UDP
+     ******************************************************************************/
+    void onUdpButtonClicked();
+    void onUdpStopButtonClicked();
+    void onUdpSendMessage();
+    void onUdpAppendMessage(const QString &from, const QString &message);
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -96,13 +91,7 @@ private:
     void saveSettings();
     void findLocalIPs();
     bool setupConnection(quint8 type);
-    quint8 getProtocolValue();
-    quint8 getRoleValue();
 
-    QList<QString> TCPUDPComboList = QList<QString>() << "TCP"           // #define TCP 0
-                                                      << "UDP";          // #define UDP 1
-    QList<QString> ServerClientComboList = QList<QString>() << "Server"  // #define SERVER 0
-                                                            << "Client"; // #define CLIENT 1
 
     QTextTableFormat tableFormat;
 
@@ -114,16 +103,16 @@ private:
     quint16 tcpClientTargetPort;
 
     QHostAddress localAddr;
-    quint16 listenPort;
+
+    quint16 tcpServerListenPort;
+
+    quint16 udpListenPort;
+    QHostAddress udpTargetAddr;
+    quint16 udpTargetPort;
 
     QString settingsFileDir;
     QList<QNetworkInterface> wifiList;
     quint8 type;
-
-    QString targetIPString;
-    QString targetPortString;
-    QString localIPString;
-    QString listenPortString;
 
     QString messageUDP="[UDP] ";
     QString messageTCP="[TCP] ";
