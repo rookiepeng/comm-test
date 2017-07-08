@@ -48,25 +48,42 @@ class MainWindow : public QMainWindow
     Q_OBJECT
 
 private slots:
-    void sendMessage();
 
-    void onStartButtonClicked();
-    void onTcpDisconnectButtonClicked();
 
-    void onStopButtonClicked();
+    void onTcpClientButtonClicked();
+    void onTcpClientNewConnection(const QString &from, quint16 port);
+    void onTcpClientStopButtonClicked();
+    void onTcpClientTimeOut();
+    void onTcpClientDisconnectButtonClicked();
+    void onTcpClientDisconnected();
+    void onTcpClientSendMessage();
+    void onTcpClientAppendMessage(const QString &from, const QString &message);
 
-    void onDisconnectedTcpServer();
-    void onDisconnectedTcpClient();
+    void onTcpServerButtonClicked();
+    void onTcpServerNewConnection(const QString &from, quint16 port);
+    void onTcpServerStopButtonClicked();
+    void onTcpServerDisconnectButtonClicked();
+    void onTcpServerDisconnected();
+    void onTcpServerSendMessage();
+    void onTcpServerAppendMessage(const QString &from, const QString &message);
 
-    void onTcpUdpComboChanged(int index);
-    void onServerClientComboChanged(int index);
 
-    void onTimeOutTcpClient();
 
-    void appendMessage(const QString &from, const QString &message);
 
-    void onNewConnectionTcpServer(const QString &from, quint16 port);
-    void onNewConnectionTcpClient(const QString &from, quint16 port);
+
+
+
+
+
+    //void onTcpUdpComboChanged(int index);
+    //void onServerClientComboChanged(int index);
+
+
+
+
+
+
+
 
 public:
     explicit MainWindow(QWidget *parent = 0);
@@ -78,7 +95,7 @@ private:
     void loadSettings();
     void saveSettings();
     void findLocalIPs();
-    bool setupConnection();
+    bool setupConnection(quint8 type);
     quint8 getProtocolValue();
     quint8 getRoleValue();
 
@@ -93,10 +110,10 @@ private:
     MyTCPServer *mytcpserver = nullptr;
     MyTCPClient *mytcpclient = nullptr;
 
-    QHostAddress targetAddr;
-    QHostAddress localAddr;
+    QHostAddress tcpClientTargetAddr;
+    quint16 tcpClientTargetPort;
 
-    quint16 targetPort;
+    QHostAddress localAddr;
     quint16 listenPort;
 
     QString settingsFileDir;
