@@ -103,7 +103,7 @@ bool MainWindow::setupConnection()
     bool isSuccess = false;
     targetAddr.setAddress(ui->lineEdit_targetIP->text());
     targetPort = ui->lineEdit_targetPort->text().toInt();
-    localAddr.setAddress(ui->comboBox_localIP->currentText());
+    localAddr.setAddress(ui->label_LocalIP->text());
     listenPort = ui->lineEdit_listenPort->text().toInt();
 
     switch (type)
@@ -453,6 +453,7 @@ void MainWindow::findLocalIPs()
     QList<QNetworkInterface> listInterface = QNetworkInterface::allInterfaces();
     for (int i = 0; i < listInterface.size(); ++i)
     {
+        //qDebug()<<listInterface.at(i).humanReadableName();
         if (listInterface.at(i).humanReadableName().contains("Wi-Fi"))
         {
             wifiList.append(listInterface.at(i));
@@ -461,23 +462,24 @@ void MainWindow::findLocalIPs()
 
     if (wifiList.isEmpty())
     {
-        // TODO
-    }
-    else if (wifiList.size() == 1)
-    {
-        for (int i = 0; i < wifiList.at(0).addressEntries().size(); ++i)
-        {
-            if (wifiList.at(0).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
-            {
-                ui->comboBox_localIP->addItem(wifiList.at(0).addressEntries().at(i).ip().toString());
-                //qDebug() << wifiList.at(0).allAddresses().at(i).toString();
-                //qDebug() << wifiList.at(0).humanReadableName();
-            }
-        }
+        // TODO wifilist is empty
     }
     else
     {
-        // TODO comboBox_localIP index
+        // qDebug()<<wifiList.size();
+        // qDebug()<<wifiList.at(0).addressEntries().at(0).ip();
+        // qDebug()<<wifiList.at(0).addressEntries().at(1).ip();
+        for (int j=0; j < wifiList.size(); ++j)
+        {
+            ui->comboBox_Interface->addItem(wifiList.at(0).humanReadableName());
+            //for (int i = 0; i < wifiList.at(j).addressEntries().size(); ++i)
+            //{
+            //if (wifiList.at(0).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
+            //{
+            //ui->label_LocalIP->setText(wifiList.at(0).addressEntries().at(i).ip().toString());
+            //}
+            //}
+        }
     }
 }
 
@@ -508,9 +510,28 @@ void MainWindow::loadSettings()
     ui->lineEdit_targetPort->setText(settings.value("targetPort", 1234).toString());
     ui->lineEdit_listenPort->setText(settings.value("listenPort", 1234).toString());
 
-    if (ui->comboBox_localIP->count() >= settings.value("localIPIndex", 0).toInt())
+    int index=settings.value("interfaceIndex", 0).toInt();
+    if (ui->comboBox_Interface->count() >= index)
     {
-        ui->comboBox_localIP->setCurrentIndex(settings.value("localIPIndex", 0).toInt());
+        ui->comboBox_Interface->setCurrentIndex(index);
+        for (int i = 0; i < wifiList.at(index).addressEntries().size(); ++i)
+        {
+            if (wifiList.at(index).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
+            {
+                ui->label_LocalIP->setText(wifiList.at(index).addressEntries().at(i).ip().toString());
+            }
+        }
+    }
+    else if(ui->comboBox_Interface->count()>0 && ui->comboBox_Interface->count() < index)
+    {
+        ui->comboBox_Interface->setCurrentIndex(0);
+        for (int i = 0; i < wifiList.at(0).addressEntries().size(); ++i)
+        {
+            if (wifiList.at(0).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
+            {
+                ui->label_LocalIP->setText(wifiList.at(0).addressEntries().at(i).ip().toString());
+            }
+        }
     }
 
     ui->comboBox_TCPUDP->setCurrentIndex(settings.value("TCPorUDP", 0).toInt());
@@ -527,7 +548,7 @@ void MainWindow::saveSettings()
     settings.setValue("targetIP", targetIPString);
     settings.setValue("targetPort", targetPortString);
     settings.setValue("listenPort", listenPortString);
-    settings.setValue("localIPIndex", ui->comboBox_localIP->currentIndex());
+    settings.setValue("interfaceIndex", ui->comboBox_Interface->currentIndex());
     settings.setValue("TCPorUDP", ui->comboBox_TCPUDP->currentIndex());
     settings.setValue("serverClient", ui->comboBox_serverClient->currentIndex());
     settings.sync();
