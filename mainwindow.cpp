@@ -550,6 +550,7 @@ void MainWindow::initUI()
     ui->textBrowser_TcpServerMessage->setDisabled(true);
 
     tableFormat.setBorder(0);
+
     ui->label_AppVersion->setText(APPVERSION);
 
     ui->label_GitHub->setText("<a href=\"https://github.com/rookiepeng/TCP-UDP-Demo/\">Source codes on GitHub</a>");
@@ -651,6 +652,8 @@ void MainWindow::loadSettings()
     ui->lineEdit_UdpTargetIP->setText(settings.value("UDP_TARGET_IP", "127.0.0.1").toString());
     ui->lineEdit_UdpTargetPort->setText(settings.value("UDP_TARGET_PORT", 1234).toString());
 
+    ui->tabWidget->setCurrentIndex(settings.value("TAB_INDEX", 0).toInt());
+
     int index = settings.value("interfaceIndex", 0).toInt();
     if (ui->comboBox_Interface->count() >= index)
     {
@@ -694,6 +697,8 @@ void MainWindow::saveSettings()
     settings.setValue("UDP_TARGET_PORT", ui->lineEdit_UdpTargetPort->text());
 
     settings.setValue("INTERFACE_INDEX", ui->comboBox_Interface->currentIndex());
+
+    settings.setValue("TAB_INDEX", ui->tabWidget->currentIndex());
     settings.sync();
 }
 
