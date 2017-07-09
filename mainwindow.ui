@@ -706,7 +706,7 @@
         <item>
          <widget class="QLabel" name="label_6">
           <property name="text">
-           <string>V 1.0</string>
+           <string>V 1.1</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -719,7 +719,7 @@
         <item>
          <widget class="QLabel" name="label_7">
           <property name="text">
-           <string>By: Zhengyu Peng</string>
+           <string>By: Zach (Zhengyu) Peng</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
