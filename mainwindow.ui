@@ -176,7 +176,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="lineEdit_tcpClientTargetIP">
+              <widget class="QLineEdit" name="lineEdit_TcpClientTargetIP">
                <property name="minimumSize">
                 <size>
                  <width>200</width>
@@ -247,7 +247,7 @@
               </spacer>
              </item>
              <item>
-              <widget class="QPushButton" name="button_tcpClient">
+              <widget class="QPushButton" name="button_TcpClient">
                <property name="text">
                 <string>Connect</string>
                </property>

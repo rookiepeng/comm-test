@@ -39,7 +39,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     connect(ui->lineEdit_UdpSend, SIGNAL(returnPressed()), this, SLOT(onUdpSendMessage())); // UDP can send message directly without connection
 
     // buttons
-    connect(ui->button_tcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientButtonClicked()));
+    connect(ui->button_TcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientButtonClicked()));
     connect(ui->button_TcpServer, SIGNAL(clicked()), this, SLOT(onTcpServerButtonClicked()));
     connect(ui->button_Udp, SIGNAL(clicked()), this, SLOT(onUdpButtonClicked()));
 }
@@ -59,16 +59,16 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
  ***********************************/
 void MainWindow::onTcpClientButtonClicked()
 {
-    disconnect(ui->button_tcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientButtonClicked()));
+    disconnect(ui->button_TcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientButtonClicked()));
 
     if (setupConnection(TCPCLIENT))
     {
         ui->statusBar->showMessage(messageTCP + "Connecting to " + tcpClientTargetAddr.toString() + ": " + QString::number(tcpClientTargetPort), 0);
-        ui->lineEdit_tcpClientTargetIP->setDisabled(true);
+        ui->lineEdit_TcpClientTargetIP->setDisabled(true);
         ui->lineEdit_TcpClientTargetPort->setDisabled(true);
-        ui->button_tcpClient->setText("Stop");
+        ui->button_TcpClient->setText("Stop");
 
-        connect(ui->button_tcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientStopButtonClicked()));
+        connect(ui->button_TcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientStopButtonClicked()));
         connect(mytcpclient, SIGNAL(myClientConnected(QString, quint16)), this, SLOT(onTcpClientNewConnection(QString, quint16)));
         connect(mytcpclient, SIGNAL(connectionFailed()), this, SLOT(onTcpClientTimeOut()));
     }
@@ -85,18 +85,18 @@ void MainWindow::onTcpClientNewConnection(const QString &from, quint16 port)
 {
     disconnect(mytcpclient, SIGNAL(myClientConnected(QString, quint16)), this, SLOT(onTcpClientNewConnection(QString, quint16)));
     disconnect(mytcpclient, SIGNAL(connectionFailed()), this, SLOT(onTcpClientTimeOut()));
-    disconnect(ui->button_tcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientStopButtonClicked()));
+    disconnect(ui->button_TcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientStopButtonClicked()));
     connect(mytcpclient, SIGNAL(myClientDisconnected()), this, SLOT(onTcpClientDisconnected()));
 
-    ui->button_tcpClient->setDisabled(false);
-    ui->button_tcpClient->setText("Disconnect");
+    ui->button_TcpClient->setDisabled(false);
+    ui->button_TcpClient->setText("Disconnect");
 
     ui->button_TcpClientSend->setDisabled(false);
     ui->lineEdit_TcpClientSend->setDisabled(false);
     ui->textBrowser_TcpClientMessage->setDisabled(false);
 
     ui->statusBar->showMessage(messageTCP + "Connected to " + from + ": " + QString::number(port), 0);
-    connect(ui->button_tcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientDisconnectButtonClicked()));
+    connect(ui->button_TcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientDisconnectButtonClicked()));
 
     connect(mytcpclient, SIGNAL(newMessage(QString, QString)), this, SLOT(onTcpClientAppendMessage(QString, QString)));
     connect(ui->button_TcpClientSend, SIGNAL(clicked()), this, SLOT(onTcpClientSendMessage()));
@@ -110,21 +110,21 @@ void MainWindow::onTcpClientNewConnection(const QString &from, quint16 port)
  ***********************************/
 void MainWindow::onTcpClientStopButtonClicked()
 {
-    disconnect(ui->button_tcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientStopButtonClicked()));
+    disconnect(ui->button_TcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientStopButtonClicked()));
 
     ui->statusBar->showMessage(messageTCP + "Stopped", 2000);
     disconnect(mytcpclient, SIGNAL(myClientConnected(QString, quint16)), this, SLOT(onTcpClientNewConnection(QString, quint16)));
     disconnect(mytcpclient, SIGNAL(connectionFailed()), this, SLOT(onTcpClientTimeOut()));
-    ui->button_tcpClient->setText("Connect");
+    ui->button_TcpClient->setText("Connect");
     mytcpclient->abortConnection();
-    ui->lineEdit_tcpClientTargetIP->setDisabled(false);
+    ui->lineEdit_TcpClientTargetIP->setDisabled(false);
     ui->lineEdit_TcpClientTargetPort->setDisabled(false);
 
     ui->button_TcpClientSend->setDisabled(true);
     ui->lineEdit_TcpClientSend->setDisabled(true);
     ui->textBrowser_TcpClientMessage->setDisabled(true);
 
-    connect(ui->button_tcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientButtonClicked()));
+    connect(ui->button_TcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientButtonClicked()));
 }
 
 /***********************************
@@ -135,16 +135,16 @@ void MainWindow::onTcpClientStopButtonClicked()
 void MainWindow::onTcpClientTimeOut()
 {
     ui->statusBar->showMessage(messageTCP + "Connection time out", 2000);
-    disconnect(ui->button_tcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientStopButtonClicked()));
+    disconnect(ui->button_TcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientStopButtonClicked()));
     disconnect(mytcpclient, SIGNAL(myClientConnected(QString, quint16)), this, SLOT(onTcpClientNewConnection(QString, quint16)));
     disconnect(mytcpclient, SIGNAL(connectionFailed()), this, SLOT(onTcpClientTimeOut()));
 
-    ui->button_tcpClient->setText("Connect");
-    ui->lineEdit_tcpClientTargetIP->setDisabled(false);
+    ui->button_TcpClient->setText("Connect");
+    ui->lineEdit_TcpClientTargetIP->setDisabled(false);
     ui->lineEdit_TcpClientTargetPort->setDisabled(false);
 
     mytcpclient->closeClient();
-    connect(ui->button_tcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientButtonClicked()));
+    connect(ui->button_TcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientButtonClicked()));
 }
 
 /***********************************
@@ -169,21 +169,21 @@ void MainWindow::onTcpClientDisconnected()
     disconnect(mytcpclient, SIGNAL(newMessage(QString, QString)), this, SLOT(onTcpClientAppendMessage(QString, QString)));
     disconnect(ui->button_TcpClientSend, SIGNAL(clicked()), this, SLOT(onTcpClientSendMessage()));
     disconnect(ui->lineEdit_TcpClientSend, SIGNAL(returnPressed()), this, SLOT(onTcpClientSendMessage()));
-    disconnect(ui->button_tcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientDisconnectButtonClicked()));
-    ui->button_tcpClient->setText("Connect");
+    disconnect(ui->button_TcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientDisconnectButtonClicked()));
+    ui->button_TcpClient->setText("Connect");
 
     ui->button_TcpClientSend->setDisabled(true);
     ui->lineEdit_TcpClientSend->setDisabled(true);
     ui->textBrowser_TcpClientMessage->setDisabled(true);
 
-    ui->button_tcpClient->setDisabled(false);
-    ui->lineEdit_tcpClientTargetIP->setDisabled(false);
+    ui->button_TcpClient->setDisabled(false);
+    ui->lineEdit_TcpClientTargetIP->setDisabled(false);
     ui->lineEdit_TcpClientTargetPort->setDisabled(false);
 
     mytcpclient->closeClient();
     mytcpclient->close();
 
-    connect(ui->button_tcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientButtonClicked()));
+    connect(ui->button_TcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientButtonClicked()));
 }
 
 /***********************************
@@ -529,7 +529,7 @@ void MainWindow::onUdpSendMessage()
 void MainWindow::initUI()
 {
     QString rule = "(?:[0-1]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])";
-    ui->lineEdit_tcpClientTargetIP->setValidator(new QRegExpValidator(QRegExp("^" + rule + "\\." + rule + "\\." + rule + "\\." + rule + "$"), this));
+    ui->lineEdit_TcpClientTargetIP->setValidator(new QRegExpValidator(QRegExp("^" + rule + "\\." + rule + "\\." + rule + "\\." + rule + "$"), this));
     ui->lineEdit_UdpTargetIP->setValidator(new QRegExpValidator(QRegExp("^" + rule + "\\." + rule + "\\." + rule + "\\." + rule + "$"), this));
     ui->lineEdit_TcpClientTargetPort->setValidator(new QIntValidator(0, 65535, this));
     ui->lineEdit_TcpServerListenPort->setValidator(new QIntValidator(0, 65535, this));
@@ -573,7 +573,7 @@ bool MainWindow::setupConnection(quint8 type)
         break;
     case TCPCLIENT:
         isSuccess = true;
-        tcpClientTargetAddr.setAddress(ui->lineEdit_tcpClientTargetIP->text());
+        tcpClientTargetAddr.setAddress(ui->lineEdit_TcpClientTargetIP->text());
         tcpClientTargetPort = ui->lineEdit_TcpClientTargetPort->text().toInt();
         if (mytcpclient == nullptr)
         {
@@ -630,7 +630,7 @@ void MainWindow::loadSettings()
 {
     settingsFileDir = QApplication::applicationDirPath() + "/config.ini";
     QSettings settings(settingsFileDir, QSettings::IniFormat);
-    ui->lineEdit_tcpClientTargetIP->setText(settings.value("TCP_CLIENT_TARGET_IP", "127.0.0.1").toString());
+    ui->lineEdit_TcpClientTargetIP->setText(settings.value("TCP_CLIENT_TARGET_IP", "127.0.0.1").toString());
     ui->lineEdit_TcpClientTargetPort->setText(settings.value("TCP_CLIENT_TARGET_PORT", 1234).toString());
 
     ui->lineEdit_TcpServerListenPort->setText(settings.value("TCP_SERVER_LISTEN_PORT", 1234).toString());
@@ -672,7 +672,7 @@ void MainWindow::loadSettings()
 void MainWindow::saveSettings()
 {
     QSettings settings(settingsFileDir, QSettings::IniFormat);
-    settings.setValue("TCP_CLIENT_TARGET_IP", ui->lineEdit_tcpClientTargetIP->text());
+    settings.setValue("TCP_CLIENT_TARGET_IP", ui->lineEdit_TcpClientTargetIP->text());
     settings.setValue("TCP_CLIENT_TARGET_PORT", ui->lineEdit_TcpClientTargetPort->text());
 
     settings.setValue("TCP_SERVER_LISTEN_PORT", ui->lineEdit_TcpServerListenPort->text());
