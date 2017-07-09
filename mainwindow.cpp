@@ -1,4 +1,4 @@
-/*
+/****************************************************************************************
 //    mainwindow.cpp
 //
 //    Copyright (C) 2017  Zach (Zhengyu) Peng, https://zpeng.me
@@ -15,7 +15,7 @@
 //
 //    You should have received a copy of the GNU General Public License
 //    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+*****************************************************************************************/
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
@@ -624,9 +624,6 @@ void MainWindow::findLocalIPs()
     }
     else
     {
-        // qDebug()<<wifiList.size();
-        // qDebug()<<wifiList.at(0).addressEntries().at(0).ip();
-        // qDebug()<<wifiList.at(0).addressEntries().at(1).ip();
         for (int j = 0; j < interfaceList.size(); ++j)
         {
             ui->comboBox_Interface->addItem(interfaceList.at(j).humanReadableName());
