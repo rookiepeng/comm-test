@@ -33,6 +33,7 @@
 #define TCPSERVER 10
 #define TCPCLIENT 20
 #define UDPSERVER 30
+#define APPVERSION "V1.1"
 
 namespace Ui
 {
