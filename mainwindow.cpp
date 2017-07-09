@@ -527,6 +527,7 @@ void MainWindow::initUI()
 {
     QString rule = "(?:[0-1]?[0-9]?[0-9]|2[0-4][0-9]|25[0-5])";
     ui->lineEdit_tcpClientTargetIP->setValidator(new QRegExpValidator(QRegExp("^" + rule + "\\." + rule + "\\." + rule + "\\." + rule + "$"), this));
+    ui->lineEdit_UdpTargetIP->setValidator(new QRegExpValidator(QRegExp("^" + rule + "\\." + rule + "\\." + rule + "\\." + rule + "$"), this));
     ui->lineEdit_TcpClientTargetPort->setValidator(new QIntValidator(0, 65535, this));
     ui->lineEdit_TcpServerListenPort->setValidator(new QIntValidator(0, 65535, this));
 
