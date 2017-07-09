@@ -533,6 +533,7 @@ void MainWindow::initUI()
     ui->lineEdit_UdpTargetIP->setValidator(new QRegExpValidator(QRegExp("^" + rule + "\\." + rule + "\\." + rule + "\\." + rule + "$"), this));
     ui->lineEdit_TcpClientTargetPort->setValidator(new QIntValidator(0, 65535, this));
     ui->lineEdit_TcpServerListenPort->setValidator(new QIntValidator(0, 65535, this));
+    ui->lineEdit_UdpListenPort->setValidator(new QIntValidator(0, 65535, this));
 
     ui->textBrowser_TcpClientMessage->setFocusPolicy(Qt::NoFocus);
     ui->textBrowser_TcpServerMessage->setFocusPolicy(Qt::NoFocus);
