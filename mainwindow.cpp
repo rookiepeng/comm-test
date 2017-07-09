@@ -28,13 +28,17 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     findLocalIPs();
     loadSettings();
 
+    /******
+     * UDP
+     ******/
     if (myudp == nullptr)
     {
         myudp = new MyUDP;
     }
-    connect(ui->button_UdpSend, SIGNAL(clicked()), this, SLOT(onUdpSendMessage()));
-    connect(ui->lineEdit_UdpSend, SIGNAL(returnPressed()), this, SLOT(onUdpSendMessage()));
+    connect(ui->button_UdpSend, SIGNAL(clicked()), this, SLOT(onUdpSendMessage()));         // UDP can send message directly without connection
+    connect(ui->lineEdit_UdpSend, SIGNAL(returnPressed()), this, SLOT(onUdpSendMessage())); // UDP can send message directly without connection
 
+    // buttons
     connect(ui->button_tcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientButtonClicked()));
     connect(ui->button_TcpServer, SIGNAL(clicked()), this, SLOT(onTcpServerButtonClicked()));
     connect(ui->button_Udp, SIGNAL(clicked()), this, SLOT(onUdpButtonClicked()));
@@ -63,6 +67,7 @@ void MainWindow::onTcpClientButtonClicked()
         ui->lineEdit_tcpClientTargetIP->setDisabled(true);
         ui->lineEdit_TcpClientTargetPort->setDisabled(true);
         ui->button_tcpClient->setText("Stop");
+
         connect(ui->button_tcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientStopButtonClicked()));
         connect(mytcpclient, SIGNAL(myClientConnected(QString, quint16)), this, SLOT(onTcpClientNewConnection(QString, quint16)));
         connect(mytcpclient, SIGNAL(connectionFailed()), this, SLOT(onTcpClientTimeOut()));
@@ -241,7 +246,6 @@ void MainWindow::onTcpClientSendMessage()
  ******************************************************************************
  ******************************************************************************/
 
-
 /***********************************
  *
  * TCP server listen button clicked
@@ -306,7 +310,6 @@ void MainWindow::onTcpServerStopButtonClicked()
     mytcpserver->stopListening();
     ui->button_TcpServer->setText("Start");
     ui->lineEdit_TcpServerListenPort->setDisabled(false);
-
 
     ui->button_TcpServerSend->setDisabled(true);
     ui->lineEdit_TcpServerSend->setDisabled(true);
@@ -505,7 +508,7 @@ void MainWindow::onUdpSendMessage()
     }
 
     udpTargetAddr.setAddress(ui->lineEdit_UdpTargetIP->text());
-    udpTargetPort=ui->lineEdit_UdpTargetPort->text().toInt();
+    udpTargetPort = ui->lineEdit_UdpTargetPort->text().toInt();
     myudp->sendMessage(udpTargetAddr, udpTargetPort, text);
 
     onUdpAppendMessage("Me", text);
@@ -540,7 +543,6 @@ void MainWindow::initUI()
     ui->button_TcpClientSend->setDisabled(true);
     ui->lineEdit_TcpClientSend->setDisabled(true);
     ui->textBrowser_TcpClientMessage->setDisabled(true);
-
 
     ui->button_TcpServerSend->setDisabled(true);
     ui->lineEdit_TcpServerSend->setDisabled(true);
@@ -597,7 +599,6 @@ void MainWindow::findLocalIPs()
     QList<QNetworkInterface> listInterface = QNetworkInterface::allInterfaces();
     for (int i = 0; i < listInterface.size(); ++i)
     {
-        //qDebug()<<listInterface.at(i).humanReadableName();
         if (listInterface.at(i).humanReadableName().contains("Wi-Fi"))
         {
             interfaceList.append(listInterface.at(i));
@@ -613,16 +614,9 @@ void MainWindow::findLocalIPs()
         // qDebug()<<wifiList.size();
         // qDebug()<<wifiList.at(0).addressEntries().at(0).ip();
         // qDebug()<<wifiList.at(0).addressEntries().at(1).ip();
-        for (int j=0; j < interfaceList.size(); ++j)
+        for (int j = 0; j < interfaceList.size(); ++j)
         {
             ui->comboBox_Interface->addItem(interfaceList.at(j).humanReadableName());
-            //for (int i = 0; i < wifiList.at(j).addressEntries().size(); ++i)
-            //{
-            //if (wifiList.at(0).addressEntries().at(i).ip().protocol() == QAbstractSocket::IPv4Protocol)
-            //{
-            //ui->label_LocalIP->setText(wifiList.at(0).addressEntries().at(i).ip().toString());
-            //}
-            //}
         }
     }
 }
@@ -645,7 +639,7 @@ void MainWindow::loadSettings()
     ui->lineEdit_UdpTargetIP->setText(settings.value("UDP_TARGET_IP", "127.0.0.1").toString());
     ui->lineEdit_UdpTargetPort->setText(settings.value("UDP_TARGET_PORT", 1234).toString());
 
-    int index=settings.value("interfaceIndex", 0).toInt();
+    int index = settings.value("interfaceIndex", 0).toInt();
     if (ui->comboBox_Interface->count() >= index)
     {
         ui->comboBox_Interface->setCurrentIndex(index);
@@ -657,7 +651,7 @@ void MainWindow::loadSettings()
             }
         }
     }
-    else if(ui->comboBox_Interface->count()>0 && ui->comboBox_Interface->count() < index)
+    else if (ui->comboBox_Interface->count() > 0 && ui->comboBox_Interface->count() < index)
     {
         ui->comboBox_Interface->setCurrentIndex(0);
         for (int i = 0; i < interfaceList.at(0).addressEntries().size(); ++i)
