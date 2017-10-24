@@ -612,7 +612,8 @@ void MainWindow::findLocalIPs()
     QList<QNetworkInterface> listInterface = QNetworkInterface::allInterfaces();
     for (int i = 0; i < listInterface.size(); ++i)
     {
-        if (listInterface.at(i).humanReadableName().contains("Wi-Fi"))
+        //qDebug()<<listInterface.at(i).name();
+        if (listInterface.at(i).humanReadableName().contains("Wi-Fi")||listInterface.at(i).humanReadableName().contains("wlp"))
         {
             interfaceList.append(listInterface.at(i));
         }
