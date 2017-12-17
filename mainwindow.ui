@@ -17,7 +17,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>TCP/UDP Demo</string>
+   <string>Socket Test</string>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
@@ -142,7 +142,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>3</number>
       </property>
       <widget class="QWidget" name="tab_tcpClient">
        <attribute name="title">
@@ -700,7 +700,7 @@
            <enum>Qt::LeftToRight</enum>
           </property>
           <property name="text">
-           <string>TCP/UDP Demo</string>
+           <string>Socket Test</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>

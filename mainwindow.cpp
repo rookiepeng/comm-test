@@ -553,7 +553,7 @@ void MainWindow::initUI()
 
     ui->label_AppVersion->setText(APPVERSION);
 
-    ui->label_GitHub->setText("<a href=\"https://github.com/rookiepeng/TCP-UDP-Demo/\">Source codes on GitHub</a>");
+    ui->label_GitHub->setText("<a href=\"https://github.com/rookiepeng/Socket-Test-QT/\">Source codes on GitHub</a>");
     ui->label_GitHub->setTextFormat(Qt::RichText);
     ui->label_GitHub->setTextInteractionFlags(Qt::TextBrowserInteraction);
     ui->label_GitHub->setOpenExternalLinks(true);
