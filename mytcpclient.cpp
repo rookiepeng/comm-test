@@ -28,12 +28,12 @@ void MyTCPClient::connectTo(QHostAddress addr, quint16 port)
 {
     tcpSocket->connectToHost(addr, port);
     connect(tcpSocket, SIGNAL(connected()), this, SLOT(onConnected()));
-    connect(tcpSocket,SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onStateChanged(QAbstractSocket::SocketState)));
+    connect(tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onStateChanged(QAbstractSocket::SocketState)));
 }
 
 void MyTCPClient::onConnected()
 {
-    disconnect(tcpSocket,SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onStateChanged(QAbstractSocket::SocketState)));
+    disconnect(tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onStateChanged(QAbstractSocket::SocketState)));
     connect(tcpSocket, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
     connect(tcpSocket, SIGNAL(readyRead()), this, SLOT(messageReady()));
     emit myClientConnected(tcpSocket->peerAddress().toString(), tcpSocket->peerPort());
@@ -41,8 +41,8 @@ void MyTCPClient::onConnected()
 
 void MyTCPClient::onStateChanged(QAbstractSocket::SocketState state)
 {
-    disconnect(tcpSocket,SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onStateChanged(QAbstractSocket::SocketState)));
-    switch(state)
+    disconnect(tcpSocket, SIGNAL(stateChanged(QAbstractSocket::SocketState)), this, SLOT(onStateChanged(QAbstractSocket::SocketState)));
+    switch (state)
     {
     case QAbstractSocket::UnconnectedState:
         emit connectionFailed();
