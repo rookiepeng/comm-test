@@ -23,6 +23,7 @@
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
                                           ui(new Ui::MainWindow)
 {
+    restoreWindowState();
     ui->setupUi(this);
     initUI();
     findLocalIPs();
@@ -708,6 +709,21 @@ void MainWindow::onRefreshButtonClicked()
     saveSettings();
     findLocalIPs();
     loadSettings();
+}
+
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    QSettings settings("ZPeng", "SocketTest");
+    settings.setValue("geometry", saveGeometry());
+    settings.setValue("windowState", saveState());
+    QMainWindow::closeEvent(event);
+}
+
+void MainWindow::restoreWindowState()
+{
+    QSettings settings("ZPeng", "SocketTest");
+    restoreGeometry(settings.value("geometry").toByteArray());
+    restoreState(settings.value("windowState").toByteArray());
 }
 
 MainWindow::~MainWindow()
