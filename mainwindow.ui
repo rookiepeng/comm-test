@@ -86,7 +86,7 @@
           </spacer>
          </item>
          <item>
-          <widget class="QPushButton" name="refreshButton">
+          <widget class="QPushButton" name="button_Refresh">
            <property name="text">
             <string>Refresh</string>
            </property>
@@ -142,7 +142,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>2</number>
       </property>
       <widget class="QWidget" name="tab_tcpClient">
        <attribute name="title">

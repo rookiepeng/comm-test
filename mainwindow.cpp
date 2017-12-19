@@ -21,7 +21,7 @@
 #include "ui_mainwindow.h"
 
 MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
-    ui(new Ui::MainWindow)
+                                          ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
     initUI();
@@ -42,6 +42,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent),
     connect(ui->button_TcpClient, SIGNAL(clicked()), this, SLOT(onTcpClientButtonClicked()));
     connect(ui->button_TcpServer, SIGNAL(clicked()), this, SLOT(onTcpServerButtonClicked()));
     connect(ui->button_Udp, SIGNAL(clicked()), this, SLOT(onUdpButtonClicked()));
+    connect(ui->button_Refresh, SIGNAL(clicked()), this, SLOT(onRefreshButtonClicked()));
 }
 
 /******************************************************************************
@@ -609,11 +610,13 @@ bool MainWindow::setupConnection(quint8 type)
  ***********************************/
 void MainWindow::findLocalIPs()
 {
+    ui->comboBox_Interface->clear();
+    interfaceList.clear();
     QList<QNetworkInterface> listInterface = QNetworkInterface::allInterfaces();
     for (int i = 0; i < listInterface.size(); ++i)
     {
         //qDebug()<<listInterface.at(i).name();
-        if (listInterface.at(i).humanReadableName().contains("Wi-Fi")||listInterface.at(i).humanReadableName().contains("wlp"))
+        if (listInterface.at(i).humanReadableName().contains("Wi-Fi") || listInterface.at(i).humanReadableName().contains("wlp"))
         {
             interfaceList.append(listInterface.at(i));
         }
@@ -698,6 +701,13 @@ void MainWindow::saveSettings()
 
     settings.setValue("TAB_INDEX", ui->tabWidget->currentIndex());
     settings.sync();
+}
+
+void MainWindow::onRefreshButtonClicked()
+{
+    saveSettings();
+    findLocalIPs();
+    loadSettings();
 }
 
 MainWindow::~MainWindow()

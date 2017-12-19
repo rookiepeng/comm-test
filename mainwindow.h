@@ -83,6 +83,8 @@ private slots:
     void onUdpSendMessage();
     void onUdpAppendMessage(const QString &from, const QString &message);
 
+    void onRefreshButtonClicked();
+
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
