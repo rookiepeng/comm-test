@@ -469,10 +469,10 @@ void MainWindow::onUdpStopButtonClicked()
  ***********************************/
 void MainWindow::onUdpAppendMessage(const QString &from, const QString &message)
 {
-    if (from.isEmpty() || message.isEmpty())
-    {
-        return;
-    }
+    //if (from.isEmpty() || message.isEmpty())
+    //{
+    //    return;
+    //}
 
     QTextCursor cursor(ui->textBrowser_UdpMessage->textCursor());
     cursor.movePosition(QTextCursor::End);
