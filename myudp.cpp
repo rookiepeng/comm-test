@@ -61,7 +61,8 @@ void MyUDP::readyRead()
     socket->readDatagram(buffer.data(), buffer.size(),
                          &sender, &senderPort);
 
-    emit newMessage(sender.toString(), buffer);
+    //qDebug()<<buffer.toHex();
+    emit newMessage(sender.toString(), buffer.toHex());
 }
 
 void MyUDP::unbindPort()

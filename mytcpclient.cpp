@@ -89,7 +89,12 @@ void MyTCPClient::abortConnection()
 
 void MyTCPClient::messageReady()
 {
-    array = tcpSocket->readAll();
+    //array = tcpSocket->readAll();
+    array.append(tcpSocket->readAll());
+    if(QString::compare("END", array.right(3), Qt::CaseInsensitive))
+    {
+
+    }
     emit newMessage(tcpSocket->peerAddress().toString(), array);
 }
 
