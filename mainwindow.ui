@@ -142,7 +142,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>2</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_tcpClient">
        <attribute name="title">
@@ -784,7 +784,7 @@
      <x>0</x>
      <y>0</y>
      <width>500</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
   </widget>
