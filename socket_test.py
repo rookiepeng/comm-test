@@ -28,8 +28,6 @@ class MyApp(QtWidgets.QMainWindow):
         super().__init__()
         super(QtWidgets.QMainWindow, self).__init__()
 
-        self.reconnect = False
-
         """Load UI"""
         self.ui = uic.loadUi('mainwindow.ui', self)
         self.init_ui()
@@ -138,24 +136,21 @@ class MyApp(QtWidgets.QMainWindow):
         elif self.ui.button_TcpServer.text() == 'Disconnect':
             self.ui.button_TcpServer.setEnabled(False)
             self.tcp_server.disconnect()
-            self.reconnect = True
 
     def on_tcp_server_status_update(self, status, addr):
-        if status == TCPServer.ERROR:
+        if status == TCPServer.STOP:
             self.tcp_server.status.disconnect()
             self.tcp_server.message.disconnect()
 
             self.ui.button_TcpServer.setText('Start')
-            self.tcp_server_thread.terminate()
+            # self.tcp_server_thread.terminate()
+            self.tcp_server_thread.quit()
 
             self.ui.textBrowser_TcpServerMessage.setEnabled(False)
             self.ui.lineEdit_TcpServerSend.setEnabled(False)
             self.ui.button_TcpServerSend.setEnabled(False)
             self.ui.lineEdit_TcpServerListenPort.setEnabled(True)
 
-            if self.reconnect:
-                self.reconnect = False
-                self.on_tcp_server_start_stop_button_clicked()
         elif status == TCPServer.LISTEN:
             self.ui.button_TcpServer.setText('Stop')
 
