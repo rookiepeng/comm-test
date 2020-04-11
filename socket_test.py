@@ -47,6 +47,9 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.button_TcpClient.clicked.connect(
             self.on_tcp_client_connect_button_clicked
         )
+        self.ui.button_TcpClientSend.clicked.connect(
+            self.on_tcp_client_message_send
+        )
 
     def init_ui(self):
         # Interface
@@ -181,18 +184,56 @@ class MyApp(QtWidgets.QMainWindow):
     def on_tcp_client_connect_button_clicked(self):
         if self.ui.button_TcpClient.text() == 'Connect':
             self.ui.button_TcpClient.setEnabled(False)
+            self.ui.lineEdit_TcpClientTargetIP.setEnabled(False)
+            self.ui.lineEdit_TcpClientTargetPort.setEnabled(False)
+
             self.tcp_client_thread = QThread()
-            self.tcp_client = TCPClient(self.ui.label_LocalIP.text(), 505)
+            self.tcp_client = TCPClient(
+                self.ui.label_LocalIP.text(),
+                int(self.ui.lineEdit_TcpClientTargetPort.text()))
 
             self.tcp_client_thread.started.connect(self.tcp_client.start)
             self.tcp_client.status.connect(self.on_tcp_client_status_update)
+            self.tcp_client.message.connect(self.on_tcp_client_message_ready)
 
             self.tcp_client.moveToThread(self.tcp_client_thread)
 
             self.tcp_client_thread.start()
+        elif self.ui.button_TcpClient.text() == 'Disconnect':
+            self.ui.button_TcpClient.setEnabled(False)
+            self.tcp_client.close()
 
     def on_tcp_client_status_update(self, status, addr):
         print('tcp client status')
+        if status == TCPClient.ERROR:
+            self.tcp_client.status.disconnect()
+            self.tcp_client.message.disconnect()
+
+            self.ui.button_TcpClient.setText('Connect')
+            self.tcp_client_thread.terminate()
+
+            self.ui.lineEdit_TcpClientTargetIP.setEnabled(True)
+            self.ui.lineEdit_TcpClientTargetPort.setEnabled(True)
+
+            self.ui.textBrowser_TcpClientMessage.setEnabled(False)
+            self.ui.lineEdit_TcpClientSend.setEnabled(False)
+            self.ui.button_TcpClientSend.setEnabled(False)
+
+        elif status == TCPClient.CONNECTED:
+            self.ui.button_TcpClient.setText('Disconnect')
+
+            self.ui.textBrowser_TcpClientMessage.setEnabled(True)
+            self.ui.lineEdit_TcpClientSend.setEnabled(True)
+            self.ui.button_TcpClientSend.setEnabled(True)
+
+        self.ui.button_TcpClient.setEnabled(True)
+
+    def on_tcp_client_message_ready(self, source, msg):
+        self.ui.textBrowser_TcpClientMessage.append(msg)
+
+    def on_tcp_client_message_send(self):
+        self.tcp_client.send(self.ui.lineEdit_TcpClientSend.text())
+        self.ui.lineEdit_TcpClientSend.clear()
 
 
 if __name__ == "__main__":
