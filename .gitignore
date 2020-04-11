@@ -39,3 +39,5 @@ CMakeLists.txt.user*
 
 
 .vscode/
+
+__pycache__/
