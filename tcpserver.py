@@ -4,6 +4,7 @@ import socket
 
 class TCPServer(QObject):
     status = pyqtSignal(int, object)
+    message = pyqtSignal(object, object)
     ERROR = -1
     LISTEN = 1
     CONNECTED = 2
@@ -32,10 +33,11 @@ class TCPServer(QObject):
                 try:
                     # Receive the data in small chunks and retransmit it
                     while True:
-                        data = self.connection.recv(16)
+                        data = self.connection.recv(4096)
 
                         if data:
-                            self.connection.sendall(data)
+                            # self.connection.sendall(data)
+                            self.message.emit(client_address, data.decode())
                         else:
                             break
                 finally:

@@ -32,7 +32,7 @@ class MyApp(QtWidgets.QMainWindow):
 
         """Load UI"""
         self.ui = uic.loadUi('mainwindow.ui', self)
-        self.update_network_interfaces()
+        self.init_ui()
 
         self.ui.comboBox_Interface.currentIndexChanged.connect(
             self.on_interface_selection_change)
@@ -40,10 +40,32 @@ class MyApp(QtWidgets.QMainWindow):
 
         self.ui.button_TcpServer.clicked.connect(
             self.on_tcp_server_start_stop_button_clicked)
+        self.ui.button_TcpServerSend.clicked.connect(
+            self.on_tcp_server_message_send
+        )
 
         self.ui.button_TcpClient.clicked.connect(
             self.on_tcp_client_connect_button_clicked
         )
+
+    def init_ui(self):
+        # Interface
+        self.update_network_interfaces()
+
+        # TCP Client
+        self.ui.textBrowser_TcpClientMessage.setEnabled(False)
+        self.ui.lineEdit_TcpClientSend.setEnabled(False)
+        self.ui.button_TcpClientSend.setEnabled(False)
+
+        self.ui.lineEdit_TcpClientTargetIP.setText('192.168.1.132')
+        self.ui.lineEdit_TcpClientTargetPort.setText('1234')
+
+        # TCP Server
+        self.ui.textBrowser_TcpServerMessage.setEnabled(False)
+        self.ui.lineEdit_TcpServerSend.setEnabled(False)
+        self.ui.button_TcpServerSend.setEnabled(False)
+
+        self.ui.lineEdit_TcpServerListenPort.setText('1234')
 
     def update_network_interfaces(self):
         self.ui.comboBox_Interface.clear()
@@ -88,14 +110,19 @@ class MyApp(QtWidgets.QMainWindow):
     def on_refresh_button_clicked(self):
         self.update_network_interfaces()
 
+    # TCP Server
     def on_tcp_server_start_stop_button_clicked(self):
         if self.ui.button_TcpServer.text() == 'Start':
             self.ui.button_TcpServer.setEnabled(False)
+            self.ui.lineEdit_TcpServerListenPort.setEnabled(False)
             self.tcp_server_thread = QThread()
-            self.tcp_server = TCPServer(self.ui.label_LocalIP.text(), 505)
+            self.tcp_server = TCPServer(
+                self.ui.label_LocalIP.text(),
+                int(self.ui.lineEdit_TcpServerListenPort.text()))
 
             self.tcp_server_thread.started.connect(self.tcp_server.start)
             self.tcp_server.status.connect(self.on_tcp_server_status_update)
+            self.tcp_server.message.connect(self.on_tcp_server_message_ready)
 
             self.tcp_server.moveToThread(self.tcp_server_thread)
 
@@ -113,19 +140,44 @@ class MyApp(QtWidgets.QMainWindow):
     def on_tcp_server_status_update(self, status, addr):
         if status == TCPServer.ERROR:
             self.tcp_server.status.disconnect()
+            self.tcp_server.message.disconnect()
+
             self.ui.button_TcpServer.setText('Start')
             self.tcp_server_thread.terminate()
+
+            self.ui.textBrowser_TcpServerMessage.setEnabled(False)
+            self.ui.lineEdit_TcpServerSend.setEnabled(False)
+            self.ui.button_TcpServerSend.setEnabled(False)
+            self.ui.lineEdit_TcpServerListenPort.setEnabled(True)
+
             if self.reconnect:
                 self.reconnect = False
                 self.on_tcp_server_start_stop_button_clicked()
         elif status == TCPServer.LISTEN:
             self.ui.button_TcpServer.setText('Stop')
+
+            self.ui.textBrowser_TcpServerMessage.setEnabled(False)
+            self.ui.lineEdit_TcpServerSend.setEnabled(False)
+            self.ui.button_TcpServerSend.setEnabled(False)
+
         elif status == TCPServer.CONNECTED:
             self.ui.button_TcpServer.setText('Disconnect')
+
+            self.ui.textBrowser_TcpServerMessage.setEnabled(True)
+            self.ui.lineEdit_TcpServerSend.setEnabled(True)
+            self.ui.button_TcpServerSend.setEnabled(True)
             # self.tcp_server.send('Hello World')
 
         self.ui.button_TcpServer.setEnabled(True)
 
+    def on_tcp_server_message_ready(self, source, msg):
+        self.ui.textBrowser_TcpServerMessage.append(msg)
+
+    def on_tcp_server_message_send(self):
+        self.tcp_server.send(self.ui.lineEdit_TcpServerSend.text())
+        self.ui.lineEdit_TcpServerSend.clear()
+
+    # TCP Client
     def on_tcp_client_connect_button_clicked(self):
         if self.ui.button_TcpClient.text() == 'Connect':
             self.ui.button_TcpClient.setEnabled(False)
