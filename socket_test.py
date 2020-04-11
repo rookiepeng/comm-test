@@ -14,6 +14,7 @@ from pathlib import Path
 import json
 
 from tcpserver import TCPServer
+from tcpclient import TCPClient
 
 QtWidgets.QApplication.setAttribute(
     QtCore.Qt.AA_EnableHighDpiScaling, True)  # enable highdpi scaling
@@ -39,6 +40,10 @@ class MyApp(QtWidgets.QMainWindow):
 
         self.ui.button_TcpServer.clicked.connect(
             self.on_tcp_server_start_stop_button_clicked)
+
+        self.ui.button_TcpClient.clicked.connect(
+            self.on_tcp_client_connect_button_clicked
+        )
 
     def update_network_interfaces(self):
         self.ui.comboBox_Interface.clear()
@@ -120,6 +125,22 @@ class MyApp(QtWidgets.QMainWindow):
             # self.tcp_server.send('Hello World')
 
         self.ui.button_TcpServer.setEnabled(True)
+
+    def on_tcp_client_connect_button_clicked(self):
+        if self.ui.button_TcpClient.text() == 'Connect':
+            self.ui.button_TcpClient.setEnabled(False)
+            self.tcp_client_thread = QThread()
+            self.tcp_client = TCPClient(self.ui.label_LocalIP.text(), 505)
+
+            self.tcp_client_thread.started.connect(self.tcp_client.start)
+            self.tcp_client.status.connect(self.on_tcp_client_status_update)
+
+            self.tcp_client.moveToThread(self.tcp_client_thread)
+
+            self.tcp_client_thread.start()
+
+    def on_tcp_client_status_update(self, status, addr):
+        print('tcp client status')
 
 
 if __name__ == "__main__":
