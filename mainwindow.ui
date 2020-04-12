@@ -19,6 +19,10 @@
   <property name="windowTitle">
    <string>Socket Test</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>res/socket_test.png</normaloff>res/socket_test.png</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QVBoxLayout" name="verticalLayout">
     <item>
@@ -784,7 +788,7 @@
      <x>0</x>
      <y>0</y>
      <width>500</width>
-     <height>22</height>
+     <height>30</height>
     </rect>
    </property>
   </widget>
