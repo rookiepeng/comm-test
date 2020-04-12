@@ -8,11 +8,9 @@ from PyQt5.QtCore import QThread
 import psutil
 import socket
 
-# import os
 import time
 from pathlib import Path
 import json
-# from os import path
 
 from tcpserver import TCPServer
 from tcpclient import TCPClient

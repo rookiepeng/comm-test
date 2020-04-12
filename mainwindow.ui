@@ -713,7 +713,7 @@
         <item>
          <widget class="QLabel" name="label_AppVersion">
           <property name="text">
-           <string>V 1.1</string>
+           <string>V 2.0</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -736,7 +736,7 @@
         <item>
          <widget class="QLabel" name="label_GitHub">
           <property name="text">
-           <string>Source codes on Github</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/rookiepeng/socket-test-qt&quot; target=&quot;_blank&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Source codes on Github&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -749,7 +749,7 @@
         <item>
          <widget class="QLabel" name="label_HomePage">
           <property name="text">
-           <string>My home page</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://zpeng.me/&quot; target=&quot;_blank&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;My home page&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
