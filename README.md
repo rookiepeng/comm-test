@@ -1,6 +1,6 @@
 # Socket Test
 
-![Alt text](./docs/socket_test.svg)
+![Alt text](./res/socket_test.svg)
 
 A simple TCP/UDP socket test interface built with Python and PyQt5.
 
