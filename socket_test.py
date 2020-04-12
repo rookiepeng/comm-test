@@ -57,8 +57,8 @@ class MyApp(QtWidgets.QMainWindow):
             self.on_udp_message_send
         )
         self.udp_send = UDPServer(
-                '0.0.0.0',
-                1234)
+            '0.0.0.0',
+            1234)
 
     def init_ui(self):
         # Interface
@@ -285,7 +285,14 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.button_Udp.setEnabled(True)
 
     def on_udp_server_message_ready(self, source, msg):
-        self.ui.textBrowser_UdpMessage.append(msg)
+        self.ui.textBrowser_UdpMessage.append(
+            '<p style="text-align: center;"><span style="color: #0000ff;"><strong>----- ' +
+            source[0] +
+            ' -----</strong></span></p>')
+        self.ui.textBrowser_UdpMessage.append(
+            '<p style="text-align: center;"><span style="color: #0000ff;">' +
+            msg +
+            '</span></p>')
 
     def on_udp_message_send(self):
         self.udp_send.send(
