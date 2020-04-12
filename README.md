@@ -1,6 +1,6 @@
 # Socket Test
 
-<img src="https://raw.githubusercontent.com/rookiepeng/socket-test/master/res/socket_test.png" width="64">
+<img src="https://raw.githubusercontent.com/rookiepeng/socket-test/master/res/socket_test.png" width="128">
 
 A simple TCP/UDP socket test interface built with Python and PyQt5.
 
