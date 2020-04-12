@@ -122,7 +122,10 @@ class MyApp(QtWidgets.QMainWindow):
         )
 
     def save_config(self):
-        json.dump(self.config, open('config.json', 'w+'))
+        try:
+            json.dump(self.config, open('config.json', 'w+'))
+        except PermissionError as err:
+            pass
 
     def init_ui(self):
         # Interface
