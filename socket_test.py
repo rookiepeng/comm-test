@@ -176,10 +176,25 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.button_TcpClient.setEnabled(True)
 
     def on_tcp_client_message_ready(self, source, msg):
-        self.ui.textBrowser_TcpClientMessage.append(msg)
+        self.ui.textBrowser_TcpClientMessage.append(
+            '<p style="text-align: center;"><span style="color: #0000ff;"><strong>----- ' +
+            source +
+            ' -----</strong></span></p>')
+        self.ui.textBrowser_TcpClientMessage.append(
+            '<p style="text-align: center;"><span style="color: #0000ff;">' +
+            msg +
+            '</span></p>')
 
     def on_tcp_client_message_send(self):
         self.tcp_client.send(self.ui.lineEdit_TcpClientSend.text())
+        self.ui.textBrowser_TcpClientMessage.append(
+            '<p style="text-align: center;"><strong>----- ' +
+            'this' +
+            ' -----</strong></p>')
+        self.ui.textBrowser_TcpClientMessage.append(
+            '<p style="text-align: center;">' +
+            self.ui.lineEdit_TcpClientSend.text() +
+            '</p>')
         self.ui.lineEdit_TcpClientSend.clear()
 
     # TCP Server
@@ -214,7 +229,6 @@ class MyApp(QtWidgets.QMainWindow):
             self.tcp_server.message.disconnect()
 
             self.ui.button_TcpServer.setText('Start')
-            # self.tcp_server_thread.terminate()
             self.tcp_server_thread.quit()
 
             self.ui.textBrowser_TcpServerMessage.setEnabled(False)
@@ -240,10 +254,25 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.button_TcpServer.setEnabled(True)
 
     def on_tcp_server_message_ready(self, source, msg):
-        self.ui.textBrowser_TcpServerMessage.append(msg)
+        self.ui.textBrowser_TcpServerMessage.append(
+            '<p style="text-align: center;"><span style="color: #0000ff;"><strong>----- ' +
+            source +
+            ' -----</strong></span></p>')
+        self.ui.textBrowser_TcpServerMessage.append(
+            '<p style="text-align: center;"><span style="color: #0000ff;">' +
+            msg +
+            '</span></p>')
 
     def on_tcp_server_message_send(self):
         self.tcp_server.send(self.ui.lineEdit_TcpServerSend.text())
+        self.ui.textBrowser_TcpServerMessage.append(
+            '<p style="text-align: center;"><strong>----- ' +
+            'this' +
+            ' -----</strong></p>')
+        self.ui.textBrowser_TcpServerMessage.append(
+            '<p style="text-align: center;">' +
+            self.ui.lineEdit_TcpServerSend.text() +
+            '</p>')
         self.ui.lineEdit_TcpServerSend.clear()
 
     # UDP
@@ -287,7 +316,7 @@ class MyApp(QtWidgets.QMainWindow):
     def on_udp_server_message_ready(self, source, msg):
         self.ui.textBrowser_UdpMessage.append(
             '<p style="text-align: center;"><span style="color: #0000ff;"><strong>----- ' +
-            source[0] +
+            source +
             ' -----</strong></span></p>')
         self.ui.textBrowser_UdpMessage.append(
             '<p style="text-align: center;"><span style="color: #0000ff;">' +
@@ -300,6 +329,14 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.lineEdit_UdpTargetIP.text(),
             int(self.ui.lineEdit_UdpTargetPort.text())
         )
+        self.ui.textBrowser_UdpMessage.append(
+            '<p style="text-align: center;"><strong>----- ' +
+            'this' +
+            ' -----</strong></p>')
+        self.ui.textBrowser_UdpMessage.append(
+            '<p style="text-align: center;">' +
+            self.ui.lineEdit_UdpSend.text() +
+            '</p>')
         self.ui.lineEdit_UdpSend.clear()
 
 

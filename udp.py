@@ -29,12 +29,10 @@ class UDPServer(QObject):
         try:
             self.udp_socket.bind((self.ip, self.port))
         except OSError as err:
-            print('emit tcp server error')
             self.status.emit(self.STOP, '')
         else:
             while True:
                 if self.signal == self.SIG_NORMAL:
-                    print('wait for a connection')
                     self.status.emit(self.LISTEN, '')
                     try:
                         data, addr = self.udp_socket.recvfrom(4096)
@@ -42,7 +40,8 @@ class UDPServer(QObject):
                         pass
                     else:
                         if data:
-                            self.message.emit(addr, data.decode())
+                            self.message.emit(
+                                addr[0]+':'+str(addr[1]), data.decode())
                         else:
                             break
                 elif self.signal == self.SIG_STOP:

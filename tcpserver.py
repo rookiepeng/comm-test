@@ -30,13 +30,13 @@ class TCPServer(QObject):
             self.tcp_socket.bind((self.ip, self.port))
             self.tcp_socket.listen(1)
         except OSError as err:
-            print('emit tcp server error')
+            # print('emit tcp server error')
             self.status.emit(self.STOP, '')
         else:
             while True:
                 # Wait for a connection
                 if self.signal == self.SIG_NORMAL:
-                    print('wait for a connection')
+                    # print('wait for a connection')
                     self.status.emit(self.LISTEN, '')
                     try:
                         self.connection, addr = self.tcp_socket.accept()
@@ -47,7 +47,7 @@ class TCPServer(QObject):
                         self.status.emit(self.CONNECTED, addr[0])
 
                         while True:
-                            print('waiting for data')
+                            # print('waiting for data')
                             if self.signal == self.SIG_NORMAL:
                                 try:
                                     data = self.connection.recv(4096)
@@ -56,7 +56,8 @@ class TCPServer(QObject):
                                 else:
                                     if data:
                                         self.message.emit(
-                                            addr[0], data.decode())
+                                            addr[0]+':'+str(addr[1]),
+                                            data.decode())
                                     else:
                                         break
                             elif self.signal == self.SIG_DISCONNECT:

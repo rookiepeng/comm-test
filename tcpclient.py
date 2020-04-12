@@ -31,7 +31,7 @@ class TCPClient(QObject):
         except OSError as err:
             self.status.emit(self.STOP, '')
         else:
-            print('connected')
+            # print('connected')
             self.status.emit(self.CONNECTED, self.ip)
 
             while True:
@@ -43,7 +43,9 @@ class TCPClient(QObject):
                         pass
                     else:
                         if data:
-                            self.message.emit(self.ip, data.decode())
+                            self.message.emit(
+                                self.ip+':'+str(self.port),
+                                data.decode())
                         else:
                             break
                 elif self.signal == self.SIG_DISCONNECT:
