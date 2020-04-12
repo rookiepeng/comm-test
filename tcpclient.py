@@ -28,7 +28,7 @@ class TCPClient(QObject):
     def start(self):
         try:
             self.tcp_socket.connect((self.ip, self.port))
-        except:
+        except OSError as err:
             self.status.emit(self.STOP, '')
         else:
             print('connected')
