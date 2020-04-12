@@ -72,9 +72,10 @@ class UDPServer(QObject):
         except OSError as err:
             self.status.emit(self.STOP, '')
         else:
+            self.status.emit(self.LISTEN, '')
             while True:
                 if self.signal == self.SIG_NORMAL:
-                    self.status.emit(self.LISTEN, '')
+                    # self.status.emit(self.LISTEN, '')
                     try:
                         data, addr = self.udp_socket.recvfrom(4096)
                     except socket.timeout as t_out:
@@ -84,10 +85,12 @@ class UDPServer(QObject):
                             self.message.emit(
                                 addr[0]+':'+str(addr[1]), data.decode())
                         else:
+                            self.status.emit(self.LISTEN, '')
                             break
                 elif self.signal == self.SIG_STOP:
                     self.signal = self.SIG_NORMAL
                     self.udp_socket.close()
+                    # self.status.emit(self.LISTEN, '')
                     break
         finally:
             self.status.emit(self.STOP, '')
