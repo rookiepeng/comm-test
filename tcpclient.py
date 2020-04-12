@@ -8,6 +8,11 @@ class TCPClient(QObject):
     ERROR = -1
     LISTEN = 1
     CONNECTED = 2
+    STOP = 3
+
+    SIG_NORMAL = 0
+    SIG_STOP = 1
+    SIG_DISCONNECT = 2
 
     def __init__(self, ip, port):
         QObject.__init__(self)
@@ -15,35 +20,41 @@ class TCPClient(QObject):
         self.ip = ip
         self.port = port
         self.tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.tcp_socket.settimeout(1)
+
+        self.signal = self.SIG_NORMAL
 
     @pyqtSlot()
     def start(self):
         try:
             self.tcp_socket.connect((self.ip, self.port))
+        except:
+            self.status.emit(self.STOP, '')
+        else:
             print('connected')
-
             self.status.emit(self.CONNECTED, self.ip)
 
-            try:
-                # Receive the data in small chunks and retransmit it
-                while True:
-                    data = self.tcp_socket.recv(16)
+            while True:
+                if self.signal == self.SIG_NORMAL:
+                    try:
 
-                    if data:
-                        self.message.emit(self.ip, data.decode())
+                        data = self.tcp_socket.recv(4096)
+                    except socket.timeout as t_out:
+                        pass
                     else:
-                        break
-            finally:
-                # Clean up the connection
-                print('close connection')
-                self.tcp_socket.close()
-        except:
-            print('emit error')
-            self.status.emit(self.ERROR, '')
+                        if data:
+                            self.message.emit(self.ip, data.decode())
+                        else:
+                            break
+                elif self.signal == self.SIG_DISCONNECT:
+                    self.signal = self.SIG_NORMAL
+                    self.tcp_socket.close()
+                    break
+        finally:
+            self.status.emit(self.STOP, '')
 
     def send(self, msg):
         self.tcp_socket.sendall(msg.encode())
 
     def close(self):
-        self.tcp_socket.close()
-        print('close socket')
+        self.signal = self.SIG_DISCONNECT

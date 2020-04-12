@@ -200,12 +200,12 @@ class MyApp(QtWidgets.QMainWindow):
 
     def on_tcp_client_status_update(self, status, addr):
         print('tcp client status')
-        if status == TCPClient.ERROR:
+        if status == TCPClient.STOP:
             self.tcp_client.status.disconnect()
             self.tcp_client.message.disconnect()
 
             self.ui.button_TcpClient.setText('Connect')
-            self.tcp_client_thread.terminate()
+            self.tcp_client_thread.quit()
 
             self.ui.lineEdit_TcpClientTargetIP.setEnabled(True)
             self.ui.lineEdit_TcpClientTargetPort.setEnabled(True)

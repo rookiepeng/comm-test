@@ -14,8 +14,6 @@ class TCPServer(QObject):
     SIG_STOP = 1
     SIG_DISCONNECT = 2
 
-    stop_flag = False
-
     def __init__(self, ip, port):
         QObject.__init__(self)
 
