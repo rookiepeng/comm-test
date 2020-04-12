@@ -1,7 +1,8 @@
 # Socket Test
 
 A simple TCP/UDP socket test interface built with Python and PyQt5.
-(This software has been fully re-written from C++/QT5 to Python/PyQt5)
+
+(This project has been fully re-written from C++/QT5 to Python/PyQt5)
 
 ## Dependence
 
