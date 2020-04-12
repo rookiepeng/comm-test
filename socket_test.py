@@ -276,11 +276,11 @@ class MyApp(QtWidgets.QMainWindow):
 
     def on_tcp_client_message_ready(self, source, msg):
         self.ui.textBrowser_TcpClientMessage.append(
-            '<p style="text-align: center;"><span style="color: #0000ff;"><strong>----- ' +
+            '<p style="text-align: center;"><span style="color: #2196F3;"><strong>----- ' +
             source +
             ' -----</strong></span></p>')
         self.ui.textBrowser_TcpClientMessage.append(
-            '<p style="text-align: center;"><span style="color: #0000ff;">' +
+            '<p style="text-align: center;"><span style="color: #2196F3;">' +
             msg +
             '</span></p>')
 
@@ -368,11 +368,11 @@ class MyApp(QtWidgets.QMainWindow):
 
     def on_tcp_server_message_ready(self, source, msg):
         self.ui.textBrowser_TcpServerMessage.append(
-            '<p style="text-align: center;"><span style="color: #0000ff;"><strong>----- ' +
+            '<p style="text-align: center;"><span style="color: #2196F3;"><strong>----- ' +
             source +
             ' -----</strong></span></p>')
         self.ui.textBrowser_TcpServerMessage.append(
-            '<p style="text-align: center;"><span style="color: #0000ff;">' +
+            '<p style="text-align: center;"><span style="color: #2196F3;">' +
             msg +
             '</span></p>')
 
@@ -439,11 +439,11 @@ class MyApp(QtWidgets.QMainWindow):
 
     def on_udp_server_message_ready(self, source, msg):
         self.ui.textBrowser_UdpMessage.append(
-            '<p style="text-align: center;"><span style="color: #0000ff;"><strong>----- ' +
+            '<p style="text-align: center;"><span style="color: #2196F3;"><strong>----- ' +
             source +
             ' -----</strong></span></p>')
         self.ui.textBrowser_UdpMessage.append(
-            '<p style="text-align: center;"><span style="color: #0000ff;">' +
+            '<p style="text-align: center;"><span style="color: #2196F3;">' +
             msg +
             '</span></p>')
 
