@@ -1,6 +1,7 @@
 # Socket Test
 
-![Alt text](./res/socket_test.svg)
+<!-- ![Alt text](./res/socket_test.svg) -->
+<img src="https://raw.githubusercontent.com/rookiepeng/socket-test/master/res/socket_test.svg" width="32">
 
 A simple TCP/UDP socket test interface built with Python and PyQt5.
 
@@ -19,17 +20,17 @@ Users can select among **TCP server**, **TCP client**, and **UDP** modes in this
 
 In TCP sever mode, this program listens to the port specified by the user through TCP sockets.
 
-<img src="https://raw.githubusercontent.com/rookiepeng/Socket-Test-QT/master/docs/TCP%20server.png" width="500">
+<img src="https://raw.githubusercontent.com/rookiepeng/socket-test/master/docs/TCP%20server.png" width="500">
 
 ### TCP Client
 
 In TCP client mode, this program connects to the IP address specified by the user throught TCP sockets.
 
-<img src="https://raw.githubusercontent.com/rookiepeng/Socket-Test-QT/master/docs/TCP%20client.png" width="500">
+<img src="https://raw.githubusercontent.com/rookiepeng/socket-test/master/docs/TCP%20client.png" width="500">
 
 ### UDP
 
 In UDP mode, this program listens to the port specified by the user through UDP sockets.
 
-<img src="https://raw.githubusercontent.com/rookiepeng/Socket-Test-QT/master/docs/UDP.png" width="500">
+<img src="https://raw.githubusercontent.com/rookiepeng/socket-test/master/docs/UDP.png" width="500">
 
