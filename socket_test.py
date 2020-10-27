@@ -223,7 +223,7 @@ class MyApp(QtWidgets.QMainWindow):
 
             self.tcp_client_thread = QThread()
             self.tcp_client = TCPClient(
-                self.ui.label_LocalIP.text(),
+                self.ui.lineEdit_TcpClientTargetIP.text(),
                 int(self.ui.lineEdit_TcpClientTargetPort.text()))
 
             self.tcp_client_thread.started.connect(self.tcp_client.start)
@@ -234,7 +234,7 @@ class MyApp(QtWidgets.QMainWindow):
 
             self.tcp_client_thread.start()
 
-            self.config['TCP_Client_IP'] = self.ui.label_LocalIP.text()
+            self.config['TCP_Client_IP'] = self.ui.lineEdit_TcpClientTargetIP.text()
             self.config['TCP_Client_Port'] = self.ui.lineEdit_TcpClientTargetPort.text()
             self.save_config()
 
