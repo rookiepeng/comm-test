@@ -40,14 +40,14 @@
 """
 
 import sys
-from PyQt5 import QtWidgets, uic, QtCore, QtGui
-from PyQt5.QtCore import Qt
-from PyQt5.QtCore import QThread
+from PySide2 import QtWidgets, QtCore, QtGui
+from PySide2.QtCore import Qt
+from PySide2.QtCore import QThread, QFile
+from PySide2.QtUiTools import QUiLoader
 
 import psutil
 import socket
 
-import time
 from pathlib import Path
 import json
 
@@ -64,8 +64,8 @@ QtWidgets.QApplication.setAttribute(
 class MyApp(QtWidgets.QMainWindow):
 
     def __init__(self):
-        super().__init__()
-        super(QtWidgets.QMainWindow, self).__init__()
+        super(MyApp, self).__init__()
+        # super(QtWidgets.QMainWindow, self).__init__()
 
         self.status_message = ['● Idle', '● Idle', '● Idle', '']
 
@@ -78,7 +78,12 @@ class MyApp(QtWidgets.QMainWindow):
             json.dump(self.config, open('config.json', 'w+'))
 
         """Load UI"""
-        self.ui = uic.loadUi('mainwindow.ui', self)
+        ui_file_name = "mainwindow.ui"
+        ui_file = QFile(ui_file_name)
+        loader = QUiLoader()
+        self.ui = loader.load(ui_file)
+        # self.ui = uic.loadUi('mainwindow.ui', self)
+        ui_file.close()
         self.init_ui()
 
         self.ui.comboBox_Interface.currentIndexChanged.connect(
@@ -120,6 +125,8 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.tabWidget.currentChanged.connect(
             self.on_tab_changed
         )
+
+        self.ui.show()
 
     def save_config(self):
         try:
@@ -327,8 +334,14 @@ class MyApp(QtWidgets.QMainWindow):
 
     def on_tcp_server_status_update(self, status, addr):
         if status == TCPServer.STOP:
-            self.tcp_server.status.disconnect()
-            self.tcp_server.message.disconnect()
+            try:
+                self.tcp_server.status.disconnect()
+            except Exception:
+                pass
+            try:
+                self.tcp_server.message.disconnect()
+            except Exception:
+                pass
 
             self.ui.button_TcpServer.setText('Start')
             self.tcp_server_thread.quit()
@@ -468,16 +481,17 @@ class MyApp(QtWidgets.QMainWindow):
         self.save_config()
 
     def on_tab_changed(self, index):
-        self.ui.statusBar.clearMessage()
-        self.ui.statusBar.setStyleSheet('color: green')
-        self.ui.statusBar.showMessage(self.status_message[index])
+        self.ui.status_bar.clearMessage()
+        self.ui.status_bar.setStyleSheet('color: green')
+        self.ui.status_bar.showMessage(self.status_message[index])
 
         self.config['Tab_Index'] = self.ui.tabWidget.currentIndex()
         self.save_config()
 
 
 if __name__ == "__main__":
+    QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
     app = QtWidgets.QApplication(sys.argv)
     window = MyApp()
-    window.show()
+    # window.show()
     sys.exit(app.exec_())

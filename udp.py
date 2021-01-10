@@ -39,13 +39,13 @@
 
 """
 
-from PyQt5.QtCore import QObject, pyqtSignal, pyqtSlot
+from PySide2.QtCore import QObject, Signal, Slot
 import socket
 
 
 class UDPServer(QObject):
-    status = pyqtSignal(int, object)
-    message = pyqtSignal(object, object)
+    status = Signal(int, object)
+    message = Signal(object, object)
     ERROR = -1
     LISTEN = 1
     CONNECTED = 2
@@ -65,7 +65,7 @@ class UDPServer(QObject):
 
         self.signal = self.SIG_NORMAL
 
-    @pyqtSlot()
+    @Slot()
     def start(self):
         try:
             self.udp_socket.bind((self.ip, self.port))
