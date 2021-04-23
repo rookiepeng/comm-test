@@ -800,7 +800,7 @@
         <item>
          <widget class="QLabel" name="label_AppVersion">
           <property name="text">
-           <string>V 2.0</string>
+           <string>V 2.3</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
