@@ -1,5 +1,5 @@
 """
-    Copyright (C) 2017 - 2020  Zhengyu Peng, https://zpeng.me
+    Copyright (C) 2017 - 2021  Zhengyu Peng, https://zpeng.me
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -67,7 +67,7 @@ class MyApp(QtWidgets.QMainWindow):
         super(MyApp, self).__init__()
         # super(QtWidgets.QMainWindow, self).__init__()
 
-        self.status_message = ['● Idle', '● Idle', '● Idle', '']
+        self.status_message = ['● Idle', '● Idle', '● Idle', '● Idle', '● Idle', '']
 
         config_file = Path('config.json')
         # config_file = open('config.json', 'w+')

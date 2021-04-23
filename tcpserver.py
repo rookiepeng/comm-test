@@ -1,5 +1,5 @@
 """
-    Copyright (C) 2017 - 2020  Zhengyu Peng, https://zpeng.me
+    Copyright (C) 2017 - 2021  Zhengyu Peng, https://zpeng.me
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -72,7 +72,8 @@ class TCPServer(QObject):
             self.tcp_socket.listen(1)
         except OSError as err:
             # print('emit tcp server error')
-            self.status.emit(self.STOP, '')
+            # self.status.emit(self.STOP, '')
+            pass
         else:
             self.status.emit(self.LISTEN, '')
             while True:

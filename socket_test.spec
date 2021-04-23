@@ -4,7 +4,7 @@ block_cipher = None
 
 
 a = Analysis(['socket_test.py'],
-             pathex=['/home/rookie/Workspace/socket-test'],
+             pathex=['./socket-test'],
              binaries=[],
              datas=[],
              hiddenimports=[],

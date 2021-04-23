@@ -1,5 +1,5 @@
 """
-    Copyright (C) 2017 - 2020  Zhengyu Peng, https://zpeng.me
+    Copyright (C) 2017 - 2021  Zhengyu Peng, https://zpeng.me
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -70,7 +70,8 @@ class TCPClient(QObject):
         try:
             self.tcp_socket.connect((self.ip, self.port))
         except OSError as err:
-            self.status.emit(self.STOP, '')
+            print(err)
+            # self.status.emit(self.STOP, '')
         else:
             # print('connected')
             self.status.emit(self.CONNECTED, self.ip)
