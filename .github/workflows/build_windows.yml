@@ -31,7 +31,6 @@ jobs:
       run: |
         pyinstaller socket_test.spec
         copy mainwindow.ui .\dist\socket_test\
-        copy .\res .\dist\socket_test\
         mkdir .\dist\socket_test\res
         copy .\res .\dist\socket_test\res\
     - name: Archive built module
