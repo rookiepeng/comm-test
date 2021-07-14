@@ -8,7 +8,7 @@ A simple TCP/UDP socket test interface built with Python and PySide.
 
 ## Dependence
 
-- PyQt5
+- PySide6
 - psutil
 
 ## Usage
