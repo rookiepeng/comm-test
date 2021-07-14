@@ -6,7 +6,7 @@ block_cipher = None
 a = Analysis(['socket_test.py'],
              pathex=['./socket-test'],
              binaries=[],
-             datas=[],
+             datas=[('./res', 'res')],
              hiddenimports=['PySide2.QtXml'],
              hookspath=[],
              runtime_hooks=[],
@@ -26,7 +26,8 @@ exe = EXE(pyz,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
-          console=False )
+          console=False,
+          icon='res/socket_test.ico' )
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,

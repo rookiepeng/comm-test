@@ -28,7 +28,6 @@ jobs:
       run: |
         pyinstaller socket_test.spec
         cp mainwindow.ui ./dist/socket_test/
-        cp -rf res ./dist/socket_test
     - name: Archive built module
       uses: actions/upload-artifact@v2
       if: success()
