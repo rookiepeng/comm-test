@@ -2,9 +2,9 @@
 
 <img src="https://raw.githubusercontent.com/rookiepeng/socket-test/master/res/socket_test.png" width="128">
 
-A simple TCP/UDP socket test interface built with Python and PyQt5.
+A simple TCP/UDP socket test interface built with Python and PySide.
 
-(This project has been fully re-written from C++/QT5 to Python/PyQt5)
+(This project has been fully re-written from C++/QT5 to Python/PySide)
 
 ## Dependence
 
