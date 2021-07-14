@@ -40,10 +40,10 @@
 """
 
 import sys
-from PySide2 import QtWidgets, QtCore, QtGui
-from PySide2.QtCore import Qt
-from PySide2.QtCore import QThread, QFile
-from PySide2.QtUiTools import QUiLoader
+from PySide6 import QtWidgets, QtCore, QtGui
+from PySide6.QtCore import Qt
+from PySide6.QtCore import QThread, QFile
+from PySide6.QtUiTools import QUiLoader
 
 import psutil
 import socket
@@ -493,5 +493,5 @@ if __name__ == "__main__":
     QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
     app = QtWidgets.QApplication(sys.argv)
     window = MyApp()
-    # window.show()
-    sys.exit(app.exec_())
+
+    sys.exit(app.exec())
