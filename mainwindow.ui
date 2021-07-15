@@ -629,6 +629,13 @@
        </attribute>
        <layout class="QVBoxLayout" name="verticalLayout_15">
         <item>
+         <widget class="QPushButton" name="button_gpib">
+          <property name="text">
+           <string>Open GPIB</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QGroupBox" name="groupBox_9">
           <property name="title">
            <string>Message:</string>
