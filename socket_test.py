@@ -80,8 +80,6 @@ class MyApp(QtWidgets.QMainWindow):
             self.config = dict()
             json.dump(self.config, open('config.json', 'w+'))
 
-        self.gpib_manager = visa.ResourceManager()
-
         """Load UI"""
         ui_file_name = "mainwindow.ui"
         ui_file = QFile(ui_file_name)
@@ -200,6 +198,8 @@ class MyApp(QtWidgets.QMainWindow):
 
     def update_network_interfaces(self):
         self.net_if = psutil.net_if_addrs()
+
+        self.gpib_manager = visa.ResourceManager()
         self.gpib_list = self.gpib_manager.list_resources()
 
         if self.ui.tabWidget.currentIndex() < 3:
