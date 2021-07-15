@@ -55,6 +55,8 @@ from tcpserver import TCPServer
 from tcpclient import TCPClient
 from udp import UDPServer
 
+import pyvisa as visa
+
 QtWidgets.QApplication.setAttribute(
     QtCore.Qt.AA_EnableHighDpiScaling, True)  # enable highdpi scaling
 QtWidgets.QApplication.setAttribute(
@@ -67,7 +69,8 @@ class MyApp(QtWidgets.QMainWindow):
         super(MyApp, self).__init__()
         # super(QtWidgets.QMainWindow, self).__init__()
 
-        self.status_message = ['● Idle', '● Idle', '● Idle', '● Idle', '● Idle', '']
+        self.status_message = ['● Idle', '● Idle',
+                               '● Idle', '● Idle', '● Idle', '']
 
         config_file = Path('config.json')
         # config_file = open('config.json', 'w+')
@@ -167,56 +170,92 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.lineEdit_UdpTargetIP.setText(udp_target_ip)
         self.ui.lineEdit_UdpTargetPort.setText(udp_target_port)
 
+        self.ui.comboBox_GPIB_SendType.addItem('Write ASCII')
+        self.ui.comboBox_GPIB_SendType.addItem('Query ASCII')
+        self.ui.comboBox_GPIB_SendType.addItem('Write Binary')
+        self.ui.comboBox_GPIB_SendType.addItem('Query Binary')
+
     def update_network_interfaces(self):
-        self.ui.comboBox_Interface.clear()
-        self.net_if = psutil.net_if_addrs()
-        net_if_stats = psutil.net_if_stats()
+        if self.ui.tabWidget.currentIndex() < 3:
+            interface_idx = self.config.get('Interface', 0)
+            self.ui.comboBox_Interface.clear()
+            self.net_if = psutil.net_if_addrs()
+            net_if_stats = psutil.net_if_stats()
 
-        net_names = list(self.net_if.keys())
+            net_names = list(self.net_if.keys())
 
-        for if_name in net_names:
-            if not net_if_stats[if_name].isup:
-                self.net_if.pop(if_name, None)
+            for if_name in net_names:
+                if not net_if_stats[if_name].isup:
+                    self.net_if.pop(if_name, None)
+                else:
+                    self.ui.comboBox_Interface.addItem(if_name)
+
+            if interface_idx >= self.ui.comboBox_Interface.count():
+                self.ui.comboBox_Interface.setCurrentIndex(0)
             else:
-                self.ui.comboBox_Interface.addItem(if_name)
+                self.ui.comboBox_Interface.setCurrentIndex(interface_idx)
 
-        interface_idx = self.config.get('Interface', 0)
+            current_interface = self.ui.comboBox_Interface.currentText()
+            self.config['Interface'] = self.ui.comboBox_Interface.currentIndex()
 
-        if interface_idx >= self.ui.comboBox_Interface.count():
-            self.ui.comboBox_Interface.setCurrentIndex(0)
-        else:
-            self.ui.comboBox_Interface.setCurrentIndex(interface_idx)
-
-        current_interface = self.ui.comboBox_Interface.currentText()
-        self.config['Interface'] = self.ui.comboBox_Interface.currentIndex()
-
-        for snicaddr in self.net_if[current_interface]:
-            if snicaddr.family == socket.AF_INET:
-                ipv4_add = snicaddr.address
-                break
-            else:
-                ipv4_add = '0.0.0.0'
-
-        self.ui.label_LocalIP.setText(ipv4_add)
-
-        self.save_config()
-
-    def on_interface_selection_change(self):
-        current_interface = self.ui.comboBox_Interface.currentText()
-
-        if current_interface in self.net_if:
             for snicaddr in self.net_if[current_interface]:
                 if snicaddr.family == socket.AF_INET:
                     ipv4_add = snicaddr.address
                     break
                 else:
                     ipv4_add = '0.0.0.0'
-        else:
-            return
 
-        self.ui.label_LocalIP.setText(ipv4_add)
-        self.config['Interface'] = self.ui.comboBox_Interface.currentIndex()
-        self.save_config()
+            self.ui.label_LocalIP.setText(ipv4_add)
+
+            self.save_config()
+        elif self.ui.tabWidget.currentIndex() == 3:
+            interface_idx = self.config.get('GPIBInterface', 0)
+            self.ui.comboBox_Interface.clear()
+
+            self.gpib_manager = visa.ResourceManager()
+            self.gpib_list = self.gpib_manager.list_resources()
+            for if_name in self.gpib_list:
+                self.ui.comboBox_Interface.addItem(if_name)
+
+            if interface_idx >= self.ui.comboBox_Interface.count():
+                self.ui.comboBox_Interface.setCurrentIndex(0)
+            else:
+                self.ui.comboBox_Interface.setCurrentIndex(interface_idx)
+
+            self.config['GPIBInterface'] = self.ui.comboBox_Interface.currentIndex()
+
+            if len(self.gpib_list) > 0:
+                self.ui.label_LocalIP.setText(self.gpib_list[interface_idx])
+            else:
+                self.ui.label_LocalIP.setText('')
+
+            self.save_config()
+
+    def on_interface_selection_change(self):
+        if self.ui.tabWidget.currentIndex() < 3:
+            current_interface = self.ui.comboBox_Interface.currentText()
+
+            if current_interface in self.net_if:
+                for snicaddr in self.net_if[current_interface]:
+                    if snicaddr.family == socket.AF_INET:
+                        ipv4_add = snicaddr.address
+                        break
+                    else:
+                        ipv4_add = '0.0.0.0'
+            else:
+                return
+
+            self.ui.label_LocalIP.setText(ipv4_add)
+            self.config['Interface'] = self.ui.comboBox_Interface.currentIndex()
+            self.save_config()
+        elif self.ui.tabWidget.currentIndex() == 3:
+            self.config['GPIBInterface'] = self.ui.comboBox_Interface.currentIndex()
+
+            if len(self.gpib_list) > 0:
+                self.ui.label_LocalIP.setText(
+                    self.gpib_list[self.ui.comboBox_Interface.currentIndex()])
+            else:
+                self.ui.label_LocalIP.setText('')
 
     def on_refresh_button_clicked(self):
         self.update_network_interfaces()
@@ -481,6 +520,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.save_config()
 
     def on_tab_changed(self, index):
+        self.update_network_interfaces()
         self.ui.status_bar.clearMessage()
         self.ui.status_bar.setStyleSheet('color: green')
         self.ui.status_bar.showMessage(self.status_message[index])

@@ -39,7 +39,7 @@
 
 """
 
-import visa
+import pyvisa as visa
 
 # rm = visa.ResourceManager()
 # fsw = rm.open_resource("TCPIP0::192.168.29.1::inst0::INSTR")
