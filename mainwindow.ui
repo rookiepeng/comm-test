@@ -721,7 +721,7 @@
         <item>
          <widget class="QLabel" name="label_AppVersion">
           <property name="text">
-           <string>v2.5</string>
+           <string>v3.0</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
