@@ -80,6 +80,8 @@ class MyApp(QtWidgets.QMainWindow):
             self.config = dict()
             json.dump(self.config, open('config.json', 'w+'))
 
+        self.gpib_manager = visa.ResourceManager()
+
         """Load UI"""
         ui_file_name = "mainwindow.ui"
         ui_file = QFile(ui_file_name)
@@ -197,13 +199,15 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.button_gpib.setEnabled(True)
 
     def update_network_interfaces(self):
+        self.net_if = psutil.net_if_addrs()
+        self.gpib_list = self.gpib_manager.list_resources()
+
         if self.ui.tabWidget.currentIndex() < 3:
             interface_idx = self.config.get('Interface', 0)
             self.ui.comboBox_Interface.clear()
-            self.net_if = psutil.net_if_addrs()
-            net_if_stats = psutil.net_if_stats()
 
             net_names = list(self.net_if.keys())
+            net_if_stats = psutil.net_if_stats()
 
             for if_name in net_names:
                 if not net_if_stats[if_name].isup:
@@ -233,8 +237,6 @@ class MyApp(QtWidgets.QMainWindow):
             interface_idx = self.config.get('GPIBInterface', 0)
             self.ui.comboBox_Interface.clear()
 
-            self.gpib_manager = visa.ResourceManager()
-            self.gpib_list = self.gpib_manager.list_resources()
             for if_name in self.gpib_list:
                 self.ui.comboBox_Interface.addItem(if_name)
 
