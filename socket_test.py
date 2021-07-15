@@ -125,6 +125,10 @@ class MyApp(QtWidgets.QMainWindow):
             '0.0.0.0',
             1234)
 
+        self.ui.button_gpib.clicked.connect(
+            self.on_gpib_button_clicked
+        )
+
         self.ui.tabWidget.currentChanged.connect(
             self.on_tab_changed
         )
@@ -170,10 +174,27 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.lineEdit_UdpTargetIP.setText(udp_target_ip)
         self.ui.lineEdit_UdpTargetPort.setText(udp_target_port)
 
+        # GPIO
         self.ui.comboBox_GPIB_SendType.addItem('Write ASCII')
         self.ui.comboBox_GPIB_SendType.addItem('Query ASCII')
         self.ui.comboBox_GPIB_SendType.addItem('Write Binary')
         self.ui.comboBox_GPIB_SendType.addItem('Query Binary')
+        self.ui.textBrowser_GPIBMessage.setEnabled(False)
+        self.ui.comboBox_GPIB_SendType.setEnabled(False)
+        self.ui.lineEdit_GPIBSend.setEnabled(False)
+        self.ui.button_GPIBSend.setEnabled(False)
+
+    def on_gpib_button_clicked(self):
+        self.ui.button_gpib.setEnabled(False)
+        if self.ui.button_gpib.text() == 'Open device':
+            self.device = self.gpib_manager.open_resource(
+                self.ui.comboBox_Interface.currentText())
+            self.ui.button_gpib.setText('Close device')
+        elif self.ui.button_gpib.text() == 'Close device':
+            self.device.close()
+            self.ui.button_gpib.setText('Open device')
+
+        self.ui.button_gpib.setEnabled(True)
 
     def update_network_interfaces(self):
         if self.ui.tabWidget.currentIndex() < 3:
@@ -226,8 +247,10 @@ class MyApp(QtWidgets.QMainWindow):
 
             if len(self.gpib_list) > 0:
                 self.ui.label_LocalIP.setText(self.gpib_list[interface_idx])
+                self.ui.button_gpib.setEnabled(True)
             else:
                 self.ui.label_LocalIP.setText('')
+                self.ui.button_gpib.setEnabled(False)
 
             self.save_config()
 
@@ -254,8 +277,10 @@ class MyApp(QtWidgets.QMainWindow):
             if len(self.gpib_list) > 0:
                 self.ui.label_LocalIP.setText(
                     self.gpib_list[self.ui.comboBox_Interface.currentIndex()])
+                self.ui.button_gpib.setEnabled(True)
             else:
                 self.ui.label_LocalIP.setText('')
+                self.ui.button_gpib.setEnabled(False)
 
     def on_refresh_button_clicked(self):
         self.update_network_interfaces()

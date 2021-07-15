@@ -631,7 +631,7 @@
         <item>
          <widget class="QPushButton" name="button_gpib">
           <property name="text">
-           <string>Open GPIB</string>
+           <string>Open device</string>
           </property>
          </widget>
         </item>
