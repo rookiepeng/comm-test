@@ -232,7 +232,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.label_LocalIP.setText(ipv4_add)
 
             self.save_config()
-        elif self.ui.tabWidget.currentIndex() == 3:
+        elif self.ui.tabWidget.currentIndex() == 5:
             interface_idx = self.config.get('GPIBInterface', 0)
             self.ui.comboBox_Interface.clear()
 
@@ -272,7 +272,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.label_LocalIP.setText(ipv4_add)
             self.config['Interface'] = self.ui.comboBox_Interface.currentIndex()
             self.save_config()
-        elif self.ui.tabWidget.currentIndex() == 3:
+        elif self.ui.tabWidget.currentIndex() == 5:
             self.config['GPIBInterface'] = self.ui.comboBox_Interface.currentIndex()
 
             if len(self.gpib_list) > 0:
