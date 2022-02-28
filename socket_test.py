@@ -98,37 +98,36 @@ class MyApp(QtWidgets.QMainWindow):
             self.on_tcp_server_message_send
         )
         self.ui.button_TcpRefresh.clicked.connect(self.on_refresh_button_clicked)
-        self.tcp_server_send_edit = self.ui.comboBox_TcpServerSend.lineEdit()
-        self.tcp_server_send_edit.returnPressed.connect(
+        self.ui.comboBox_TcpServerSend.lineEdit().returnPressed.connect(
             self.on_tcp_server_message_send
         )
 
-        #
-        self.local_udp_addr=''
-        self.ui.comboBox_UdpInterface.currentIndexChanged.connect(
-            self.on_udp_interface_selection_change)
-        self.ui.button_UdpRefresh.clicked.connect(self.on_refresh_button_clicked)
+        # TCP client
         self.ui.button_TcpClient.clicked.connect(
             self.on_tcp_client_connect_button_clicked
         )
         self.ui.button_TcpClientSend.clicked.connect(
             self.on_tcp_client_message_send
         )
-        self.tcp_client_send_edit = self.ui.comboBox_TcpClientSend.lineEdit()
-        self.tcp_client_send_edit.returnPressed.connect(
+        self.ui.comboBox_TcpClientSend.lineEdit().returnPressed.connect(
             self.on_tcp_client_message_send
         )
         
-
+        # UDP
+        self.local_udp_addr=''
+        self.ui.comboBox_UdpInterface.currentIndexChanged.connect(
+            self.on_udp_interface_selection_change)
+        self.ui.button_UdpRefresh.clicked.connect(self.on_refresh_button_clicked)
         self.ui.button_Udp.clicked.connect(
             self.on_udp_server_start_stop_button_clicked
         )
         self.ui.button_UdpSend.clicked.connect(
             self.on_udp_message_send
         )
-        # self.ui.lineEdit_UdpSend.returnPressed.connect(
-        #     self.on_udp_message_send
-        # )
+
+        self.ui.comboBox_UdpSend.lineEdit().returnPressed.connect(
+            self.on_udp_message_send
+        )
         self.udp_send = UDPServer(
             '0.0.0.0',
             1234)
@@ -568,30 +567,31 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.button_Udp.setEnabled(True)
 
     def on_udp_server_message_ready(self, source, msg):
-        self.ui.textBrowser_UdpMessage.append(
+        self.ui.textBrowser_Message.append(
             '<p style="text-align: center;"><span style="color: #2196F3;"><strong>----- ' +
             source +
             ' -----</strong></span></p>')
-        self.ui.textBrowser_UdpMessage.append(
+        self.ui.textBrowser_Message.append(
             '<p style="text-align: center;"><span style="color: #2196F3;">' +
             msg +
             '</span></p>')
 
     def on_udp_message_send(self):
         self.udp_send.send(
-            self.ui.lineEdit_UdpSend.text(),
+            self.ui.comboBox_UdpSend.currentText(),
             self.ui.lineEdit_UdpTargetIP.text(),
             int(self.ui.lineEdit_UdpTargetPort.text())
         )
-        self.ui.textBrowser_UdpMessage.append(
+        self.ui.textBrowser_Message.append(
             '<p style="text-align: center;"><strong>----- ' +
             'this' +
             ' -----</strong></p>')
-        self.ui.textBrowser_UdpMessage.append(
+        self.ui.textBrowser_Message.append(
             '<p style="text-align: center;">' +
-            self.ui.lineEdit_UdpSend.text() +
+            self.ui.comboBox_UdpSend.currentText() +
             '</p>')
-        self.ui.lineEdit_UdpSend.clear()
+        self.ui.comboBox_UdpSend.addItem(self.ui.comboBox_UdpSend.currentText())
+        self.ui.comboBox_UdpSend.clearEditText()
 
         self.config['UDP_Target_IP'] = self.ui.lineEdit_UdpTargetIP.text()
         self.config['UDP_Target_Port'] = self.ui.lineEdit_UdpTargetPort.text()
