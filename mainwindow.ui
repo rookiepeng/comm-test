@@ -37,7 +37,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_tcpServer">
        <attribute name="title">
@@ -478,7 +478,7 @@
               <item>
                <widget class="QLabel" name="label_udp_host_address">
                 <property name="text">
-                 <string>TextLabel</string>
+                 <string/>
                 </property>
                 <property name="textInteractionFlags">
                  <set>Qt::TextSelectableByMouse</set>
@@ -600,7 +600,7 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_6">
                 <item>
-                 <widget class="QComboBox" name="comboBox_4">
+                 <widget class="QComboBox" name="comboBox_UdpSend">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                     <horstretch>1</horstretch>
