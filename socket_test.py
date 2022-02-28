@@ -89,7 +89,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.init_ui()
 
         # TCP server
-        self.local_tcp_addr=''
+        self.local_tcp_addr = ''
         self.ui.comboBox_TcpInterface.currentIndexChanged.connect(
             self.on_tcp_interface_selection_change)
         self.ui.button_TcpServer.clicked.connect(
@@ -97,7 +97,8 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.button_TcpServerSend.clicked.connect(
             self.on_tcp_server_message_send
         )
-        self.ui.button_TcpRefresh.clicked.connect(self.on_refresh_button_clicked)
+        self.ui.button_TcpRefresh.clicked.connect(
+            self.on_refresh_button_clicked)
         self.ui.comboBox_TcpServerSend.lineEdit().returnPressed.connect(
             self.on_tcp_server_message_send
         )
@@ -112,12 +113,13 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.comboBox_TcpClientSend.lineEdit().returnPressed.connect(
             self.on_tcp_client_message_send
         )
-        
+
         # UDP
-        self.local_udp_addr=''
+        self.local_udp_addr = ''
         self.ui.comboBox_UdpInterface.currentIndexChanged.connect(
             self.on_udp_interface_selection_change)
-        self.ui.button_UdpRefresh.clicked.connect(self.on_refresh_button_clicked)
+        self.ui.button_UdpRefresh.clicked.connect(
+            self.on_refresh_button_clicked)
         self.ui.button_Udp.clicked.connect(
             self.on_udp_server_start_stop_button_clicked
         )
@@ -219,14 +221,13 @@ class MyApp(QtWidgets.QMainWindow):
         self.config['GPIBInterface'] = self.ui.comboBox_TcpInterface.currentIndex()
 
         if len(self.gpib_list) > 0:
-            self.local_tcp_addr=self.gpib_list[tcp_interface_idx]
+            self.local_tcp_addr = self.gpib_list[tcp_interface_idx]
             self.ui.button_gpib.setEnabled(True)
         else:
-            self.local_tcp_addr=''
+            self.local_tcp_addr = ''
             self.ui.button_gpib.setEnabled(False)
 
         self.save_config()
-
 
     def update_network_interfaces(self):
         temp_net_if = psutil.net_if_addrs()
@@ -262,18 +263,18 @@ class MyApp(QtWidgets.QMainWindow):
         tcp_addr = ''
         for snicaddr in self.net_if[self.ui.comboBox_TcpInterface.currentText()]:
             if snicaddr.family == socket.AF_INET:
-                tcp_addr = tcp_addr +'IPv4: ' + snicaddr.address + ' '
+                tcp_addr = tcp_addr + 'IPv4: ' + snicaddr.address + ' '
                 self.local_tcp_addr = snicaddr.address
             else:
                 self.local_tcp_addr = '0.0.0.0'
             # elif snicaddr.family == socket.AF_INET6:
             #     tcp_addr = tcp_addr +'IPv6: ' + snicaddr.address + ' '
         self.ui.label_tcp_host_address.setText(tcp_addr)
-        
+
         udp_addr = ''
         for snicaddr in self.net_if[self.ui.comboBox_UdpInterface.currentText()]:
             if snicaddr.family == socket.AF_INET:
-                udp_addr = udp_addr +'IPv4: ' + snicaddr.address + ' '
+                udp_addr = udp_addr + 'IPv4: ' + snicaddr.address + ' '
                 self.local_udp_addr = snicaddr.address
             else:
                 self.local_udp_addr = '0.0.0.0'
@@ -282,7 +283,6 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.label_udp_host_address.setText(udp_addr)
 
         self.save_config()
-        
 
     def on_tcp_interface_selection_change(self):
         current_interface = self.ui.comboBox_TcpInterface.currentText()
@@ -291,7 +291,7 @@ class MyApp(QtWidgets.QMainWindow):
             tcp_addr = ''
             for snicaddr in self.net_if[current_interface]:
                 if snicaddr.family == socket.AF_INET:
-                    tcp_addr = tcp_addr +'IPv4: ' + snicaddr.address + ' '
+                    tcp_addr = tcp_addr + 'IPv4: ' + snicaddr.address + ' '
                     self.local_tcp_addr = snicaddr.address
                 # elif snicaddr.family == socket.AF_INET6:
                 #     tcp_addr = tcp_addr +'IPv6: ' + snicaddr.address + ' '
@@ -302,7 +302,7 @@ class MyApp(QtWidgets.QMainWindow):
         # self.local_tcp_addr=ipv4_add
         self.config['TcpInterface'] = self.ui.comboBox_TcpInterface.currentIndex()
         self.save_config()
-    
+
     def on_udp_interface_selection_change(self):
         current_interface = self.ui.comboBox_UdpInterface.currentText()
 
@@ -310,7 +310,7 @@ class MyApp(QtWidgets.QMainWindow):
             udp_addr = ''
             for snicaddr in self.net_if[current_interface]:
                 if snicaddr.family == socket.AF_INET:
-                    udp_addr = udp_addr +'IPv4: ' + snicaddr.address + ' '
+                    udp_addr = udp_addr + 'IPv4: ' + snicaddr.address + ' '
                     self.local_udp_addr = snicaddr.address
                 # elif snicaddr.family == socket.AF_INET6:
                 #     udp_addr = udp_addr +'IPv6: ' + snicaddr.address + ' '
@@ -321,15 +321,15 @@ class MyApp(QtWidgets.QMainWindow):
         self.config['UdpInterface'] = self.ui.comboBox_UdpInterface.currentIndex()
         self.save_config()
 
-                
     def on_gpib_interface_selection_change(self):
         self.config['GPIBInterface'] = self.ui.comboBox_TcpInterface.currentIndex()
 
         if len(self.gpib_list) > 0:
-            self.local_tcp_addr=self.gpib_list[self.ui.comboBox_TcpInterface.currentIndex()]
+            self.local_tcp_addr = self.gpib_list[self.ui.comboBox_TcpInterface.currentIndex(
+            )]
             self.ui.button_gpib.setEnabled(True)
         else:
-            self.local_tcp_addr=''
+            self.local_tcp_addr = ''
             self.ui.button_gpib.setEnabled(False)
 
     def on_refresh_button_clicked(self):
@@ -415,7 +415,8 @@ class MyApp(QtWidgets.QMainWindow):
             '<p style="text-align: center;">' +
             self.ui.comboBox_TcpClientSend.currentText() +
             '</p>')
-        self.ui.comboBox_TcpClientSend.addItem(self.ui.comboBox_TcpClientSend.currentText())
+        self.ui.comboBox_TcpClientSend.addItem(
+            self.ui.comboBox_TcpClientSend.currentText())
         self.ui.comboBox_TcpClientSend.clearEditText()
 
     # TCP Server
@@ -514,7 +515,8 @@ class MyApp(QtWidgets.QMainWindow):
             '<p style="text-align: center;">' +
             self.ui.comboBox_TcpServerSend.currentText() +
             '</p>')
-        self.ui.comboBox_TcpServerSend.addItem(self.ui.comboBox_TcpServerSend.currentText())
+        self.ui.comboBox_TcpServerSend.addItem(
+            self.ui.comboBox_TcpServerSend.currentText())
         self.ui.comboBox_TcpServerSend.clearEditText()
 
     # UDP
@@ -590,7 +592,8 @@ class MyApp(QtWidgets.QMainWindow):
             '<p style="text-align: center;">' +
             self.ui.comboBox_UdpSend.currentText() +
             '</p>')
-        self.ui.comboBox_UdpSend.addItem(self.ui.comboBox_UdpSend.currentText())
+        self.ui.comboBox_UdpSend.addItem(
+            self.ui.comboBox_UdpSend.currentText())
         self.ui.comboBox_UdpSend.clearEditText()
 
         self.config['UDP_Target_IP'] = self.ui.lineEdit_UdpTargetIP.text()
