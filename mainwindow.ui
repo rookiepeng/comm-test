@@ -37,7 +37,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="tab_tcpServer">
        <attribute name="title">
@@ -78,7 +78,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="button_Refresh">
+                 <widget class="QPushButton" name="button_TcpRefresh">
                   <property name="text">
                    <string/>
                   </property>
@@ -427,7 +427,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="pushButton">
+                 <widget class="QPushButton" name="button_UdpRefresh">
                   <property name="text">
                    <string/>
                   </property>

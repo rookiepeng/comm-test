@@ -92,19 +92,21 @@ class MyApp(QtWidgets.QMainWindow):
 
         # TCP server
         self.ui.comboBox_TcpInterface.currentIndexChanged.connect(
-            self.on_interface_selection_change)
+            self.on_tcp_interface_selection_change)
         self.ui.button_TcpServer.clicked.connect(
             self.on_tcp_server_start_stop_button_clicked)
         self.ui.button_TcpServerSend.clicked.connect(
             self.on_tcp_server_message_send
         )
+        self.ui.button_TcpRefresh.clicked.connect(self.on_refresh_button_clicked)
         # self.ui.comboBox_TcpServerSend.returnPressed.connect(
         #     self.on_tcp_server_message_send
         # )
 
         #
-        self.ui.button_Refresh.clicked.connect(self.on_refresh_button_clicked)
-
+        self.ui.comboBox_UdpInterface.currentIndexChanged.connect(
+            self.on_udp_interface_selection_change)
+        self.ui.button_UdpRefresh.clicked.connect(self.on_refresh_button_clicked)
         self.ui.button_TcpClient.clicked.connect(
             self.on_tcp_client_connect_button_clicked
         )
@@ -247,11 +249,13 @@ class MyApp(QtWidgets.QMainWindow):
 
         if tcp_interface_idx >= self.ui.comboBox_TcpInterface.count():
             self.ui.comboBox_TcpInterface.setCurrentIndex(0)
+            self.config['TcpInterface'] = 0
         else:
             self.ui.comboBox_TcpInterface.setCurrentIndex(tcp_interface_idx)
 
         if udp_interface_idx >= self.ui.comboBox_UdpInterface.count():
             self.ui.comboBox_UdpInterface.setCurrentIndex(0)
+            self.config['UdpInterface']
         else:
             self.ui.comboBox_UdpInterface.setCurrentIndex(udp_interface_idx)
 
@@ -259,47 +263,66 @@ class MyApp(QtWidgets.QMainWindow):
         for snicaddr in self.net_if[self.ui.comboBox_TcpInterface.currentText()]:
             if snicaddr.family == socket.AF_INET:
                 tcp_addr = tcp_addr +'IPv4: ' + snicaddr.address + ' '
-            elif snicaddr.family == socket.AF_INET6:
-                tcp_addr = tcp_addr +'IPv6: ' + snicaddr.address + ' '
+            # elif snicaddr.family == socket.AF_INET6:
+            #     tcp_addr = tcp_addr +'IPv6: ' + snicaddr.address + ' '
         self.ui.label_tcp_host_address.setText(tcp_addr)
         
         udp_addr = ''
         for snicaddr in self.net_if[self.ui.comboBox_UdpInterface.currentText()]:
             if snicaddr.family == socket.AF_INET:
                 udp_addr = udp_addr +'IPv4: ' + snicaddr.address + ' '
-            elif snicaddr.family == socket.AF_INET6:
-                udp_addr = udp_addr +'IPv6: ' + snicaddr.address + ' '
+            # elif snicaddr.family == socket.AF_INET6:
+            #     udp_addr = udp_addr +'IPv6: ' + snicaddr.address + ' '
         self.ui.label_udp_host_address.setText(udp_addr)
 
         self.save_config()
         
 
-    def on_interface_selection_change(self):
-        if self.ui.tabWidget.currentIndex() < 3:
-            current_interface = self.ui.comboBox_TcpInterface.currentText()
+    def on_tcp_interface_selection_change(self):
+        current_interface = self.ui.comboBox_TcpInterface.currentText()
 
-            if current_interface in self.net_if:
-                for snicaddr in self.net_if[current_interface]:
-                    if snicaddr.family == socket.AF_INET:
-                        ipv4_add = snicaddr.address
-                        break
-                    else:
-                        ipv4_add = '0.0.0.0'
-            else:
-                return
+        if current_interface in self.net_if:
+            tcp_addr = ''
+            for snicaddr in self.net_if[current_interface]:
+                if snicaddr.family == socket.AF_INET:
+                    tcp_addr = tcp_addr +'IPv4: ' + snicaddr.address + ' '
+                # elif snicaddr.family == socket.AF_INET6:
+                #     tcp_addr = tcp_addr +'IPv6: ' + snicaddr.address + ' '
+            self.ui.label_tcp_host_address.setText(tcp_addr)
+        else:
+            return
 
-            self.local_tcp_addr=ipv4_add
-            self.config['Interface'] = self.ui.comboBox_TcpInterface.currentIndex()
-            self.save_config()
-        elif self.ui.tabWidget.currentIndex() == 5:
-            self.config['GPIBInterface'] = self.ui.comboBox_TcpInterface.currentIndex()
+        # self.local_tcp_addr=ipv4_add
+        self.config['TcpInterface'] = self.ui.comboBox_TcpInterface.currentIndex()
+        self.save_config()
+    
+    def on_udp_interface_selection_change(self):
+        current_interface = self.ui.comboBox_UdpInterface.currentText()
 
-            if len(self.gpib_list) > 0:
-                self.local_tcp_addr=self.gpib_list[self.ui.comboBox_TcpInterface.currentIndex()]
-                self.ui.button_gpib.setEnabled(True)
-            else:
-                self.local_tcp_addr=''
-                self.ui.button_gpib.setEnabled(False)
+        if current_interface in self.net_if:
+            udp_addr = ''
+            for snicaddr in self.net_if[current_interface]:
+                if snicaddr.family == socket.AF_INET:
+                    udp_addr = udp_addr +'IPv4: ' + snicaddr.address + ' '
+                # elif snicaddr.family == socket.AF_INET6:
+                #     udp_addr = udp_addr +'IPv6: ' + snicaddr.address + ' '
+            self.ui.label_udp_host_address.setText(udp_addr)
+        else:
+            return
+
+        self.config['UdpInterface'] = self.ui.comboBox_UdpInterface.currentIndex()
+        self.save_config()
+
+                
+    def on_gpib_interface_selection_change(self):
+        self.config['GPIBInterface'] = self.ui.comboBox_TcpInterface.currentIndex()
+
+        if len(self.gpib_list) > 0:
+            self.local_tcp_addr=self.gpib_list[self.ui.comboBox_TcpInterface.currentIndex()]
+            self.ui.button_gpib.setEnabled(True)
+        else:
+            self.local_tcp_addr=''
+            self.ui.button_gpib.setEnabled(False)
 
     def on_refresh_button_clicked(self):
         self.update_network_interfaces()
