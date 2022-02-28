@@ -145,6 +145,16 @@
                 </item>
                </layout>
               </item>
+              <item>
+               <widget class="QLabel" name="label_tcp_host_address">
+                <property name="text">
+                 <string/>
+                </property>
+                <property name="textInteractionFlags">
+                 <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+                </property>
+               </widget>
+              </item>
              </layout>
             </widget>
            </item>
@@ -407,7 +417,7 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_4">
                 <item>
-                 <widget class="QComboBox" name="comboBox">
+                 <widget class="QComboBox" name="comboBox_UdpInterface">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                     <horstretch>1</horstretch>
@@ -464,6 +474,16 @@
                  </widget>
                 </item>
                </layout>
+              </item>
+              <item>
+               <widget class="QLabel" name="label_udp_host_address">
+                <property name="text">
+                 <string>TextLabel</string>
+                </property>
+                <property name="textInteractionFlags">
+                 <set>Qt::TextSelectableByMouse</set>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>

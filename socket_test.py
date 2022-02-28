@@ -79,7 +79,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.config = dict()
             json.dump(self.config, open('config.json', 'w+'))
 
-        self.local_ip=''
+        self.local_tcp_addr=''
 
         """Load UI"""
         ui_file_name = "mainwindow.ui"
@@ -203,60 +203,73 @@ class MyApp(QtWidgets.QMainWindow):
         self.gpib_manager = visa.ResourceManager()
         self.gpib_list = self.gpib_manager.list_resources()
 
-        interface_idx = self.config.get('GPIBInterface', 0)
+        tcp_interface_idx = self.config.get('GPIBInterface', 0)
         self.ui.comboBox_TcpInterface.clear()
 
         for if_name in self.gpib_list:
             self.ui.comboBox_TcpInterface.addItem(if_name)
 
-        if interface_idx >= self.ui.comboBox_TcpInterface.count():
+        if tcp_interface_idx >= self.ui.comboBox_TcpInterface.count():
             self.ui.comboBox_TcpInterface.setCurrentIndex(0)
         else:
-            self.ui.comboBox_TcpInterface.setCurrentIndex(interface_idx)
+            self.ui.comboBox_TcpInterface.setCurrentIndex(tcp_interface_idx)
 
         self.config['GPIBInterface'] = self.ui.comboBox_TcpInterface.currentIndex()
 
         if len(self.gpib_list) > 0:
-            self.local_ip=self.gpib_list[interface_idx]
+            self.local_tcp_addr=self.gpib_list[tcp_interface_idx]
             self.ui.button_gpib.setEnabled(True)
         else:
-            self.local_ip=''
+            self.local_tcp_addr=''
             self.ui.button_gpib.setEnabled(False)
 
         self.save_config()
 
 
     def update_network_interfaces(self):
+        temp_net_if = psutil.net_if_addrs()
         self.net_if = psutil.net_if_addrs()
 
-        interface_idx = self.config.get('Interface', 0)
+        tcp_interface_idx = self.config.get('TcpInterface', 0)
         self.ui.comboBox_TcpInterface.clear()
 
-        net_names = list(self.net_if.keys())
+        udp_interface_idx = self.config.get('UdpInterface', 0)
+        self.ui.comboBox_UdpInterface.clear()
+
         net_if_stats = psutil.net_if_stats()
 
-        for if_name in net_names:
-            if not net_if_stats[if_name].isup:
-                self.net_if.pop(if_name, None)
+        for _, netif in enumerate(temp_net_if):
+            if not net_if_stats[netif].isup:
+                self.net_if.pop(netif, None)
             else:
-                self.ui.comboBox_TcpInterface.addItem(if_name)
+                self.ui.comboBox_TcpInterface.addItem(netif)
+                self.ui.comboBox_UdpInterface.addItem(netif)
 
-        if interface_idx >= self.ui.comboBox_TcpInterface.count():
+        if tcp_interface_idx >= self.ui.comboBox_TcpInterface.count():
             self.ui.comboBox_TcpInterface.setCurrentIndex(0)
         else:
-            self.ui.comboBox_TcpInterface.setCurrentIndex(interface_idx)
+            self.ui.comboBox_TcpInterface.setCurrentIndex(tcp_interface_idx)
 
-        current_interface = self.ui.comboBox_TcpInterface.currentText()
-        self.config['Interface'] = self.ui.comboBox_TcpInterface.currentIndex()
+        if udp_interface_idx >= self.ui.comboBox_UdpInterface.count():
+            self.ui.comboBox_UdpInterface.setCurrentIndex(0)
+        else:
+            self.ui.comboBox_UdpInterface.setCurrentIndex(udp_interface_idx)
 
-        for snicaddr in self.net_if[current_interface]:
+        tcp_addr = ''
+        for snicaddr in self.net_if[self.ui.comboBox_TcpInterface.currentText()]:
             if snicaddr.family == socket.AF_INET:
-                ipv4_add = snicaddr.address
-                break
-            else:
-                ipv4_add = '0.0.0.0'
-
-        self.local_ip=ipv4_add
+                tcp_addr = tcp_addr +'IPv4: ' + snicaddr.address + ' '
+            elif snicaddr.family == socket.AF_INET6:
+                tcp_addr = tcp_addr +'IPv6: ' + snicaddr.address + ' '
+        self.ui.label_tcp_host_address.setText(tcp_addr)
+        
+        udp_addr = ''
+        for snicaddr in self.net_if[self.ui.comboBox_UdpInterface.currentText()]:
+            if snicaddr.family == socket.AF_INET:
+                udp_addr = udp_addr +'IPv4: ' + snicaddr.address + ' '
+            elif snicaddr.family == socket.AF_INET6:
+                udp_addr = udp_addr +'IPv6: ' + snicaddr.address + ' '
+        self.ui.label_udp_host_address.setText(udp_addr)
 
         self.save_config()
         
@@ -275,17 +288,17 @@ class MyApp(QtWidgets.QMainWindow):
             else:
                 return
 
-            self.local_ip=ipv4_add
+            self.local_tcp_addr=ipv4_add
             self.config['Interface'] = self.ui.comboBox_TcpInterface.currentIndex()
             self.save_config()
         elif self.ui.tabWidget.currentIndex() == 5:
             self.config['GPIBInterface'] = self.ui.comboBox_TcpInterface.currentIndex()
 
             if len(self.gpib_list) > 0:
-                self.local_ip=self.gpib_list[self.ui.comboBox_TcpInterface.currentIndex()]
+                self.local_tcp_addr=self.gpib_list[self.ui.comboBox_TcpInterface.currentIndex()]
                 self.ui.button_gpib.setEnabled(True)
             else:
-                self.local_ip=''
+                self.local_tcp_addr=''
                 self.ui.button_gpib.setEnabled(False)
 
     def on_refresh_button_clicked(self):
@@ -344,7 +357,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.comboBox_TcpClientSend.setEnabled(True)
             self.ui.button_TcpClientSend.setEnabled(True)
             self.status_message[0] = '● Connected to ' +\
-                self.local_ip +\
+                self.local_tcp_addr +\
                 ':'+self.ui.lineEdit_TcpClientTargetPort.text()
             if self.ui.tabWidget.currentIndex() == 0:
                 self.on_tab_changed(0)
@@ -380,7 +393,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.lineEdit_TcpServerListenPort.setEnabled(False)
             self.tcp_server_thread = QThread()
             self.tcp_server = TCPServer(
-                self.local_ip,
+                self.local_tcp_addr,
                 int(self.ui.lineEdit_TcpServerListenPort.text()))
 
             self.tcp_server_thread.started.connect(self.tcp_server.start)
@@ -431,7 +444,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.comboBox_TcpServerSend.setEnabled(False)
             self.ui.button_TcpServerSend.setEnabled(False)
             self.status_message[1] = '● Listen on ' +\
-                self.local_ip+':' +\
+                self.local_tcp_addr+':' +\
                 self.ui.lineEdit_TcpServerListenPort.text()
             if self.ui.tabWidget.currentIndex() == 1:
                 self.on_tab_changed(1)
@@ -478,7 +491,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.lineEdit_UdpListenPort.setEnabled(False)
             self.udp_thread = QThread()
             self.udp_server = UDPServer(
-                self.local_ip,
+                self.local_tcp_addr,
                 int(self.ui.lineEdit_UdpListenPort.text()))
 
             self.udp_thread.started.connect(self.udp_server.start)
@@ -513,7 +526,7 @@ class MyApp(QtWidgets.QMainWindow):
         elif status == UDPServer.LISTEN:
             self.ui.button_Udp.setText('Stop')
             self.status_message[2] = '● Listen on ' +\
-                self.local_ip+':' +\
+                self.local_tcp_addr+':' +\
                 self.ui.lineEdit_TcpServerListenPort.text()
             if self.ui.tabWidget.currentIndex() == 2:
                 self.on_tab_changed(2)
