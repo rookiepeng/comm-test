@@ -79,8 +79,6 @@ class MyApp(QtWidgets.QMainWindow):
             self.config = dict()
             json.dump(self.config, open('config.json', 'w+'))
 
-        self.local_tcp_addr=''
-
         """Load UI"""
         ui_file_name = "mainwindow.ui"
         ui_file = QFile(ui_file_name)
@@ -91,6 +89,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.init_ui()
 
         # TCP server
+        self.local_tcp_addr=''
         self.ui.comboBox_TcpInterface.currentIndexChanged.connect(
             self.on_tcp_interface_selection_change)
         self.ui.button_TcpServer.clicked.connect(
@@ -104,6 +103,7 @@ class MyApp(QtWidgets.QMainWindow):
         # )
 
         #
+        self.local_udp_addr=''
         self.ui.comboBox_UdpInterface.currentIndexChanged.connect(
             self.on_udp_interface_selection_change)
         self.ui.button_UdpRefresh.clicked.connect(self.on_refresh_button_clicked)
@@ -263,6 +263,9 @@ class MyApp(QtWidgets.QMainWindow):
         for snicaddr in self.net_if[self.ui.comboBox_TcpInterface.currentText()]:
             if snicaddr.family == socket.AF_INET:
                 tcp_addr = tcp_addr +'IPv4: ' + snicaddr.address + ' '
+                self.local_tcp_addr = snicaddr.address
+            else:
+                self.local_tcp_addr = '0.0.0.0'
             # elif snicaddr.family == socket.AF_INET6:
             #     tcp_addr = tcp_addr +'IPv6: ' + snicaddr.address + ' '
         self.ui.label_tcp_host_address.setText(tcp_addr)
@@ -271,6 +274,9 @@ class MyApp(QtWidgets.QMainWindow):
         for snicaddr in self.net_if[self.ui.comboBox_UdpInterface.currentText()]:
             if snicaddr.family == socket.AF_INET:
                 udp_addr = udp_addr +'IPv4: ' + snicaddr.address + ' '
+                self.local_udp_addr = snicaddr.address
+            else:
+                self.local_udp_addr = '0.0.0.0'
             # elif snicaddr.family == socket.AF_INET6:
             #     udp_addr = udp_addr +'IPv6: ' + snicaddr.address + ' '
         self.ui.label_udp_host_address.setText(udp_addr)
@@ -286,6 +292,7 @@ class MyApp(QtWidgets.QMainWindow):
             for snicaddr in self.net_if[current_interface]:
                 if snicaddr.family == socket.AF_INET:
                     tcp_addr = tcp_addr +'IPv4: ' + snicaddr.address + ' '
+                    self.local_tcp_addr = snicaddr.address
                 # elif snicaddr.family == socket.AF_INET6:
                 #     tcp_addr = tcp_addr +'IPv6: ' + snicaddr.address + ' '
             self.ui.label_tcp_host_address.setText(tcp_addr)
@@ -304,6 +311,7 @@ class MyApp(QtWidgets.QMainWindow):
             for snicaddr in self.net_if[current_interface]:
                 if snicaddr.family == socket.AF_INET:
                     udp_addr = udp_addr +'IPv4: ' + snicaddr.address + ' '
+                    self.local_udp_addr = snicaddr.address
                 # elif snicaddr.family == socket.AF_INET6:
                 #     udp_addr = udp_addr +'IPv6: ' + snicaddr.address + ' '
             self.ui.label_udp_host_address.setText(udp_addr)
