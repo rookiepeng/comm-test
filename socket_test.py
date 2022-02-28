@@ -406,16 +406,17 @@ class MyApp(QtWidgets.QMainWindow):
             '</span></p>')
 
     def on_tcp_client_message_send(self):
-        self.tcp_client.send(self.ui.comboBox_TcpClientSend.text())
+        self.tcp_client.send(self.ui.comboBox_TcpClientSend.currentText())
         self.ui.textBrowser_Message.append(
             '<p style="text-align: center;"><strong>----- ' +
             'this' +
             ' -----</strong></p>')
         self.ui.textBrowser_Message.append(
             '<p style="text-align: center;">' +
-            self.ui.comboBox_TcpClientSend.text() +
+            self.ui.comboBox_TcpClientSend.currentText() +
             '</p>')
-        self.ui.comboBox_TcpClientSend.clear()
+        self.ui.comboBox_TcpClientSend.addItem(self.ui.comboBox_TcpClientSend.currentText())
+        self.ui.comboBox_TcpClientSend.clearEditText()
 
     # TCP Server
     def on_tcp_server_start_stop_button_clicked(self):
@@ -504,16 +505,17 @@ class MyApp(QtWidgets.QMainWindow):
             '</span></p>')
 
     def on_tcp_server_message_send(self):
-        self.tcp_server.send(self.ui.comboBox_TcpServerSend.text())
+        self.tcp_server.send(self.ui.comboBox_TcpServerSend.currentText())
         self.ui.textBrowser_Message.append(
             '<p style="text-align: center;"><strong>----- ' +
             'this' +
             ' -----</strong></p>')
         self.ui.textBrowser_Message.append(
             '<p style="text-align: center;">' +
-            self.ui.comboBox_TcpServerSend.text() +
+            self.ui.comboBox_TcpServerSend.currentText() +
             '</p>')
-        self.ui.comboBox_TcpServerSend.clear()
+        self.ui.comboBox_TcpServerSend.addItem(self.ui.comboBox_TcpServerSend.currentText())
+        self.ui.comboBox_TcpServerSend.clearEditText()
 
     # UDP
     def on_udp_server_start_stop_button_clicked(self):
@@ -522,7 +524,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.lineEdit_UdpListenPort.setEnabled(False)
             self.udp_thread = QThread()
             self.udp_server = UDPServer(
-                self.local_tcp_addr,
+                self.local_udp_addr,
                 int(self.ui.lineEdit_UdpListenPort.text()))
 
             self.udp_thread.started.connect(self.udp_server.start)
