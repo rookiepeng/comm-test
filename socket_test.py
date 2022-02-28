@@ -54,6 +54,8 @@ import json
 from tcpserver import TCPServer
 from tcpclient import TCPClient
 from udp import UDPServer
+from btserver import BluetoothServer
+from btclient import BluetoothClient
 
 import pyvisa as visa
 
@@ -134,9 +136,32 @@ class MyApp(QtWidgets.QMainWindow):
             '0.0.0.0',
             1234)
 
+        # Bluetooth server
+        self.ui.button_BtServer.clicked.connect(
+            self.on_bt_server_start_stop_button_clicked)
+        self.ui.button_BtServerSend.clicked.connect(
+            self.on_bt_server_message_send
+        )
+        self.ui.comboBox_BtServerSend.lineEdit().returnPressed.connect(
+            self.on_bt_server_message_send
+        )
+
+        # Bluetooth client
+        self.ui.button_BtClient.clicked.connect(
+            self.on_bt_client_connect_button_clicked
+        )
+        self.ui.button_BtClientSend.clicked.connect(
+            self.on_bt_client_message_send
+        )
+        self.ui.comboBox_BtClientSend.lineEdit().returnPressed.connect(
+            self.on_bt_client_message_send
+        )
+
         self.ui.button_gpib.clicked.connect(
             self.on_gpib_button_clicked
         )
+
+
 
         self.ui.tabWidget.currentChanged.connect(
             self.on_tab_changed
@@ -599,6 +624,191 @@ class MyApp(QtWidgets.QMainWindow):
         self.config['UDP_Target_IP'] = self.ui.lineEdit_UdpTargetIP.text()
         self.config['UDP_Target_Port'] = self.ui.lineEdit_UdpTargetPort.text()
         self.save_config()
+    
+    # Bluetooth Server
+    def on_bt_server_start_stop_button_clicked(self):
+        if self.ui.button_BtServer.text() == 'Start':
+            self.ui.button_BtServer.setEnabled(False)
+            self.ui.lineEdit_BtServerListenPort.setEnabled(False)
+            self.bt_server_thread = QThread()
+            self.bt_server = BluetoothServer(
+                self.ui.lineEdit_BtHostMac.text(),
+                int(self.ui.lineEdit_BtServerListenPort.text()))
+
+            self.bt_server_thread.started.connect(self.bt_server.start)
+            self.bt_server.status.connect(self.on_bt_server_status_update)
+            self.bt_server.message.connect(self.on_bt_server_message_ready)
+
+            self.bt_server.moveToThread(self.bt_server_thread)
+
+            self.bt_server_thread.start()
+
+            self.config['Bluetooth_Server_MAC'] = self.ui.lineEdit_BtHostMac.text()
+            self.config['Bluetooth_Server_Port'] = self.ui.lineEdit_BtServerListenPort.text()
+            self.save_config()
+
+        elif self.ui.button_BtServer.text() == 'Stop':
+            self.ui.button_BtServer.setEnabled(False)
+            self.bt_server.close()
+
+        elif self.ui.button_BtServer.text() == 'Disconnect':
+            self.ui.button_BtServer.setEnabled(False)
+            self.bt_server.disconnect()
+
+    def on_bt_server_status_update(self, status, addr):
+        if status == BluetoothServer.STOP:
+            try:
+                self.bt_server.status.disconnect()
+            except Exception:
+                pass
+            try:
+                self.bt_server.message.disconnect()
+            except Exception:
+                pass
+
+            self.ui.button_BtServer.setText('Start')
+            self.bt_server_thread.quit()
+
+            # self.ui.textBrowser_Message.setEnabled(False)
+            self.ui.comboBox_BtServerSend.setEnabled(False)
+            self.ui.button_BtServerSend.setEnabled(False)
+            self.ui.lineEdit_BtServerListenPort.setEnabled(True)
+            self.status_message[1] = '● Idle'
+            if self.ui.tabWidget.currentIndex() == 1:
+                self.on_tab_changed(1)
+
+        elif status == BluetoothServer.LISTEN:
+            self.ui.button_BtServer.setText('Stop')
+
+            # self.ui.textBrowser_Message.setEnabled(False)
+            self.ui.comboBox_BtServerSend.setEnabled(False)
+            self.ui.button_BtServerSend.setEnabled(False)
+            self.status_message[1] = '● Listen on ' +\
+                self.ui.lineEdit_BtHostMac.text()+':' +\
+                self.ui.lineEdit_BtServerListenPort.text()
+            if self.ui.tabWidget.currentIndex() == 1:
+                self.on_tab_changed(1)
+
+        elif status == BluetoothServer.CONNECTED:
+            self.ui.button_BtServer.setText('Disconnect')
+
+            # self.ui.textBrowser_Message.setEnabled(True)
+            self.ui.comboBox_BtServerSend.setEnabled(True)
+            self.ui.button_BtServerSend.setEnabled(True)
+            self.status_message[1] = '● Connected to '+addr
+            if self.ui.tabWidget.currentIndex() == 1:
+                self.on_tab_changed(1)
+            # self.bt_server.send('Hello World')
+
+        self.ui.button_BtServer.setEnabled(True)
+
+    def on_bt_server_message_ready(self, source, msg):
+        self.ui.textBrowser_Message.append(
+            '<p style="text-align: center;"><span style="color: #2196F3;"><strong>----- ' +
+            source +
+            ' -----</strong></span></p>')
+        self.ui.textBrowser_Message.append(
+            '<p style="text-align: center;"><span style="color: #2196F3;">' +
+            msg +
+            '</span></p>')
+
+    def on_bt_server_message_send(self):
+        self.bt_server.send(self.ui.comboBox_BtServerSend.currentText())
+        self.ui.textBrowser_Message.append(
+            '<p style="text-align: center;"><strong>----- ' +
+            'this' +
+            ' -----</strong></p>')
+        self.ui.textBrowser_Message.append(
+            '<p style="text-align: center;">' +
+            self.ui.comboBox_BtServerSend.currentText() +
+            '</p>')
+        self.ui.comboBox_BtServerSend.addItem(
+            self.ui.comboBox_BtServerSend.currentText())
+        self.ui.comboBox_BtServerSend.clearEditText()
+    
+    # Bluetooth Client
+    def on_bt_client_connect_button_clicked(self):
+        if self.ui.button_BtClient.text() == 'Connect':
+            self.ui.button_BtClient.setEnabled(False)
+            self.ui.lineEdit_BtClientTargetMac.setEnabled(False)
+            self.ui.lineEdit_BtClientTargetPort.setEnabled(False)
+
+            self.bt_client_thread = QThread()
+            self.bt_client = BluetoothClient(
+                self.ui.lineEdit_BtClientTargetMac.text(),
+                int(self.ui.lineEdit_BtClientTargetPort.text()))
+
+            self.bt_client_thread.started.connect(self.bt_client.start)
+            self.bt_client.status.connect(self.on_bt_client_status_update)
+            self.bt_client.message.connect(self.on_bt_client_message_ready)
+
+            self.bt_client.moveToThread(self.bt_client_thread)
+
+            self.bt_client_thread.start()
+
+            self.config['Bluetooth_Client_MAC'] = self.ui.lineEdit_BtClientTargetMac.text()
+            self.config['Bluetooth_Client_Port'] = self.ui.lineEdit_BtClientTargetPort.text()
+            self.save_config()
+
+        elif self.ui.button_BtClient.text() == 'Disconnect':
+            self.ui.button_BtClient.setEnabled(False)
+            self.bt_client.close()
+
+    def on_bt_client_status_update(self, status, addr):
+        if status == BluetoothClient.STOP:
+            self.bt_client.status.disconnect()
+            self.bt_client.message.disconnect()
+
+            self.ui.button_BtClient.setText('Connect')
+            self.bt_client_thread.quit()
+
+            self.ui.lineEdit_BtClientTargetMac.setEnabled(True)
+            self.ui.lineEdit_BtClientTargetPort.setEnabled(True)
+
+            # self.ui.textBrowser_Message.setEnabled(False)
+            self.ui.comboBox_BtClientSend.setEnabled(False)
+            self.ui.button_BtClientSend.setEnabled(False)
+            self.status_message[0] = '● Idle'
+            if self.ui.tabWidget.currentIndex() == 0:
+                self.on_tab_changed(0)
+
+        elif status == BluetoothClient.CONNECTED:
+            self.ui.button_BtClient.setText('Disconnect')
+
+            # self.ui.textBrowser_Message.setEnabled(True)
+            self.ui.comboBox_BtClientSend.setEnabled(True)
+            self.ui.button_BtClientSend.setEnabled(True)
+            self.status_message[0] = '● Connected to ' +\
+                self.local_bt_addr +\
+                ':'+self.ui.lineEdit_BtClientTargetPort.text()
+            if self.ui.tabWidget.currentIndex() == 0:
+                self.on_tab_changed(0)
+
+        self.ui.button_BtClient.setEnabled(True)
+
+    def on_bt_client_message_ready(self, source, msg):
+        self.ui.textBrowser_Message.append(
+            '<p style="text-align: center;"><span style="color: #2196F3;"><strong>----- ' +
+            source +
+            ' -----</strong></span></p>')
+        self.ui.textBrowser_Message.append(
+            '<p style="text-align: center;"><span style="color: #2196F3;">' +
+            msg +
+            '</span></p>')
+
+    def on_bt_client_message_send(self):
+        self.bt_client.send(self.ui.comboBox_BtClientSend.currentText())
+        self.ui.textBrowser_Message.append(
+            '<p style="text-align: center;"><strong>----- ' +
+            'this' +
+            ' -----</strong></p>')
+        self.ui.textBrowser_Message.append(
+            '<p style="text-align: center;">' +
+            self.ui.comboBox_BtClientSend.currentText() +
+            '</p>')
+        self.ui.comboBox_BtClientSend.addItem(
+            self.ui.comboBox_BtClientSend.currentText())
+        self.ui.comboBox_BtClientSend.clearEditText()
 
     def on_tab_changed(self, index):
         self.update_network_interfaces()
