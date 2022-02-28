@@ -100,7 +100,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>4</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_tcpClient">
        <attribute name="title">
@@ -153,13 +153,6 @@
                  <width>200</width>
                  <height>16777215</height>
                 </size>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="Line" name="line_4">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
                </property>
               </widget>
              </item>
@@ -528,13 +521,6 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="Line" name="line_2">
-                  <property name="orientation">
-                   <enum>Qt::Vertical</enum>
-                  </property>
-                 </widget>
-                </item>
-                <item>
                  <widget class="QLabel" name="label_4">
                   <property name="text">
                    <string>Port:</string>
@@ -678,13 +664,6 @@
               </widget>
              </item>
              <item>
-              <widget class="Line" name="line_11">
-               <property name="orientation">
-                <enum>Qt::Vertical</enum>
-               </property>
-              </widget>
-             </item>
-             <item>
               <widget class="QLabel" name="label_targetPort_2">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
@@ -808,6 +787,16 @@
           <layout class="QVBoxLayout" name="verticalLayout_17">
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_11">
+             <item>
+              <widget class="QLabel" name="label_2">
+               <property name="text">
+                <string>Host MAC:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="lineEdit"/>
+             </item>
              <item>
               <widget class="QLabel" name="label_listenPort_3">
                <property name="sizePolicy">
