@@ -98,9 +98,10 @@ class MyApp(QtWidgets.QMainWindow):
             self.on_tcp_server_message_send
         )
         self.ui.button_TcpRefresh.clicked.connect(self.on_refresh_button_clicked)
-        # self.ui.comboBox_TcpServerSend.returnPressed.connect(
-        #     self.on_tcp_server_message_send
-        # )
+        self.tcp_server_send_edit = self.ui.comboBox_TcpServerSend.lineEdit()
+        self.tcp_server_send_edit.returnPressed.connect(
+            self.on_tcp_server_message_send
+        )
 
         #
         self.local_udp_addr=''
@@ -113,10 +114,10 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.button_TcpClientSend.clicked.connect(
             self.on_tcp_client_message_send
         )
-        # self.ui.comboBox_TcpClientSend.returnPressed.connect(
-        #     self.on_tcp_client_message_send
-        # )
-
+        self.tcp_client_send_edit = self.ui.comboBox_TcpClientSend.lineEdit()
+        self.tcp_client_send_edit.returnPressed.connect(
+            self.on_tcp_client_message_send
+        )
         
 
         self.ui.button_Udp.clicked.connect(
