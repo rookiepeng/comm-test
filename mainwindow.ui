@@ -37,7 +37,7 @@
        <enum>QTabWidget::Rounded</enum>
       </property>
       <property name="currentIndex">
-       <number>3</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="tab_tcpServer">
        <attribute name="title">
@@ -152,7 +152,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="groupBox_5">
+            <widget class="QGroupBox" name="groupBox_TcpServerMessage">
              <property name="title">
               <string>Message:</string>
              </property>
@@ -300,7 +300,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="groupBox_2">
+            <widget class="QGroupBox" name="groupBox_TcpClientMessage">
              <property name="title">
               <string>Message:</string>
              </property>
