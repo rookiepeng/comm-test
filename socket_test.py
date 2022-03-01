@@ -39,7 +39,6 @@
 
 """
 
-from email.message import Message
 import sys
 from PySide6 import QtWidgets, QtCore, QtGui
 from PySide6.QtCore import Qt
