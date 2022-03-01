@@ -250,7 +250,6 @@ class MyApp(QtWidgets.QMainWindow):
 
         self.ui.groupBox_GpibMessage.setEnabled(False)
 
-
     def on_gpib_button_clicked(self):
         self.ui.button_gpib.setEnabled(False)
         if self.ui.button_gpib.text() == 'Open':
@@ -394,7 +393,8 @@ class MyApp(QtWidgets.QMainWindow):
         else:
             # self.local_tcp_addr = ''
             self.ui.button_gpib.setEnabled(False)
-    
+        self.save_config()
+
     def on_gpib_message_send(self):
         if self.ui.comboBox_GPIB_SendType.currentText() == 'Write':
             self.device.write(self.ui.comboBox_GPIBSend.currentText())
@@ -434,7 +434,7 @@ class MyApp(QtWidgets.QMainWindow):
 
     def on_refresh_button_clicked(self):
         self.update_network_interfaces()
-    
+
     def on_gpib_refresh_button_clicked(self):
         self.update_gpib_interfaces()
 
