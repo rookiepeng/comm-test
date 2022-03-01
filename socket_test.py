@@ -176,11 +176,13 @@ class MyApp(QtWidgets.QMainWindow):
         )
 
         # GPIB
-        self.ui.button_UdpRefresh.clicked.connect(
+        self.ui.button_GpibRefresh.clicked.connect(
             self.on_gpib_refresh_button_clicked)
         self.ui.button_gpib.clicked.connect(
             self.on_gpib_button_clicked
         )
+
+
         self.ui.tabWidget.currentChanged.connect(
             self.on_tab_changed
         )
@@ -241,24 +243,33 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.comboBox_GPIB_SendType.addItem('Write Binary')
         self.ui.comboBox_GPIB_SendType.addItem('Query Binary')
 
-        self.ui.comboBox_GPIB_SendType.setEnabled(False)
-        self.ui.comboBox_GPIBSend.setEnabled(False)
-        self.ui.button_GPIBSend.setEnabled(False)
+        self.ui.groupBox_GpibMessage.setEnabled(False)
+        # self.ui.comboBox_GPIB_SendType.setEnabled(False)
+        # self.ui.comboBox_GPIBSend.setEnabled(False)
+        # self.ui.button_GPIBSend.setEnabled(False)
 
     def on_gpib_button_clicked(self):
         self.ui.button_gpib.setEnabled(False)
-        if self.ui.button_gpib.text() == 'Open device':
+        if self.ui.button_gpib.text() == 'Open':
             self.device = self.gpib_manager.open_resource(
                 self.ui.comboBox_TcpInterface.currentText())
-            self.ui.button_gpib.setText('Close device')
-        elif self.ui.button_gpib.text() == 'Close device':
+            self.ui.button_gpib.setText('Close')
+            self.ui.groupBox_GpibMessage.setEnabled(True)
+
+            self.ui.comboBox_GpibInterface.setEnabled(False)
+            self.ui.button_GpibRefresh.setEnabled(False)
+        elif self.ui.button_gpib.text() == 'Close':
             self.device.close()
-            self.ui.button_gpib.setText('Open device')
+            self.ui.button_gpib.setText('Open')
+            self.ui.groupBox_GpibMessage.setEnabled(False)
+
+            self.ui.comboBox_GpibInterface.setEnabled(True)
+            self.ui.button_GpibRefresh.setEnabled(True)
 
         self.ui.button_gpib.setEnabled(True)
 
     def update_gpib_interfaces(self):
-        self.gpib_manager = visa.ResourceManager('@py')
+        self.gpib_manager = visa.ResourceManager()
         self.gpib_list = self.gpib_manager.list_resources()
 
         gpib_interface_idx = self.config.get('GPIBInterface', 0)
