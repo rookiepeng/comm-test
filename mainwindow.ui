@@ -904,7 +904,7 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout">
              <item>
-              <widget class="QComboBox" name="comboBox_8">
+              <widget class="QComboBox" name="comboBox_GpibInterface">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>1</horstretch>
@@ -914,7 +914,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="pushButton_2">
+              <widget class="QPushButton" name="button_GpibRefresh">
                <property name="text">
                 <string/>
                </property>
