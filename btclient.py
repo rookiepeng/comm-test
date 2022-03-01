@@ -87,7 +87,7 @@ class BluetoothClient(QObject):
                     else:
                         if data:
                             self.message.emit(
-                                self.mac+':'+str(self.port),
+                                self.mac+' ('+str(self.port)+')',
                                 data.decode())
                         else:
                             break

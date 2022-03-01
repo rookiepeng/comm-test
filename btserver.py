@@ -90,7 +90,7 @@ class BluetoothServer(QObject):
                         pass
                     else:
                         self.status.emit(
-                            self.CONNECTED, addr[0]+':'+str(addr[1]))
+                            self.CONNECTED, addr[0]+' ('+str(addr[1])+')')
 
                         while True:
                             # print('waiting for data')
@@ -102,7 +102,7 @@ class BluetoothServer(QObject):
                                 else:
                                     if data:
                                         self.message.emit(
-                                            addr[0]+':'+str(addr[1]),
+                                            addr[0]+' ('+str(addr[1])+')',
                                             data.decode())
                                     else:
                                         self.status.emit(self.LISTEN, '')
