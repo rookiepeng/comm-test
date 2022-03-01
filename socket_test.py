@@ -258,7 +258,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.button_gpib.setEnabled(True)
 
     def update_gpib_interfaces(self):
-        self.gpib_manager = visa.ResourceManager()
+        self.gpib_manager = visa.ResourceManager('@py')
         self.gpib_list = self.gpib_manager.list_resources()
 
         gpib_interface_idx = self.config.get('GPIBInterface', 0)
