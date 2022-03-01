@@ -255,7 +255,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.button_gpib.setEnabled(False)
         if self.ui.button_gpib.text() == 'Open':
             self.device = self.gpib_manager.open_resource(
-                self.ui.comboBox_TcpInterface.currentText())
+                self.ui.comboBox_GpibInterface.currentText())
             self.ui.button_gpib.setText('Close')
             self.ui.groupBox_GpibMessage.setEnabled(True)
 
