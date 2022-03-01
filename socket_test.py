@@ -175,10 +175,12 @@ class MyApp(QtWidgets.QMainWindow):
             self.on_bt_client_message_send
         )
 
+        # GPIB
+        self.ui.button_UdpRefresh.clicked.connect(
+            self.on_gpib_refresh_button_clicked)
         self.ui.button_gpib.clicked.connect(
             self.on_gpib_button_clicked
         )
-
         self.ui.tabWidget.currentChanged.connect(
             self.on_tab_changed
         )
@@ -194,6 +196,7 @@ class MyApp(QtWidgets.QMainWindow):
     def init_ui(self):
         # Interface
         self.update_network_interfaces()
+        self.update_gpib_interfaces()
 
         self.ui.tabWidget.setCurrentIndex(self.config.get('Tab_Index', 0))
         self.on_tab_changed()
@@ -258,24 +261,18 @@ class MyApp(QtWidgets.QMainWindow):
         self.gpib_manager = visa.ResourceManager()
         self.gpib_list = self.gpib_manager.list_resources()
 
-        tcp_interface_idx = self.config.get('GPIBInterface', 0)
-        self.ui.comboBox_TcpInterface.clear()
-
+        gpib_interface_idx = self.config.get('GPIBInterface', 0)
+        self.ui.comboBox_GpibInterface.clear()
         for if_name in self.gpib_list:
-            self.ui.comboBox_TcpInterface.addItem(if_name)
+            self.ui.comboBox_GpibInterface.addItem(if_name)
 
-        if tcp_interface_idx >= self.ui.comboBox_TcpInterface.count():
-            self.ui.comboBox_TcpInterface.setCurrentIndex(0)
-        else:
-            self.ui.comboBox_TcpInterface.setCurrentIndex(tcp_interface_idx)
-
-        self.config['GPIBInterface'] = self.ui.comboBox_TcpInterface.currentIndex()
+        self.config['GPIBInterface'] = self.ui.comboBox_GpibInterface.currentIndex()
 
         if len(self.gpib_list) > 0:
-            # self.local_tcp_addr = self.gpib_list[tcp_interface_idx]
+            self.gpib_interface = self.gpib_list[gpib_interface_idx]
             self.ui.button_gpib.setEnabled(True)
         else:
-            # self.local_tcp_addr = ''
+            self.gpib_interface = ''
             self.ui.button_gpib.setEnabled(False)
 
         self.save_config()
@@ -386,6 +383,9 @@ class MyApp(QtWidgets.QMainWindow):
 
     def on_refresh_button_clicked(self):
         self.update_network_interfaces()
+    
+    def on_gpib_refresh_button_clicked(self):
+        self.update_gpib_interfaces()
 
     # TCP Client
     def on_tcp_client_connect_button_clicked(self):
