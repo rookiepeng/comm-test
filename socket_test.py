@@ -281,7 +281,7 @@ class MyApp(QtWidgets.QMainWindow):
 
         if udp_interface_idx >= self.ui.comboBox_UdpInterface.count():
             self.ui.comboBox_UdpInterface.setCurrentIndex(0)
-            self.config['UdpInterface']
+            self.config['UdpInterface'] = 0
         else:
             self.ui.comboBox_UdpInterface.setCurrentIndex(udp_interface_idx)
 
@@ -449,6 +449,8 @@ class MyApp(QtWidgets.QMainWindow):
         if self.ui.button_TcpServer.text() == 'Start':
             self.ui.button_TcpServer.setEnabled(False)
             self.ui.lineEdit_TcpServerListenPort.setEnabled(False)
+            self.ui.comboBox_TcpInterface.setEnabled(False)
+            self.ui.button_TcpRefresh.setEnabled(False)
             self.tcp_server_thread = QThread()
             self.tcp_server = TCPServer(
                 self.local_tcp_addr,
@@ -491,6 +493,8 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.comboBox_TcpServerSend.setEnabled(False)
             self.ui.button_TcpServerSend.setEnabled(False)
             self.ui.lineEdit_TcpServerListenPort.setEnabled(True)
+            self.ui.comboBox_TcpInterface.setEnabled(True)
+            self.ui.button_TcpRefresh.setEnabled(True)
             self.status_message[1] = '● Idle'
             if self.ui.tabWidget.currentIndex() == 1:
                 self.on_tab_changed(1)
@@ -549,6 +553,8 @@ class MyApp(QtWidgets.QMainWindow):
         if self.ui.button_Udp.text() == 'Start':
             self.ui.button_Udp.setEnabled(False)
             self.ui.lineEdit_UdpListenPort.setEnabled(False)
+            self.ui.comboBox_UdpInterface.setEnabled(False)
+            self.ui.button_UdpRefresh.setEnabled(False)
             self.udp_thread = QThread()
             self.udp_server = UDPServer(
                 self.local_udp_addr,
@@ -579,6 +585,8 @@ class MyApp(QtWidgets.QMainWindow):
             self.udp_thread.quit()
 
             self.ui.lineEdit_UdpListenPort.setEnabled(True)
+            self.ui.comboBox_UdpInterface.setEnabled(True)
+            self.ui.button_UdpRefresh.setEnabled(True)
             self.status_message[2] = '● Idle'
             if self.ui.tabWidget.currentIndex() == 2:
                 self.on_tab_changed(2)
