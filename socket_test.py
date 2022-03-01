@@ -181,7 +181,12 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.button_gpib.clicked.connect(
             self.on_gpib_button_clicked
         )
-
+        self.ui.button_GPIBSend.clicked.connect(
+            self.on_gpib_message_send
+        )
+        self.ui.comboBox_GPIBSend.lineEdit().returnPressed.connect(
+            self.on_gpib_message_send
+        )
 
         self.ui.tabWidget.currentChanged.connect(
             self.on_tab_changed
@@ -238,15 +243,13 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.groupBox_BtClientMessage.setEnabled(False)
 
         # GPIO
-        self.ui.comboBox_GPIB_SendType.addItem('Write ASCII')
-        self.ui.comboBox_GPIB_SendType.addItem('Query ASCII')
-        self.ui.comboBox_GPIB_SendType.addItem('Write Binary')
-        self.ui.comboBox_GPIB_SendType.addItem('Query Binary')
+        self.ui.comboBox_GPIB_SendType.addItem('Write')
+        self.ui.comboBox_GPIB_SendType.addItem('Query')
+        # self.ui.comboBox_GPIB_SendType.addItem('Write Binary')
+        # self.ui.comboBox_GPIB_SendType.addItem('Query Binary')
 
         self.ui.groupBox_GpibMessage.setEnabled(False)
-        # self.ui.comboBox_GPIB_SendType.setEnabled(False)
-        # self.ui.comboBox_GPIBSend.setEnabled(False)
-        # self.ui.button_GPIBSend.setEnabled(False)
+
 
     def on_gpib_button_clicked(self):
         self.ui.button_gpib.setEnabled(False)
@@ -391,6 +394,43 @@ class MyApp(QtWidgets.QMainWindow):
         else:
             # self.local_tcp_addr = ''
             self.ui.button_gpib.setEnabled(False)
+    
+    def on_gpib_message_send(self):
+        if self.ui.comboBox_GPIB_SendType.currentText() == 'Write':
+            self.device.write(self.ui.comboBox_GPIBSend.currentText())
+            self.ui.textBrowser_Message.append(
+                '<p style="text-align: center;"><strong>----- ' +
+                'this' +
+                ' -----</strong></p>')
+            self.ui.textBrowser_Message.append(
+                '<p style="text-align: center;">' +
+                self.ui.comboBox_GPIBSend.currentText() +
+                '</p>')
+            self.ui.comboBox_GPIBSend.addItem(
+                self.ui.comboBox_GPIBSend.currentText())
+            self.ui.comboBox_GPIBSend.clearEditText()
+        elif self.ui.comboBox_GPIB_SendType.currentText() == 'Query':
+            output = self.device.query(self.ui.comboBox_GPIBSend.currentText())
+            self.ui.textBrowser_Message.append(
+                '<p style="text-align: center;"><strong>----- ' +
+                'this' +
+                ' -----</strong></p>')
+            self.ui.textBrowser_Message.append(
+                '<p style="text-align: center;">' +
+                self.ui.comboBox_GPIBSend.currentText() +
+                '</p>')
+            self.ui.comboBox_GPIBSend.addItem(
+                self.ui.comboBox_GPIBSend.currentText())
+            self.ui.comboBox_GPIBSend.clearEditText()
+
+            self.ui.textBrowser_Message.append(
+                '<p style="text-align: center;"><span style="color: #2196F3;"><strong>----- ' +
+                self.ui.comboBox_GpibInterface.currentText() +
+                ' -----</strong></span></p>')
+            self.ui.textBrowser_Message.append(
+                '<p style="text-align: center;"><span style="color: #2196F3;">' +
+                output +
+                '</span></p>')
 
     def on_refresh_button_clicked(self):
         self.update_network_interfaces()
