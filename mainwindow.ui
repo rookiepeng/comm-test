@@ -937,7 +937,7 @@
          </widget>
         </item>
         <item>
-         <widget class="QGroupBox" name="groupBox_9">
+         <widget class="QGroupBox" name="groupBox_GpibMessage">
           <property name="title">
            <string>Message:</string>
           </property>
