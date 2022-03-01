@@ -60,7 +60,8 @@ class BluetoothClient(QObject):
 
         self.mac = mac
         self.port = port
-        self.bt_socket = socket.socket(socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
+        self.bt_socket = socket.socket(
+            socket.AF_BLUETOOTH, socket.SOCK_STREAM, socket.BTPROTO_RFCOMM)
         self.bt_socket.settimeout(1)
 
         self.signal = self.SIG_NORMAL
