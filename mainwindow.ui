@@ -553,13 +553,15 @@
                 </item>
                </layout>
               </item>
-              <item>
-               <widget class="Line" name="line_3">
-                <property name="orientation">
-                 <enum>Qt::Horizontal</enum>
-                </property>
-               </widget>
-              </item>
+             </layout>
+            </widget>
+           </item>
+           <item>
+            <widget class="QGroupBox" name="groupBox_UdpMessage">
+             <property name="title">
+              <string>Message:</string>
+             </property>
+             <layout class="QVBoxLayout" name="verticalLayout_19">
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_6">
                 <item>
@@ -689,7 +691,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="groupBox_18">
+            <widget class="QGroupBox" name="groupBox_BtServerMessage">
              <property name="title">
               <string>Message:</string>
              </property>
@@ -834,7 +836,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="groupBox_12">
+            <widget class="QGroupBox" name="groupBox_BtClientMessage">
              <property name="title">
               <string>Message:</string>
              </property>
