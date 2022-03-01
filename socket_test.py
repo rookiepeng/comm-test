@@ -182,21 +182,19 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.tabWidget.setCurrentIndex(self.config.get('Tab_Index', 0))
         self.on_tab_changed(self.config.get('Tab_Index', 0))
 
+        # TCP Server
+        self.ui.comboBox_TcpServerSend.setEnabled(False)
+        self.ui.button_TcpServerSend.setEnabled(False)
+        tcp_server_port = self.config.get('TCP_Server_Port', '1234')
+        self.ui.lineEdit_TcpServerListenPort.setText(tcp_server_port)
+
         # TCP Client
         self.ui.comboBox_TcpClientSend.setEnabled(False)
         self.ui.button_TcpClientSend.setEnabled(False)
-
         tcp_client_ip = self.config.get('TCP_Client_IP', '127.0.0.1')
         tcp_client_port = self.config.get('TCP_Client_Port', '1234')
         self.ui.lineEdit_TcpClientTargetIP.setText(tcp_client_ip)
         self.ui.lineEdit_TcpClientTargetPort.setText(tcp_client_port)
-
-        # TCP Server
-        self.ui.comboBox_TcpServerSend.setEnabled(False)
-        self.ui.button_TcpServerSend.setEnabled(False)
-
-        tcp_server_port = self.config.get('TCP_Server_Port', '1234')
-        self.ui.lineEdit_TcpServerListenPort.setText(tcp_server_port)
 
         # UDP
         udp_listen_port = self.config.get('UDP_Listen_Port', '1234')
@@ -205,6 +203,18 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.lineEdit_UdpListenPort.setText(udp_listen_port)
         self.ui.lineEdit_UdpTargetIP.setText(udp_target_ip)
         self.ui.lineEdit_UdpTargetPort.setText(udp_target_port)
+
+        # Bluetooth Server
+        self.ui.lineEdit_BtHostMac.setText(self.config.get('Bluetooth_Server_MAC', ''))
+        self.ui.lineEdit_BtServerListenPort.setText(self.config.get('Bluetooth_Server_Port', '11'))
+        self.ui.comboBox_BtServerSend.setEnabled(False)
+        self.ui.button_BtServerSend.setEnabled(False)
+
+        # Bluetooth Client
+        self.ui.lineEdit_BtClientTargetMac.setText(self.config.get('Bluetooth_Client_MAC', ''))
+        self.ui.lineEdit_BtClientTargetPort.setText(self.config.get('Bluetooth_Client_Port', '11'))
+        self.ui.comboBox_BtClientSend.setEnabled(False)
+        self.ui.button_BtClientSend.setEnabled(False)
 
         # GPIO
         self.ui.comboBox_GPIB_SendType.addItem('Write ASCII')
@@ -638,6 +648,7 @@ class MyApp(QtWidgets.QMainWindow):
         if self.ui.button_BtServer.text() == 'Start':
             self.ui.button_BtServer.setEnabled(False)
             self.ui.lineEdit_BtServerListenPort.setEnabled(False)
+            self.ui.lineEdit_BtHostMac.setEnabled(False)
             self.bt_server_thread = QThread()
             self.bt_server = BluetoothServer(
                 self.ui.lineEdit_BtHostMac.text(),
@@ -681,6 +692,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.comboBox_BtServerSend.setEnabled(False)
             self.ui.button_BtServerSend.setEnabled(False)
             self.ui.lineEdit_BtServerListenPort.setEnabled(True)
+            self.ui.lineEdit_BtHostMac.setEnabled(True)
             self.status_message[1] = '● Idle'
             if self.ui.tabWidget.currentIndex() == 1:
                 self.on_tab_changed(1)
