@@ -399,38 +399,38 @@ class MyApp(QtWidgets.QMainWindow):
         if self.ui.comboBox_GPIB_SendType.currentText() == 'Write':
             self.device.write(self.ui.comboBox_GPIBSend.currentText())
             self.ui.textBrowser_Message.append(
-                '<p style="text-align: center;"><strong>----- ' +
+                '<div><strong>----- ' +
                 'this' +
-                ' -----</strong></p>')
+                ' -----</strong></div>')
             self.ui.textBrowser_Message.append(
-                '<p style="text-align: center;">' +
+                '<div>' +
                 self.ui.comboBox_GPIBSend.currentText() +
-                '</p>')
+                '</div>')
             self.ui.comboBox_GPIBSend.addItem(
                 self.ui.comboBox_GPIBSend.currentText())
             self.ui.comboBox_GPIBSend.clearEditText()
         elif self.ui.comboBox_GPIB_SendType.currentText() == 'Query':
             output = self.device.query(self.ui.comboBox_GPIBSend.currentText())
             self.ui.textBrowser_Message.append(
-                '<p style="text-align: center;"><strong>----- ' +
+                '<div><strong>----- ' +
                 'this' +
-                ' -----</strong></p>')
+                ' -----</strong></div>')
             self.ui.textBrowser_Message.append(
-                '<p style="text-align: center;">' +
+                '<div>' +
                 self.ui.comboBox_GPIBSend.currentText() +
-                '</p>')
+                '</div>')
             self.ui.comboBox_GPIBSend.addItem(
                 self.ui.comboBox_GPIBSend.currentText())
             self.ui.comboBox_GPIBSend.clearEditText()
 
             self.ui.textBrowser_Message.append(
-                '<p style="text-align: center;"><span style="color: #2196F3;"><strong>----- ' +
+                '<div><span style="color: #2196F3;"><strong>----- ' +
                 self.ui.comboBox_GpibInterface.currentText() +
-                ' -----</strong></span></p>')
+                ' -----</strong></span></div>')
             self.ui.textBrowser_Message.append(
-                '<p style="text-align: center;"><span style="color: #2196F3;">' +
+                '<div><span style="color: #2196F3;">' +
                 output +
-                '</span></p>')
+                '</span></div>')
 
     def on_refresh_button_clicked(self):
         self.update_network_interfaces()
@@ -495,24 +495,24 @@ class MyApp(QtWidgets.QMainWindow):
 
     def on_tcp_client_message_ready(self, source, msg):
         self.ui.textBrowser_Message.append(
-            '<p style="text-align: center;"><span style="color: #2196F3;"><strong>----- ' +
+            '<div><span style="color: #2196F3;"><strong>----- ' +
             source +
-            ' -----</strong></span></p>')
+            ' -----</strong></span></div>')
         self.ui.textBrowser_Message.append(
-            '<p style="text-align: center;"><span style="color: #2196F3;">' +
+            '<div><span style="color: #2196F3;">' +
             msg +
-            '</span></p>')
+            '</span></div>')
 
     def on_tcp_client_message_send(self):
         self.tcp_client.send(self.ui.comboBox_TcpClientSend.currentText())
         self.ui.textBrowser_Message.append(
-            '<p style="text-align: center;"><strong>----- ' +
+            '<div><strong>----- ' +
             'this' +
-            ' -----</strong></p>')
+            ' -----</strong></div>')
         self.ui.textBrowser_Message.append(
-            '<p style="text-align: center;">' +
+            '<div>' +
             self.ui.comboBox_TcpClientSend.currentText() +
-            '</p>')
+            '</div>')
         self.ui.comboBox_TcpClientSend.addItem(
             self.ui.comboBox_TcpClientSend.currentText())
         self.ui.comboBox_TcpClientSend.clearEditText()
@@ -589,24 +589,24 @@ class MyApp(QtWidgets.QMainWindow):
 
     def on_tcp_server_message_ready(self, source, msg):
         self.ui.textBrowser_Message.append(
-            '<p style="text-align: center;"><span style="color: #2196F3;"><strong>----- ' +
+            '<div style="color: #2196F3;">----- ' +
             source +
-            ' -----</strong></span></p>')
+            ' -----</div>')
         self.ui.textBrowser_Message.append(
-            '<p style="text-align: center;"><span style="color: #2196F3;">' +
+            '<div style="color: #2196F3;">' +
             msg +
-            '</span></p>')
+            '</div>')
 
     def on_tcp_server_message_send(self):
         self.tcp_server.send(self.ui.comboBox_TcpServerSend.currentText())
         self.ui.textBrowser_Message.append(
-            '<p style="text-align: center;"><strong>----- ' +
+            '<div><strong>----- ' +
             'this' +
-            ' -----</strong></p>')
+            ' -----</strong></div>')
         self.ui.textBrowser_Message.append(
-            '<p style="text-align: center;">' +
+            '<div>' +
             self.ui.comboBox_TcpServerSend.currentText() +
-            '</p>')
+            '</div>')
         self.ui.comboBox_TcpServerSend.addItem(
             self.ui.comboBox_TcpServerSend.currentText())
         self.ui.comboBox_TcpServerSend.clearEditText()
@@ -663,13 +663,13 @@ class MyApp(QtWidgets.QMainWindow):
 
     def on_udp_server_message_ready(self, source, msg):
         self.ui.textBrowser_Message.append(
-            '<p style="text-align: center;"><span style="color: #2196F3;"><strong>----- ' +
+            '<div><span style="color: #2196F3;"><strong>----- ' +
             source +
-            ' -----</strong></span></p>')
+            ' -----</strong></span></div>')
         self.ui.textBrowser_Message.append(
-            '<p style="text-align: center;"><span style="color: #2196F3;">' +
+            '<div><span style="color: #2196F3;">' +
             msg +
-            '</span></p>')
+            '</span></div>')
 
     def on_udp_message_send(self):
         self.udp_send.send(
@@ -678,13 +678,13 @@ class MyApp(QtWidgets.QMainWindow):
             int(self.ui.lineEdit_UdpTargetPort.text())
         )
         self.ui.textBrowser_Message.append(
-            '<p style="text-align: center;"><strong>----- ' +
+            '<div><strong>----- ' +
             'this' +
-            ' -----</strong></p>')
+            ' -----</strong></div>')
         self.ui.textBrowser_Message.append(
-            '<p style="text-align: center;">' +
+            '<div>' +
             self.ui.comboBox_UdpSend.currentText() +
-            '</p>')
+            '</div>')
         self.ui.comboBox_UdpSend.addItem(
             self.ui.comboBox_UdpSend.currentText())
         self.ui.comboBox_UdpSend.clearEditText()
@@ -765,24 +765,24 @@ class MyApp(QtWidgets.QMainWindow):
 
     def on_bt_server_message_ready(self, source, msg):
         self.ui.textBrowser_Message.append(
-            '<p style="text-align: center;"><span style="color: #2196F3;"><strong>----- ' +
+            '<div><span style="color: #2196F3;"><strong>----- ' +
             source +
-            ' -----</strong></span></p>')
+            ' -----</strong></span></div>')
         self.ui.textBrowser_Message.append(
-            '<p style="text-align: center;"><span style="color: #2196F3;">' +
+            '<div><span style="color: #2196F3;">' +
             msg +
-            '</span></p>')
+            '</span></div>')
 
     def on_bt_server_message_send(self):
         self.bt_server.send(self.ui.comboBox_BtServerSend.currentText())
         self.ui.textBrowser_Message.append(
-            '<p style="text-align: center;"><strong>----- ' +
+            '<div><strong>----- ' +
             'this' +
-            ' -----</strong></p>')
+            ' -----</strong></div>')
         self.ui.textBrowser_Message.append(
-            '<p style="text-align: center;">' +
+            '<div>' +
             self.ui.comboBox_BtServerSend.currentText() +
-            '</p>')
+            '</div>')
         self.ui.comboBox_BtServerSend.addItem(
             self.ui.comboBox_BtServerSend.currentText())
         self.ui.comboBox_BtServerSend.clearEditText()
@@ -845,24 +845,24 @@ class MyApp(QtWidgets.QMainWindow):
 
     def on_bt_client_message_ready(self, source, msg):
         self.ui.textBrowser_Message.append(
-            '<p style="text-align: center;"><span style="color: #2196F3;"><strong>----- ' +
+            '<div><span style="color: #2196F3;"><strong>----- ' +
             source +
-            ' -----</strong></span></p>')
+            ' -----</strong></span></div>')
         self.ui.textBrowser_Message.append(
-            '<p style="text-align: center;"><span style="color: #2196F3;">' +
+            '<div><span style="color: #2196F3;">' +
             msg +
-            '</span></p>')
+            '</span></div>')
 
     def on_bt_client_message_send(self):
         self.bt_client.send(self.ui.comboBox_BtClientSend.currentText())
         self.ui.textBrowser_Message.append(
-            '<p style="text-align: center;"><strong>----- ' +
+            '<div><strong>----- ' +
             'this' +
-            ' -----</strong></p>')
+            ' -----</strong></div>')
         self.ui.textBrowser_Message.append(
-            '<p style="text-align: center;">' +
+            '<div>' +
             self.ui.comboBox_BtClientSend.currentText() +
-            '</p>')
+            '</div>')
         self.ui.comboBox_BtClientSend.addItem(
             self.ui.comboBox_BtClientSend.currentText())
         self.ui.comboBox_BtClientSend.clearEditText()
