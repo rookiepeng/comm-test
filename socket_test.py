@@ -199,14 +199,12 @@ class MyApp(QtWidgets.QMainWindow):
         self.on_tab_changed()
 
         # TCP Server
-        self.ui.comboBox_TcpServerSend.setEnabled(False)
-        self.ui.button_TcpServerSend.setEnabled(False)
+        self.ui.groupBox_TcpServerMessage.setEnabled(False)
         tcp_server_port = self.config.get('TCP_Server_Port', '1234')
         self.ui.lineEdit_TcpServerListenPort.setText(tcp_server_port)
 
         # TCP Client
-        self.ui.comboBox_TcpClientSend.setEnabled(False)
-        self.ui.button_TcpClientSend.setEnabled(False)
+        self.ui.groupBox_TcpClientMessage.setEnabled(False)
         tcp_client_ip = self.config.get('TCP_Client_IP', '127.0.0.1')
         tcp_client_port = self.config.get('TCP_Client_Port', '1234')
         self.ui.lineEdit_TcpClientTargetIP.setText(tcp_client_ip)
@@ -430,15 +428,13 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.lineEdit_TcpClientTargetIP.setEnabled(True)
             self.ui.lineEdit_TcpClientTargetPort.setEnabled(True)
 
-            self.ui.comboBox_TcpClientSend.setEnabled(False)
-            self.ui.button_TcpClientSend.setEnabled(False)
+            self.ui.groupBox_TcpClientMessage.setEnabled(False)
             self.status['TCP']['Client'] = '[CLIENT] Idle'
 
         elif status == TCPClient.CONNECTED:
             self.ui.button_TcpClient.setText('Disconnect')
 
-            self.ui.comboBox_TcpClientSend.setEnabled(True)
-            self.ui.button_TcpClientSend.setEnabled(True)
+            self.ui.groupBox_TcpClientMessage.setEnabled(True)
             self.status['TCP']['Client'] = '[CLIENT] Connected to ' +\
                 self.ui.lineEdit_TcpClientTargetIP.text() +\
                 ':'+self.ui.lineEdit_TcpClientTargetPort.text()
@@ -517,8 +513,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.button_TcpServer.setText('Start')
             self.tcp_server_thread.quit()
 
-            self.ui.comboBox_TcpServerSend.setEnabled(False)
-            self.ui.button_TcpServerSend.setEnabled(False)
+            self.ui.groupBox_TcpServerMessage.setEnabled(False)
             self.ui.lineEdit_TcpServerListenPort.setEnabled(True)
             self.ui.comboBox_TcpInterface.setEnabled(True)
             self.ui.button_TcpRefresh.setEnabled(True)
@@ -527,8 +522,7 @@ class MyApp(QtWidgets.QMainWindow):
         elif status == TCPServer.LISTEN:
             self.ui.button_TcpServer.setText('Stop')
 
-            self.ui.comboBox_TcpServerSend.setEnabled(False)
-            self.ui.button_TcpServerSend.setEnabled(False)
+            self.ui.groupBox_TcpServerMessage.setEnabled(False)
             self.status['TCP']['Server'] = '[SERVER] Listen on ' +\
                 self.local_tcp_addr+':' +\
                 self.ui.lineEdit_TcpServerListenPort.text()
@@ -536,8 +530,7 @@ class MyApp(QtWidgets.QMainWindow):
         elif status == TCPServer.CONNECTED:
             self.ui.button_TcpServer.setText('Disconnect')
 
-            self.ui.comboBox_TcpServerSend.setEnabled(True)
-            self.ui.button_TcpServerSend.setEnabled(True)
+            self.ui.groupBox_TcpServerMessage.setEnabled(True)
             self.status['TCP']['Server'] = '[SERVER] Connected with '+addr
 
         self.ui.button_TcpServer.setEnabled(True)
