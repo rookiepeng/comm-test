@@ -39,6 +39,7 @@
 
 """
 
+from email.message import Message
 import sys
 from PySide6 import QtWidgets, QtCore, QtGui
 from PySide6.QtCore import Qt
@@ -72,6 +73,30 @@ class MyApp(QtWidgets.QMainWindow):
 
         self.status_message = ['● Idle', '● Idle',
                                '● Idle', '● Idle', '']
+        
+        self.status = dict(
+            TCP = dict(
+                Server='[SERVER] Idle',
+                Client='[CLIENT] Idle',
+                Message='[SERVER] Idle ● [CLIENT] Idle'
+            ),
+            UDP = dict(
+                Server='[SERVER] Idle',
+                Client='[CLIENT] Idle',
+                Message='[SERVER] Idle ● [CLIENT] Idle'
+            ),
+            Bluetooth = dict(
+                Server='[SERVER] Idle',
+                Client='[CLIENT] Idle',
+                Message='[SERVER] Idle ● [CLIENT] Idle'
+            ),
+            GPIB = dict(
+                Message='Idle'
+            ),
+            About = dict(
+                Message=''
+            )
+        )
 
         config_file = Path('config.json')
 
@@ -91,7 +116,6 @@ class MyApp(QtWidgets.QMainWindow):
         self.init_ui()
 
         # TCP server
-        self.local_tcp_addr = ''
         self.ui.comboBox_TcpInterface.currentIndexChanged.connect(
             self.on_tcp_interface_selection_change)
         self.ui.button_TcpServer.clicked.connect(
@@ -117,7 +141,6 @@ class MyApp(QtWidgets.QMainWindow):
         )
 
         # UDP
-        self.local_udp_addr = ''
         self.ui.comboBox_UdpInterface.currentIndexChanged.connect(
             self.on_udp_interface_selection_change)
         self.ui.button_UdpRefresh.clicked.connect(
@@ -180,7 +203,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.update_network_interfaces()
 
         self.ui.tabWidget.setCurrentIndex(self.config.get('Tab_Index', 0))
-        self.on_tab_changed(self.config.get('Tab_Index', 0))
+        self.on_tab_changed()
 
         # TCP Server
         self.ui.comboBox_TcpServerSend.setEnabled(False)
@@ -256,10 +279,10 @@ class MyApp(QtWidgets.QMainWindow):
         self.config['GPIBInterface'] = self.ui.comboBox_TcpInterface.currentIndex()
 
         if len(self.gpib_list) > 0:
-            self.local_tcp_addr = self.gpib_list[tcp_interface_idx]
+            # self.local_tcp_addr = self.gpib_list[tcp_interface_idx]
             self.ui.button_gpib.setEnabled(True)
         else:
-            self.local_tcp_addr = ''
+            # self.local_tcp_addr = ''
             self.ui.button_gpib.setEnabled(False)
 
         self.save_config()
@@ -300,6 +323,7 @@ class MyApp(QtWidgets.QMainWindow):
             if snicaddr.family == socket.AF_INET:
                 tcp_addr = tcp_addr + 'IPv4: ' + snicaddr.address + ' '
                 self.local_tcp_addr = snicaddr.address
+                break
             else:
                 self.local_tcp_addr = '0.0.0.0'
             # elif snicaddr.family == socket.AF_INET6:
@@ -311,6 +335,7 @@ class MyApp(QtWidgets.QMainWindow):
             if snicaddr.family == socket.AF_INET:
                 udp_addr = udp_addr + 'IPv4: ' + snicaddr.address + ' '
                 self.local_udp_addr = snicaddr.address
+                break
             else:
                 self.local_udp_addr = '0.0.0.0'
             # elif snicaddr.family == socket.AF_INET6:
@@ -360,11 +385,11 @@ class MyApp(QtWidgets.QMainWindow):
         self.config['GPIBInterface'] = self.ui.comboBox_TcpInterface.currentIndex()
 
         if len(self.gpib_list) > 0:
-            self.local_tcp_addr = self.gpib_list[self.ui.comboBox_TcpInterface.currentIndex(
-            )]
+            # self.local_tcp_addr = self.gpib_list[self.ui.comboBox_TcpInterface.currentIndex(
+            # )]
             self.ui.button_gpib.setEnabled(True)
         else:
-            self.local_tcp_addr = ''
+            # self.local_tcp_addr = ''
             self.ui.button_gpib.setEnabled(False)
 
     def on_refresh_button_clicked(self):
@@ -412,23 +437,28 @@ class MyApp(QtWidgets.QMainWindow):
             # self.ui.textBrowser_Message.setEnabled(False)
             self.ui.comboBox_TcpClientSend.setEnabled(False)
             self.ui.button_TcpClientSend.setEnabled(False)
-            self.status_message[0] = '● Idle'
-            if self.ui.tabWidget.currentIndex() == 0:
-                self.on_tab_changed(0)
-
+            # self.status_message[0] = '● Idle'
+            self.status['TCP']['Client'] = '[CLIENT] Idle'
+            # if self.ui.tabWidget.currentIndex() == 0:
+            #     self.on_tab_changed(0)
         elif status == TCPClient.CONNECTED:
             self.ui.button_TcpClient.setText('Disconnect')
 
             # self.ui.textBrowser_Message.setEnabled(True)
             self.ui.comboBox_TcpClientSend.setEnabled(True)
             self.ui.button_TcpClientSend.setEnabled(True)
-            self.status_message[0] = '● Connected to ' +\
-                self.local_tcp_addr +\
+            # self.status_message[0] = '● Connected to ' +\
+            #     self.local_tcp_addr +\
+            #     ':'+self.ui.lineEdit_TcpClientTargetPort.text()
+            self.status['TCP']['Client'] = '[CLIENT] Connected to ' +\
+                self.ui.lineEdit_TcpClientTargetIP.text() +\
                 ':'+self.ui.lineEdit_TcpClientTargetPort.text()
-            if self.ui.tabWidget.currentIndex() == 0:
-                self.on_tab_changed(0)
-
+            # if self.ui.tabWidget.currentIndex() == 0:
+            #     self.on_tab_changed(0)
+        
         self.ui.button_TcpClient.setEnabled(True)
+        self.status['TCP']['Message'] = self.status['TCP']['Server'] +' ● '+self.status['TCP']['Client']
+        self.on_tab_changed()
 
     def on_tcp_client_message_ready(self, source, msg):
         self.ui.textBrowser_Message.append(
@@ -505,9 +535,10 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.lineEdit_TcpServerListenPort.setEnabled(True)
             self.ui.comboBox_TcpInterface.setEnabled(True)
             self.ui.button_TcpRefresh.setEnabled(True)
-            self.status_message[1] = '● Idle'
-            if self.ui.tabWidget.currentIndex() == 1:
-                self.on_tab_changed(1)
+            # self.status_message[1] = '● Idle'
+            self.status['TCP']['Server'] = '[SERVER] Idle'
+            # if self.ui.tabWidget.currentIndex() == 1:
+            #     self.on_tab_changed(1)
 
         elif status == TCPServer.LISTEN:
             self.ui.button_TcpServer.setText('Stop')
@@ -515,11 +546,14 @@ class MyApp(QtWidgets.QMainWindow):
             # self.ui.textBrowser_Message.setEnabled(False)
             self.ui.comboBox_TcpServerSend.setEnabled(False)
             self.ui.button_TcpServerSend.setEnabled(False)
-            self.status_message[1] = '● Listen on ' +\
+            # self.status_message[1] = '● Listen on ' +\
+            #     self.local_tcp_addr+':' +\
+            #     self.ui.lineEdit_TcpServerListenPort.text()
+            self.status['TCP']['Server'] = '[SERVER] Listen on ' +\
                 self.local_tcp_addr+':' +\
                 self.ui.lineEdit_TcpServerListenPort.text()
-            if self.ui.tabWidget.currentIndex() == 1:
-                self.on_tab_changed(1)
+            # if self.ui.tabWidget.currentIndex() == 1:
+            #     self.on_tab_changed(1)
 
         elif status == TCPServer.CONNECTED:
             self.ui.button_TcpServer.setText('Disconnect')
@@ -527,12 +561,15 @@ class MyApp(QtWidgets.QMainWindow):
             # self.ui.textBrowser_Message.setEnabled(True)
             self.ui.comboBox_TcpServerSend.setEnabled(True)
             self.ui.button_TcpServerSend.setEnabled(True)
-            self.status_message[1] = '● Connected to '+addr
-            if self.ui.tabWidget.currentIndex() == 1:
-                self.on_tab_changed(1)
+            # self.status_message[1] = '● Connected to '+addr
+            self.status['TCP']['Server'] = '[SERVER] Connected with '+addr
+            # if self.ui.tabWidget.currentIndex() == 1:
+            #     self.on_tab_changed(1)
             # self.tcp_server.send('Hello World')
 
         self.ui.button_TcpServer.setEnabled(True)
+        self.status['TCP']['Message'] = self.status['TCP']['Server'] +' ● '+self.status['TCP']['Client']
+        self.on_tab_changed()
 
     def on_tcp_server_message_ready(self, source, msg):
         self.ui.textBrowser_Message.append(
@@ -598,16 +635,16 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.comboBox_UdpInterface.setEnabled(True)
             self.ui.button_UdpRefresh.setEnabled(True)
             self.status_message[2] = '● Idle'
-            if self.ui.tabWidget.currentIndex() == 2:
-                self.on_tab_changed(2)
+            # if self.ui.tabWidget.currentIndex() == 2:
+            #     self.on_tab_changed(2)
 
         elif status == UDPServer.LISTEN:
             self.ui.button_Udp.setText('Stop')
             self.status_message[2] = '● Listen on ' +\
                 self.local_tcp_addr+':' +\
                 self.ui.lineEdit_TcpServerListenPort.text()
-            if self.ui.tabWidget.currentIndex() == 2:
-                self.on_tab_changed(2)
+            # if self.ui.tabWidget.currentIndex() == 2:
+            #     self.on_tab_changed(2)
 
         self.ui.button_Udp.setEnabled(True)
 
@@ -694,8 +731,8 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.lineEdit_BtServerListenPort.setEnabled(True)
             self.ui.lineEdit_BtHostMac.setEnabled(True)
             self.status_message[1] = '● Idle'
-            if self.ui.tabWidget.currentIndex() == 1:
-                self.on_tab_changed(1)
+            # if self.ui.tabWidget.currentIndex() == 1:
+            #     self.on_tab_changed(1)
 
         elif status == BluetoothServer.LISTEN:
             self.ui.button_BtServer.setText('Stop')
@@ -706,8 +743,8 @@ class MyApp(QtWidgets.QMainWindow):
             self.status_message[1] = '● Listen on ' +\
                 self.ui.lineEdit_BtHostMac.text()+':' +\
                 self.ui.lineEdit_BtServerListenPort.text()
-            if self.ui.tabWidget.currentIndex() == 1:
-                self.on_tab_changed(1)
+            # if self.ui.tabWidget.currentIndex() == 1:
+            #     self.on_tab_changed(1)
 
         elif status == BluetoothServer.CONNECTED:
             self.ui.button_BtServer.setText('Disconnect')
@@ -716,8 +753,8 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.comboBox_BtServerSend.setEnabled(True)
             self.ui.button_BtServerSend.setEnabled(True)
             self.status_message[1] = '● Connected to '+addr
-            if self.ui.tabWidget.currentIndex() == 1:
-                self.on_tab_changed(1)
+            # if self.ui.tabWidget.currentIndex() == 1:
+            #     self.on_tab_changed(1)
             # self.bt_server.send('Hello World')
 
         self.ui.button_BtServer.setEnabled(True)
@@ -789,8 +826,8 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.comboBox_BtClientSend.setEnabled(False)
             self.ui.button_BtClientSend.setEnabled(False)
             self.status_message[0] = '● Idle'
-            if self.ui.tabWidget.currentIndex() == 0:
-                self.on_tab_changed(0)
+            # if self.ui.tabWidget.currentIndex() == 0:
+            #     self.on_tab_changed(0)
 
         elif status == BluetoothClient.CONNECTED:
             self.ui.button_BtClient.setText('Disconnect')
@@ -801,8 +838,8 @@ class MyApp(QtWidgets.QMainWindow):
             self.status_message[0] = '● Connected to ' +\
                 self.local_bt_addr +\
                 ':'+self.ui.lineEdit_BtClientTargetPort.text()
-            if self.ui.tabWidget.currentIndex() == 0:
-                self.on_tab_changed(0)
+            # if self.ui.tabWidget.currentIndex() == 0:
+            #     self.on_tab_changed(0)
 
         self.ui.button_BtClient.setEnabled(True)
 
@@ -830,11 +867,12 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.comboBox_BtClientSend.currentText())
         self.ui.comboBox_BtClientSend.clearEditText()
 
-    def on_tab_changed(self, index):
-        self.update_network_interfaces()
+    def on_tab_changed(self):
+        # self.update_network_interfaces()
         self.ui.status_bar.clearMessage()
         self.ui.status_bar.setStyleSheet('color: green')
-        self.ui.status_bar.showMessage(self.status_message[index])
+        tab_name = self.ui.tabWidget.tabText(self.ui.tabWidget.currentIndex())
+        self.ui.status_bar.showMessage(self.status[tab_name]['Message'])
 
         self.config['Tab_Index'] = self.ui.tabWidget.currentIndex()
         self.save_config()
