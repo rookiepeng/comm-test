@@ -589,7 +589,7 @@ class MyApp(QtWidgets.QMainWindow):
 
     def on_tcp_server_message_ready(self, source, msg):
         self.ui.textBrowser_Message.append(
-            '<div style="color: #2196F3;"><strong>— [TCP Server] ' +
+            '<div style="color: #2196F3;"><strong>— [TCP Client] ' +
             source +
             ' —</strong></div>')
         self.ui.textBrowser_Message.append(
@@ -600,7 +600,7 @@ class MyApp(QtWidgets.QMainWindow):
     def on_tcp_server_message_send(self):
         self.tcp_server.send(self.ui.comboBox_TcpServerSend.currentText())
         self.ui.textBrowser_Message.append(
-            '<div><strong>— [TCP Client] ' +
+            '<div><strong>— [TCP Server] ' +
             self.local_tcp_addr + ":"+self.ui.lineEdit_TcpServerListenPort.text() +
             ' —</strong></div>')
         self.ui.textBrowser_Message.append(
