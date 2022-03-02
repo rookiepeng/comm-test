@@ -106,8 +106,8 @@ class MyApp(QtWidgets.QMainWindow):
         ui_file = QFile(ui_file_name)
         loader = QUiLoader()
         self.ui = loader.load(ui_file)
-        # self.ui = uic.loadUi('mainwindow.ui', self)
         ui_file.close()
+
         self.init_ui()
 
         # TCP server
@@ -192,6 +192,10 @@ class MyApp(QtWidgets.QMainWindow):
             self.on_tab_changed
         )
 
+        self.ui.pushButton_clear.clicked.connect(
+            self.ui.textBrowser_Message.clear
+        )
+
         self.ui.show()
 
     def save_config(self):
@@ -243,11 +247,10 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.groupBox_BtClientMessage.setEnabled(False)
 
         # GPIO
-        self.ui.comboBox_GPIB_SendType.addItem('Write')
         self.ui.comboBox_GPIB_SendType.addItem('Query')
+        self.ui.comboBox_GPIB_SendType.addItem('Write')
         # self.ui.comboBox_GPIB_SendType.addItem('Write Binary')
         # self.ui.comboBox_GPIB_SendType.addItem('Query Binary')
-
         self.ui.groupBox_GpibMessage.setEnabled(False)
 
     def on_gpib_button_clicked(self):
