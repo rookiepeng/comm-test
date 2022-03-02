@@ -400,7 +400,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.device.write(self.ui.comboBox_GPIBSend.currentText())
             self.ui.textBrowser_Message.append(
                 '<div><strong>— ' +
-                'GPIB local' +
+                '[GPIB] local' +
                 ' —</strong></div>')
             self.ui.textBrowser_Message.append(
                 '<div>' +
@@ -413,7 +413,7 @@ class MyApp(QtWidgets.QMainWindow):
             output = self.device.query(self.ui.comboBox_GPIBSend.currentText())
             self.ui.textBrowser_Message.append(
                 '<div><strong>— ' +
-                'GPIB local' +
+                '[GPIB] local' +
                 ' —</strong></div>')
             self.ui.textBrowser_Message.append(
                 '<div>' +
@@ -424,7 +424,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.comboBox_GPIBSend.clearEditText()
 
             self.ui.textBrowser_Message.append(
-                '<div style="color: #2196F3;><strong>— ' +
+                '<div style="color: #2196F3;><strong>— [GPIB] ' +
                 self.ui.comboBox_GpibInterface.currentText() +
                 ' —</strong></div>')
             self.ui.textBrowser_Message.append(
@@ -495,7 +495,7 @@ class MyApp(QtWidgets.QMainWindow):
 
     def on_tcp_client_message_ready(self, source, msg):
         self.ui.textBrowser_Message.append(
-            '<div style="color: #2196F3;"><strong>— ' +
+            '<div style="color: #2196F3;"><strong>— [TCP Server] ' +
             source +
             ' —</strong></div>')
         self.ui.textBrowser_Message.append(
@@ -506,8 +506,8 @@ class MyApp(QtWidgets.QMainWindow):
     def on_tcp_client_message_send(self):
         self.tcp_client.send(self.ui.comboBox_TcpClientSend.currentText())
         self.ui.textBrowser_Message.append(
-            '<div><strong>— ' +
-            'Localhost' +
+            '<div><strong>— [TCP Client] ' +
+            self.local_tcp_addr +
             ' —</strong></div>')
         self.ui.textBrowser_Message.append(
             '<div>' +
@@ -589,7 +589,7 @@ class MyApp(QtWidgets.QMainWindow):
 
     def on_tcp_server_message_ready(self, source, msg):
         self.ui.textBrowser_Message.append(
-            '<div style="color: #2196F3;"><strong>— ' +
+            '<div style="color: #2196F3;"><strong>— [TCP Server] ' +
             source +
             ' —</strong></div>')
         self.ui.textBrowser_Message.append(
@@ -600,8 +600,8 @@ class MyApp(QtWidgets.QMainWindow):
     def on_tcp_server_message_send(self):
         self.tcp_server.send(self.ui.comboBox_TcpServerSend.currentText())
         self.ui.textBrowser_Message.append(
-            '<div><strong>— ' +
-            self.local_tcp_addr +":"+self.ui.lineEdit_TcpServerListenPort.text() +
+            '<div><strong>— [TCP Client] ' +
+            self.local_tcp_addr + ":"+self.ui.lineEdit_TcpServerListenPort.text() +
             ' —</strong></div>')
         self.ui.textBrowser_Message.append(
             '<div>' +
@@ -663,7 +663,7 @@ class MyApp(QtWidgets.QMainWindow):
 
     def on_udp_server_message_ready(self, source, msg):
         self.ui.textBrowser_Message.append(
-            '<div style="color: #2196F3;"><strong>— ' +
+            '<div style="color: #2196F3;"><strong>— [UDP] ' +
             source +
             ' —</strong></div>')
         self.ui.textBrowser_Message.append(
@@ -678,8 +678,8 @@ class MyApp(QtWidgets.QMainWindow):
             int(self.ui.lineEdit_UdpTargetPort.text())
         )
         self.ui.textBrowser_Message.append(
-            '<div><strong>— ' +
-            'Localhost' +
+            '<div><strong>— [UDP] ' +
+            self.local_udp_addr +
             ' —</strong></div>')
         self.ui.textBrowser_Message.append(
             '<div>' +
@@ -765,7 +765,7 @@ class MyApp(QtWidgets.QMainWindow):
 
     def on_bt_server_message_ready(self, source, msg):
         self.ui.textBrowser_Message.append(
-            '<div style="color: #2196F3;"><strong>— ' +
+            '<div style="color: #2196F3;"><strong>— [Bluetooth Client] ' +
             source +
             ' —</strong></div>')
         self.ui.textBrowser_Message.append(
@@ -776,8 +776,8 @@ class MyApp(QtWidgets.QMainWindow):
     def on_bt_server_message_send(self):
         self.bt_server.send(self.ui.comboBox_BtServerSend.currentText())
         self.ui.textBrowser_Message.append(
-            '<div><strong>— ' +
-            'Localhost' +
+            '<div><strong>— [Bluetooth Server] ' +
+            self.ui.lineEdit_BtClientTargetMac.text() +
             ' —</strong></div>')
         self.ui.textBrowser_Message.append(
             '<div>' +
@@ -845,7 +845,7 @@ class MyApp(QtWidgets.QMainWindow):
 
     def on_bt_client_message_ready(self, source, msg):
         self.ui.textBrowser_Message.append(
-            '<div style="color: #2196F3;"><strong>— ' +
+            '<div style="color: #2196F3;"><strong>— [Bluetooth Server] ' +
             source +
             ' —</strong></div>')
         self.ui.textBrowser_Message.append(
@@ -856,8 +856,8 @@ class MyApp(QtWidgets.QMainWindow):
     def on_bt_client_message_send(self):
         self.bt_client.send(self.ui.comboBox_BtClientSend.currentText())
         self.ui.textBrowser_Message.append(
-            '<div><strong>— ' +
-            'Localhost' +
+            '<div><strong>— [Bluetooth Client] ' +
+            self.ui.lineEdit_BtHostMac.text() +
             ' —</strong></div>')
         self.ui.textBrowser_Message.append(
             '<div>' +
@@ -875,7 +875,6 @@ class MyApp(QtWidgets.QMainWindow):
 
         self.config['Tab_Index'] = self.ui.tabWidget.currentIndex()
         self.save_config()
-
 
 
 if __name__ == "__main__":
