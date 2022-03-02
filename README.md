@@ -2,34 +2,32 @@
 
 <img src="https://raw.githubusercontent.com/rookiepeng/socket-test/master/res/socket_test.png" width="128">
 
-A simple TCP/UDP socket test interface built with Python and PySide.
-
-(This project has been fully re-written from C++/QT5 to Python/PySide)
+A simple communication test interface built with Python and PySide.
+Support basic communication tests on TCP, UDP, Bluetooth, and GPIB.
 
 ## Dependence
 
 - PySide6
 - psutil
+- pyvisa
+- pyvisa-py
 
 ## Usage
 
-Users can select among **TCP server**, **TCP client**, and **UDP** modes in this program.
+Users can select among **TCP**, **UDP**, **Bluetooth**, and **GPIB** modes in this program.
 
-### TCP Server
+### TCP
 
-In TCP sever mode, this program listens to the port specified by the user through TCP sockets.
-
-<img src="https://raw.githubusercontent.com/rookiepeng/socket-test/master/docs/TCP%20server.png" width="500">
-
-### TCP Client
-
-In TCP client mode, this program connects to the IP address specified by the user throught TCP sockets.
-
-<img src="https://raw.githubusercontent.com/rookiepeng/socket-test/master/docs/TCP%20client.png" width="500">
+<img src="https://raw.githubusercontent.com/rookiepeng/socket-test/master/docs/TCP.png" width="800">
 
 ### UDP
 
-In UDP mode, this program listens to the port specified by the user through UDP sockets.
+<img src="https://raw.githubusercontent.com/rookiepeng/socket-test/master/docs/UDP.png" width="800">
 
-<img src="https://raw.githubusercontent.com/rookiepeng/socket-test/master/docs/UDP.png" width="500">
+### Bluetooth
 
+<img src="https://raw.githubusercontent.com/rookiepeng/socket-test/master/docs/Bluetooth.png" width="800">
+
+### GPIB
+
+<img src="https://raw.githubusercontent.com/rookiepeng/socket-test/master/docs/GPIB.png" width="800">
