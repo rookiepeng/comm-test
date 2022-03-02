@@ -1124,7 +1124,7 @@
         <item>
          <widget class="QLabel" name="label_AppVersion">
           <property name="text">
-           <string>v4.0</string>
+           <string>v4.1</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
@@ -1137,7 +1137,7 @@
         <item>
          <widget class="QLabel" name="label_7">
           <property name="text">
-           <string>By: Zhengyu Peng</string>
+           <string>Zhengyu Peng</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
