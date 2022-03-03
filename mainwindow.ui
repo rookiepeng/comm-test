@@ -72,7 +72,7 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_3">
                 <item>
-                 <widget class="QComboBox" name="comboBox_TcpInterface">
+                 <widget class="QComboBox" name="comboBoxTcpInterface">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                     <horstretch>1</horstretch>
@@ -88,7 +88,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="button_TcpRefresh">
+                 <widget class="QPushButton" name="buttonTcpRefresh">
                   <property name="text">
                    <string/>
                   </property>
@@ -124,7 +124,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="lineEdit_TcpServerListenPort">
+                 <widget class="QLineEdit" name="lineEditTcpServerPort">
                   <property name="minimumSize">
                    <size>
                     <width>80</width>
@@ -140,7 +140,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="button_TcpServer">
+                 <widget class="QPushButton" name="buttonTcpServerStart">
                   <property name="text">
                    <string>Start</string>
                   </property>
@@ -149,7 +149,7 @@
                </layout>
               </item>
               <item>
-               <widget class="QLabel" name="label_tcp_host_address">
+               <widget class="QLabel" name="labelTcpServerIp">
                 <property name="text">
                  <string/>
                 </property>
