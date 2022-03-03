@@ -254,10 +254,10 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.groupBoxBtClientMessage.setEnabled(False)
 
         # GPIO
-        self.ui.comboBox_GPIB_SendType.addItem('Query')
-        self.ui.comboBox_GPIB_SendType.addItem('Write')
-        # self.ui.comboBox_GPIB_SendType.addItem('Write Binary')
-        # self.ui.comboBox_GPIB_SendType.addItem('Query Binary')
+        self.ui.comboBoxGpibSendType.addItem('Query')
+        self.ui.comboBoxGpibSendType.addItem('Write')
+        # self.ui.comboBoxGpibSendType.addItem('Write Binary')
+        # self.ui.comboBoxGpibSendType.addItem('Query Binary')
         self.ui.groupBox_GpibMessage.setEnabled(False)
 
     def on_gpib_button_clicked(self):
@@ -406,7 +406,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.save_config()
 
     def on_gpib_message_send(self):
-        if self.ui.comboBox_GPIB_SendType.currentText() == 'Write':
+        if self.ui.comboBoxGpibSendType.currentText() == 'Write':
             self.device.write(self.ui.comboBoxGpibMessage.currentText())
             self.ui.textBrowserMessage.append(
                 '<div><strong>— ' +
@@ -419,7 +419,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.comboBoxGpibMessage.addItem(
                 self.ui.comboBoxGpibMessage.currentText())
             self.ui.comboBoxGpibMessage.clearEditText()
-        elif self.ui.comboBox_GPIB_SendType.currentText() == 'Query':
+        elif self.ui.comboBoxGpibSendType.currentText() == 'Query':
             output = self.device.query(
                 self.ui.comboBoxGpibMessage.currentText())
             self.ui.textBrowserMessage.append(
