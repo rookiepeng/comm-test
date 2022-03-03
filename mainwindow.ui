@@ -989,7 +989,7 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout">
              <item>
-              <widget class="QComboBox" name="comboBox_GpibInterface">
+              <widget class="QComboBox" name="comboBoxGpibInterface">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>1</horstretch>
@@ -999,7 +999,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="button_GpibRefresh">
+              <widget class="QPushButton" name="buttonGpibRefresh">
                <property name="text">
                 <string/>
                </property>
@@ -1010,7 +1010,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="button_gpib">
+              <widget class="QPushButton" name="buttonGpibOpen">
                <property name="text">
                 <string>Open</string>
                </property>
@@ -1030,10 +1030,10 @@
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_9">
              <item>
-              <widget class="QComboBox" name="comboBox_GPIB_SendType"/>
+              <widget class="QComboBox" name="comboBoxGpibSendType"/>
              </item>
              <item>
-              <widget class="QComboBox" name="comboBox_GPIBSend">
+              <widget class="QComboBox" name="comboBoxGpibMessage">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                  <horstretch>1</horstretch>
@@ -1046,7 +1046,7 @@
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="button_GPIBSend">
+              <widget class="QPushButton" name="buttonGpibSend">
                <property name="text">
                 <string>Send</string>
                </property>
