@@ -131,7 +131,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.buttonTcpClientSend.clicked.connect(
             self.on_tcp_client_message_send
         )
-        self.ui.comboBox_TcpClientSend.lineEdit().returnPressed.connect(
+        self.ui.comboBoxTcpClientMessage.lineEdit().returnPressed.connect(
             self.on_tcp_client_message_send
         )
 
@@ -218,7 +218,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.lineEditTcpServerPort.setText(tcp_server_port)
 
         # TCP Client
-        self.ui.groupBox_TcpClientMessage.setEnabled(False)
+        self.ui.groupBoxTcpClientMessage.setEnabled(False)
         tcp_client_ip = self.config.get('TCP_Client_IP', '127.0.0.1')
         tcp_client_port = self.config.get('TCP_Client_Port', '1234')
         self.ui.lineEditTcpTargetIp.setText(tcp_client_ip)
@@ -480,13 +480,13 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.lineEditTcpTargetIp.setEnabled(True)
             self.ui.lineEditTcpTargetPort.setEnabled(True)
 
-            self.ui.groupBox_TcpClientMessage.setEnabled(False)
+            self.ui.groupBoxTcpClientMessage.setEnabled(False)
             self.status['TCP']['Client'] = '[CLIENT] Idle'
 
         elif status == TCPClient.CONNECTED:
             self.ui.buttonTcpClientConnect.setText('Disconnect')
 
-            self.ui.groupBox_TcpClientMessage.setEnabled(True)
+            self.ui.groupBoxTcpClientMessage.setEnabled(True)
             self.status['TCP']['Client'] = '[CLIENT] Connected to ' +\
                 self.ui.lineEditTcpTargetIp.text() +\
                 ':'+self.ui.lineEditTcpTargetPort.text()
@@ -507,18 +507,18 @@ class MyApp(QtWidgets.QMainWindow):
             '<br></div>')
 
     def on_tcp_client_message_send(self):
-        self.tcp_client.send(self.ui.comboBox_TcpClientSend.currentText())
+        self.tcp_client.send(self.ui.comboBoxTcpClientMessage.currentText())
         self.ui.textBrowserMessage.append(
             '<div><strong>— [TCP Client] ' +
             self.local_tcp_addr +
             ' —</strong></div>')
         self.ui.textBrowserMessage.append(
             '<div>' +
-            self.ui.comboBox_TcpClientSend.currentText() +
+            self.ui.comboBoxTcpClientMessage.currentText() +
             '<br></div>')
-        self.ui.comboBox_TcpClientSend.addItem(
-            self.ui.comboBox_TcpClientSend.currentText())
-        self.ui.comboBox_TcpClientSend.clearEditText()
+        self.ui.comboBoxTcpClientMessage.addItem(
+            self.ui.comboBoxTcpClientMessage.currentText())
+        self.ui.comboBoxTcpClientMessage.clearEditText()
 
     # TCP Server
     def on_tcp_server_start_stop_button_clicked(self):
