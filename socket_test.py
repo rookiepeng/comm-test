@@ -353,7 +353,7 @@ class MyApp(QtWidgets.QMainWindow):
                 self.local_udp_addr = '0.0.0.0'
             # elif snicaddr.family == socket.AF_INET6:
             #     udp_addr = udp_addr +'IPv6: ' + snicaddr.address + ' '
-        self.ui.label_udp_host_address.setText(udp_addr)
+        self.ui.labelUdpHostAddress.setText(udp_addr)
 
         self.save_config()
 
@@ -386,7 +386,7 @@ class MyApp(QtWidgets.QMainWindow):
                     self.local_udp_addr = snicaddr.address
                 # elif snicaddr.family == socket.AF_INET6:
                 #     udp_addr = udp_addr +'IPv6: ' + snicaddr.address + ' '
-            self.ui.label_udp_host_address.setText(udp_addr)
+            self.ui.labelUdpHostAddress.setText(udp_addr)
         else:
             return
 
