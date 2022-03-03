@@ -155,23 +155,23 @@ class MyApp(QtWidgets.QMainWindow):
             1234)
 
         # Bluetooth server
-        self.ui.button_BtServer.clicked.connect(
+        self.ui.buttonBtServerStart.clicked.connect(
             self.on_bt_server_start_stop_button_clicked)
-        self.ui.button_BtServerSend.clicked.connect(
+        self.ui.buttonBtServerSend.clicked.connect(
             self.on_bt_server_message_send
         )
-        self.ui.comboBox_BtServerSend.lineEdit().returnPressed.connect(
+        self.ui.comboBoxBtServerMessage.lineEdit().returnPressed.connect(
             self.on_bt_server_message_send
         )
 
         # Bluetooth client
-        self.ui.button_BtClient.clicked.connect(
+        self.ui.buttonBtClientConnect.clicked.connect(
             self.on_bt_client_connect_button_clicked
         )
-        self.ui.button_BtClientSend.clicked.connect(
+        self.ui.buttonBtClientSend.clicked.connect(
             self.on_bt_client_message_send
         )
-        self.ui.comboBox_BtClientSend.lineEdit().returnPressed.connect(
+        self.ui.comboBoxBtClientMessage.lineEdit().returnPressed.connect(
             self.on_bt_client_message_send
         )
 
@@ -233,18 +233,18 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.lineEditUdpTargetPort.setText(udp_target_port)
 
         # Bluetooth Server
-        self.ui.lineEdit_BtHostMac.setText(
+        self.ui.lineEditBtHostMac.setText(
             self.config.get('Bluetooth_Server_MAC', ''))
-        self.ui.lineEdit_BtServerListenPort.setText(
+        self.ui.lineEditBtServerPort.setText(
             self.config.get('Bluetooth_Server_Port', '11'))
-        self.ui.groupBox_BtServerMessage.setEnabled(False)
+        self.ui.groupBoxBtServerMessage.setEnabled(False)
 
         # Bluetooth Client
-        self.ui.lineEdit_BtClientTargetMac.setText(
+        self.ui.lineEditBtTargetMac.setText(
             self.config.get('Bluetooth_Client_MAC', ''))
-        self.ui.lineEdit_BtClientTargetPort.setText(
+        self.ui.lineEditBtTargetPort.setText(
             self.config.get('Bluetooth_Client_Port', '11'))
-        self.ui.groupBox_BtClientMessage.setEnabled(False)
+        self.ui.groupBoxBtClientMessage.setEnabled(False)
 
         # GPIO
         self.ui.comboBox_GPIB_SendType.addItem('Query')
@@ -698,14 +698,14 @@ class MyApp(QtWidgets.QMainWindow):
 
     # Bluetooth Server
     def on_bt_server_start_stop_button_clicked(self):
-        if self.ui.button_BtServer.text() == 'Start':
-            self.ui.button_BtServer.setEnabled(False)
-            self.ui.lineEdit_BtServerListenPort.setEnabled(False)
-            self.ui.lineEdit_BtHostMac.setEnabled(False)
+        if self.ui.buttonBtServerStart.text() == 'Start':
+            self.ui.buttonBtServerStart.setEnabled(False)
+            self.ui.lineEditBtServerPort.setEnabled(False)
+            self.ui.lineEditBtHostMac.setEnabled(False)
             self.bt_server_thread = QThread()
             self.bt_server = BluetoothServer(
-                self.ui.lineEdit_BtHostMac.text(),
-                int(self.ui.lineEdit_BtServerListenPort.text()))
+                self.ui.lineEditBtHostMac.text(),
+                int(self.ui.lineEditBtServerPort.text()))
 
             self.bt_server_thread.started.connect(self.bt_server.start)
             self.bt_server.status.connect(self.on_bt_server_status_update)
@@ -715,17 +715,17 @@ class MyApp(QtWidgets.QMainWindow):
 
             self.bt_server_thread.start()
 
-            self.config['Bluetooth_Server_MAC'] = self.ui.lineEdit_BtHostMac.text()
-            self.config['Bluetooth_Server_Port'] = self.ui.lineEdit_BtServerListenPort.text(
+            self.config['Bluetooth_Server_MAC'] = self.ui.lineEditBtHostMac.text()
+            self.config['Bluetooth_Server_Port'] = self.ui.lineEditBtServerPort.text(
             )
             self.save_config()
 
-        elif self.ui.button_BtServer.text() == 'Stop':
-            self.ui.button_BtServer.setEnabled(False)
+        elif self.ui.buttonBtServerStart.text() == 'Stop':
+            self.ui.buttonBtServerStart.setEnabled(False)
             self.bt_server.close()
 
-        elif self.ui.button_BtServer.text() == 'Disconnect':
-            self.ui.button_BtServer.setEnabled(False)
+        elif self.ui.buttonBtServerStart.text() == 'Disconnect':
+            self.ui.buttonBtServerStart.setEnabled(False)
             self.bt_server.disconnect()
 
     def on_bt_server_status_update(self, status, addr):
@@ -739,29 +739,29 @@ class MyApp(QtWidgets.QMainWindow):
             except Exception:
                 pass
 
-            self.ui.button_BtServer.setText('Start')
+            self.ui.buttonBtServerStart.setText('Start')
             self.bt_server_thread.quit()
 
-            self.ui.groupBox_BtServerMessage.setEnabled(False)
-            self.ui.lineEdit_BtServerListenPort.setEnabled(True)
-            self.ui.lineEdit_BtHostMac.setEnabled(True)
+            self.ui.groupBoxBtServerMessage.setEnabled(False)
+            self.ui.lineEditBtServerPort.setEnabled(True)
+            self.ui.lineEditBtHostMac.setEnabled(True)
             self.status['Bluetooth']['Server'] = '[SERVER] Idle'
 
         elif status == BluetoothServer.LISTEN:
-            self.ui.button_BtServer.setText('Stop')
+            self.ui.buttonBtServerStart.setText('Stop')
 
-            self.ui.groupBox_BtServerMessage.setEnabled(False)
+            self.ui.groupBoxBtServerMessage.setEnabled(False)
             self.status['Bluetooth']['Server'] = '[SERVER] Listen on ' +\
-                self.ui.lineEdit_BtHostMac.text()+' (' +\
-                self.ui.lineEdit_BtServerListenPort.text()+')'
+                self.ui.lineEditBtHostMac.text()+' (' +\
+                self.ui.lineEditBtServerPort.text()+')'
 
         elif status == BluetoothServer.CONNECTED:
-            self.ui.button_BtServer.setText('Disconnect')
+            self.ui.buttonBtServerStart.setText('Disconnect')
 
-            self.ui.groupBox_BtServerMessage.setEnabled(True)
+            self.ui.groupBoxBtServerMessage.setEnabled(True)
             self.status['Bluetooth']['Server'] = '[SERVER] Connected to '+addr
 
-        self.ui.button_BtServer.setEnabled(True)
+        self.ui.buttonBtServerStart.setEnabled(True)
         self.status['Bluetooth']['Message'] = self.status['Bluetooth']['Server'] + \
             ' ● '+self.status['Bluetooth']['Client']
         self.on_tab_changed()
@@ -777,30 +777,30 @@ class MyApp(QtWidgets.QMainWindow):
             '<br></div>')
 
     def on_bt_server_message_send(self):
-        self.bt_server.send(self.ui.comboBox_BtServerSend.currentText())
+        self.bt_server.send(self.ui.comboBoxBtServerMessage.currentText())
         self.ui.textBrowserMessage.append(
             '<div><strong>— [Bluetooth Server] ' +
-            self.ui.lineEdit_BtClientTargetMac.text() +
+            self.ui.lineEditBtTargetMac.text() +
             ' —</strong></div>')
         self.ui.textBrowserMessage.append(
             '<div>' +
-            self.ui.comboBox_BtServerSend.currentText() +
+            self.ui.comboBoxBtServerMessage.currentText() +
             '<br></div>')
-        self.ui.comboBox_BtServerSend.addItem(
-            self.ui.comboBox_BtServerSend.currentText())
-        self.ui.comboBox_BtServerSend.clearEditText()
+        self.ui.comboBoxBtServerMessage.addItem(
+            self.ui.comboBoxBtServerMessage.currentText())
+        self.ui.comboBoxBtServerMessage.clearEditText()
 
     # Bluetooth Client
     def on_bt_client_connect_button_clicked(self):
-        if self.ui.button_BtClient.text() == 'Connect':
-            self.ui.button_BtClient.setEnabled(False)
-            self.ui.lineEdit_BtClientTargetMac.setEnabled(False)
-            self.ui.lineEdit_BtClientTargetPort.setEnabled(False)
+        if self.ui.buttonBtClientConnect.text() == 'Connect':
+            self.ui.buttonBtClientConnect.setEnabled(False)
+            self.ui.lineEditBtTargetMac.setEnabled(False)
+            self.ui.lineEditBtTargetPort.setEnabled(False)
 
             self.bt_client_thread = QThread()
             self.bt_client = BluetoothClient(
-                self.ui.lineEdit_BtClientTargetMac.text(),
-                int(self.ui.lineEdit_BtClientTargetPort.text()))
+                self.ui.lineEditBtTargetMac.text(),
+                int(self.ui.lineEditBtTargetPort.text()))
 
             self.bt_client_thread.started.connect(self.bt_client.start)
             self.bt_client.status.connect(self.on_bt_client_status_update)
@@ -810,13 +810,13 @@ class MyApp(QtWidgets.QMainWindow):
 
             self.bt_client_thread.start()
 
-            self.config['Bluetooth_Client_MAC'] = self.ui.lineEdit_BtClientTargetMac.text()
-            self.config['Bluetooth_Client_Port'] = self.ui.lineEdit_BtClientTargetPort.text(
+            self.config['Bluetooth_Client_MAC'] = self.ui.lineEditBtTargetMac.text()
+            self.config['Bluetooth_Client_Port'] = self.ui.lineEditBtTargetPort.text(
             )
             self.save_config()
 
-        elif self.ui.button_BtClient.text() == 'Disconnect':
-            self.ui.button_BtClient.setEnabled(False)
+        elif self.ui.buttonBtClientConnect.text() == 'Disconnect':
+            self.ui.buttonBtClientConnect.setEnabled(False)
             self.bt_client.close()
 
     def on_bt_client_status_update(self, status, addr):
@@ -824,24 +824,24 @@ class MyApp(QtWidgets.QMainWindow):
             self.bt_client.status.disconnect()
             self.bt_client.message.disconnect()
 
-            self.ui.button_BtClient.setText('Connect')
+            self.ui.buttonBtClientConnect.setText('Connect')
             self.bt_client_thread.quit()
 
-            self.ui.lineEdit_BtClientTargetMac.setEnabled(True)
-            self.ui.lineEdit_BtClientTargetPort.setEnabled(True)
+            self.ui.lineEditBtTargetMac.setEnabled(True)
+            self.ui.lineEditBtTargetPort.setEnabled(True)
 
-            self.ui.groupBox_BtClientMessage.setEnabled(False)
+            self.ui.groupBoxBtClientMessage.setEnabled(False)
             self.status['Bluetooth']['Client'] = '[CLIENT] Idle'
 
         elif status == BluetoothClient.CONNECTED:
-            self.ui.button_BtClient.setText('Disconnect')
+            self.ui.buttonBtClientConnect.setText('Disconnect')
 
-            self.ui.groupBox_BtClientMessage.setEnabled(True)
+            self.ui.groupBoxBtClientMessage.setEnabled(True)
             self.status['Bluetooth']['Client'] = '[CLIENT] Connected to ' +\
                 addr +\
-                ' ('+self.ui.lineEdit_BtClientTargetPort.text()+')'
+                ' ('+self.ui.lineEditBtTargetPort.text()+')'
 
-        self.ui.button_BtClient.setEnabled(True)
+        self.ui.buttonBtClientConnect.setEnabled(True)
         self.status['Bluetooth']['Message'] = self.status['Bluetooth']['Server'] + \
             ' ● '+self.status['Bluetooth']['Client']
         self.on_tab_changed()
@@ -857,18 +857,18 @@ class MyApp(QtWidgets.QMainWindow):
             '<br></div>')
 
     def on_bt_client_message_send(self):
-        self.bt_client.send(self.ui.comboBox_BtClientSend.currentText())
+        self.bt_client.send(self.ui.comboBoxBtClientMessage.currentText())
         self.ui.textBrowserMessage.append(
             '<div><strong>— [Bluetooth Client] ' +
-            self.ui.lineEdit_BtHostMac.text() +
+            self.ui.lineEditBtHostMac.text() +
             ' —</strong></div>')
         self.ui.textBrowserMessage.append(
             '<div>' +
-            self.ui.comboBox_BtClientSend.currentText() +
+            self.ui.comboBoxBtClientMessage.currentText() +
             '<br></div>')
-        self.ui.comboBox_BtClientSend.addItem(
-            self.ui.comboBox_BtClientSend.currentText())
-        self.ui.comboBox_BtClientSend.clearEditText()
+        self.ui.comboBoxBtClientMessage.addItem(
+            self.ui.comboBoxBtClientMessage.currentText())
+        self.ui.comboBoxBtClientMessage.clearEditText()
 
     def on_tab_changed(self):
         self.ui.status_bar.clearMessage()
