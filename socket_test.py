@@ -125,10 +125,10 @@ class MyApp(QtWidgets.QMainWindow):
         )
 
         # TCP client
-        self.ui.button_TcpClient.clicked.connect(
+        self.ui.buttonTcpClientConnect.clicked.connect(
             self.on_tcp_client_connect_button_clicked
         )
-        self.ui.button_TcpClientSend.clicked.connect(
+        self.ui.buttonTcpClientSend.clicked.connect(
             self.on_tcp_client_message_send
         )
         self.ui.comboBox_TcpClientSend.lineEdit().returnPressed.connect(
@@ -443,8 +443,8 @@ class MyApp(QtWidgets.QMainWindow):
 
     # TCP Client
     def on_tcp_client_connect_button_clicked(self):
-        if self.ui.button_TcpClient.text() == 'Connect':
-            self.ui.button_TcpClient.setEnabled(False)
+        if self.ui.buttonTcpClientConnect.text() == 'Connect':
+            self.ui.buttonTcpClientConnect.setEnabled(False)
             self.ui.lineEditTcpTargetIp.setEnabled(False)
             self.ui.lineEditTcpTargetPort.setEnabled(False)
 
@@ -465,8 +465,8 @@ class MyApp(QtWidgets.QMainWindow):
             self.config['TCP_Client_Port'] = self.ui.lineEditTcpTargetPort.text()
             self.save_config()
 
-        elif self.ui.button_TcpClient.text() == 'Disconnect':
-            self.ui.button_TcpClient.setEnabled(False)
+        elif self.ui.buttonTcpClientConnect.text() == 'Disconnect':
+            self.ui.buttonTcpClientConnect.setEnabled(False)
             self.tcp_client.close()
 
     def on_tcp_client_status_update(self, status, addr):
@@ -474,7 +474,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.tcp_client.status.disconnect()
             self.tcp_client.message.disconnect()
 
-            self.ui.button_TcpClient.setText('Connect')
+            self.ui.buttonTcpClientConnect.setText('Connect')
             self.tcp_client_thread.quit()
 
             self.ui.lineEditTcpTargetIp.setEnabled(True)
@@ -484,14 +484,14 @@ class MyApp(QtWidgets.QMainWindow):
             self.status['TCP']['Client'] = '[CLIENT] Idle'
 
         elif status == TCPClient.CONNECTED:
-            self.ui.button_TcpClient.setText('Disconnect')
+            self.ui.buttonTcpClientConnect.setText('Disconnect')
 
             self.ui.groupBox_TcpClientMessage.setEnabled(True)
             self.status['TCP']['Client'] = '[CLIENT] Connected to ' +\
                 self.ui.lineEditTcpTargetIp.text() +\
                 ':'+self.ui.lineEditTcpTargetPort.text()
 
-        self.ui.button_TcpClient.setEnabled(True)
+        self.ui.buttonTcpClientConnect.setEnabled(True)
         self.status['TCP']['Message'] = self.status['TCP']['Server'] + \
             ' ● '+self.status['TCP']['Client']
         self.on_tab_changed()
