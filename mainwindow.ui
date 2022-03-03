@@ -744,7 +744,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="button_BtServer">
+                 <widget class="QPushButton" name="buttonBtServerStart">
                   <property name="text">
                    <string>Start</string>
                   </property>
