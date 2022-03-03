@@ -706,7 +706,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="lineEdit_BtHostMac"/>
+                 <widget class="QLineEdit" name="lineEditBtHostMac"/>
                 </item>
                 <item>
                  <widget class="QLabel" name="label_listenPort_3">
@@ -728,7 +728,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="lineEdit_BtServerListenPort">
+                 <widget class="QLineEdit" name="lineEditBtServerPort">
                   <property name="minimumSize">
                    <size>
                     <width>80</width>
@@ -756,7 +756,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="groupBox_BtServerMessage">
+            <widget class="QGroupBox" name="groupBoxBtServerMessage">
              <property name="font">
               <font>
                <bold>false</bold>
@@ -769,7 +769,7 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_12">
                 <item>
-                 <widget class="QComboBox" name="comboBox_BtServerSend">
+                 <widget class="QComboBox" name="comboBoxBtServerMessage">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                     <horstretch>1</horstretch>
@@ -782,7 +782,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="button_BtServerSend">
+                 <widget class="QPushButton" name="buttonBtServerSend">
                   <property name="text">
                    <string>Send</string>
                   </property>
@@ -853,7 +853,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="lineEdit_BtClientTargetMac">
+                 <widget class="QLineEdit" name="lineEditBtTargetMac">
                   <property name="minimumSize">
                    <size>
                     <width>150</width>
@@ -888,7 +888,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="lineEdit_BtClientTargetPort">
+                 <widget class="QLineEdit" name="lineEditBtTargetPort">
                   <property name="minimumSize">
                    <size>
                     <width>80</width>
@@ -904,7 +904,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="button_BtClient">
+                 <widget class="QPushButton" name="buttonBtClientConnect">
                   <property name="text">
                    <string>Connect</string>
                   </property>
@@ -916,7 +916,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="groupBox_BtClientMessage">
+            <widget class="QGroupBox" name="groupBoxBtClientMessage">
              <property name="font">
               <font>
                <bold>false</bold>
@@ -929,7 +929,7 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_13">
                 <item>
-                 <widget class="QComboBox" name="comboBox_BtClientSend">
+                 <widget class="QComboBox" name="comboBoxBtClientMessage">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                     <horstretch>1</horstretch>
@@ -942,7 +942,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="button_BtClientSend">
+                 <widget class="QPushButton" name="buttonBtClientSend">
                   <property name="text">
                    <string>Send</string>
                   </property>
