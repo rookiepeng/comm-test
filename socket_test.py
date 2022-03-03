@@ -136,18 +136,18 @@ class MyApp(QtWidgets.QMainWindow):
         )
 
         # UDP
-        self.ui.comboBox_UdpInterface.currentIndexChanged.connect(
+        self.ui.comboBoxUdpInterface.currentIndexChanged.connect(
             self.on_udp_interface_selection_change)
-        self.ui.button_UdpRefresh.clicked.connect(
+        self.ui.buttonUdpRefresh.clicked.connect(
             self.on_refresh_button_clicked)
-        self.ui.button_Udp.clicked.connect(
+        self.ui.buttonUdpStart.clicked.connect(
             self.on_udp_server_start_stop_button_clicked
         )
-        self.ui.button_UdpSend.clicked.connect(
+        self.ui.buttonUdpSend.clicked.connect(
             self.on_udp_message_send
         )
 
-        self.ui.comboBox_UdpSend.lineEdit().returnPressed.connect(
+        self.ui.comboBoxUdpMessage.lineEdit().returnPressed.connect(
             self.on_udp_message_send
         )
         self.udp_send = UDPServer(
@@ -228,9 +228,9 @@ class MyApp(QtWidgets.QMainWindow):
         udp_listen_port = self.config.get('UDP_Listen_Port', '1234')
         udp_target_ip = self.config.get('UDP_Target_IP', '127.0.0.1')
         udp_target_port = self.config.get('UDP_Target_Port', '1234')
-        self.ui.lineEdit_UdpListenPort.setText(udp_listen_port)
-        self.ui.lineEdit_UdpTargetIP.setText(udp_target_ip)
-        self.ui.lineEdit_UdpTargetPort.setText(udp_target_port)
+        self.ui.lineEditUdpListenPort.setText(udp_listen_port)
+        self.ui.lineEditUdpTargetIp.setText(udp_target_ip)
+        self.ui.lineEditUdpTargetPort.setText(udp_target_port)
 
         # Bluetooth Server
         self.ui.lineEdit_BtHostMac.setText(
@@ -301,7 +301,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.comboBoxTcpInterface.clear()
 
         udp_interface_idx = self.config.get('UdpInterface', 0)
-        self.ui.comboBox_UdpInterface.clear()
+        self.ui.comboBoxUdpInterface.clear()
 
         net_if_stats = psutil.net_if_stats()
 
@@ -310,7 +310,7 @@ class MyApp(QtWidgets.QMainWindow):
                 self.net_if.pop(netif, None)
             else:
                 self.ui.comboBoxTcpInterface.addItem(netif)
-                self.ui.comboBox_UdpInterface.addItem(netif)
+                self.ui.comboBoxUdpInterface.addItem(netif)
 
         if tcp_interface_idx >= self.ui.comboBoxTcpInterface.count():
             self.ui.comboBoxTcpInterface.setCurrentIndex(0)
@@ -318,11 +318,11 @@ class MyApp(QtWidgets.QMainWindow):
         else:
             self.ui.comboBoxTcpInterface.setCurrentIndex(tcp_interface_idx)
 
-        if udp_interface_idx >= self.ui.comboBox_UdpInterface.count():
-            self.ui.comboBox_UdpInterface.setCurrentIndex(0)
+        if udp_interface_idx >= self.ui.comboBoxUdpInterface.count():
+            self.ui.comboBoxUdpInterface.setCurrentIndex(0)
             self.config['UdpInterface'] = 0
         else:
-            self.ui.comboBox_UdpInterface.setCurrentIndex(udp_interface_idx)
+            self.ui.comboBoxUdpInterface.setCurrentIndex(udp_interface_idx)
 
         tcp_addr = ''
         for snicaddr in self.net_if[self.ui.comboBoxTcpInterface.currentText()]:
@@ -337,7 +337,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.labelTcpServerIp.setText(tcp_addr)
 
         udp_addr = ''
-        for snicaddr in self.net_if[self.ui.comboBox_UdpInterface.currentText()]:
+        for snicaddr in self.net_if[self.ui.comboBoxUdpInterface.currentText()]:
             if snicaddr.family == socket.AF_INET:
                 udp_addr = udp_addr + 'IPv4: ' + snicaddr.address + ' '
                 self.local_udp_addr = snicaddr.address
@@ -369,7 +369,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.save_config()
 
     def on_udp_interface_selection_change(self):
-        current_interface = self.ui.comboBox_UdpInterface.currentText()
+        current_interface = self.ui.comboBoxUdpInterface.currentText()
 
         if current_interface in self.net_if:
             udp_addr = ''
@@ -383,7 +383,7 @@ class MyApp(QtWidgets.QMainWindow):
         else:
             return
 
-        self.config['UdpInterface'] = self.ui.comboBox_UdpInterface.currentIndex()
+        self.config['UdpInterface'] = self.ui.comboBoxUdpInterface.currentIndex()
         self.save_config()
 
     def on_gpib_interface_selection_change(self):
@@ -616,15 +616,15 @@ class MyApp(QtWidgets.QMainWindow):
 
     # UDP
     def on_udp_server_start_stop_button_clicked(self):
-        if self.ui.button_Udp.text() == 'Start':
-            self.ui.button_Udp.setEnabled(False)
-            self.ui.lineEdit_UdpListenPort.setEnabled(False)
-            self.ui.comboBox_UdpInterface.setEnabled(False)
-            self.ui.button_UdpRefresh.setEnabled(False)
+        if self.ui.buttonUdpStart.text() == 'Start':
+            self.ui.buttonUdpStart.setEnabled(False)
+            self.ui.lineEditUdpListenPort.setEnabled(False)
+            self.ui.comboBoxUdpInterface.setEnabled(False)
+            self.ui.buttonUdpRefresh.setEnabled(False)
             self.udp_thread = QThread()
             self.udp_server = UDPServer(
                 self.local_udp_addr,
-                int(self.ui.lineEdit_UdpListenPort.text()))
+                int(self.ui.lineEditUdpListenPort.text()))
 
             self.udp_thread.started.connect(self.udp_server.start)
             self.udp_server.status.connect(self.on_udp_server_status_update)
@@ -634,11 +634,11 @@ class MyApp(QtWidgets.QMainWindow):
 
             self.udp_thread.start()
 
-            self.config['UDP_Listen_Port'] = self.ui.lineEdit_UdpListenPort.text()
+            self.config['UDP_Listen_Port'] = self.ui.lineEditUdpListenPort.text()
             self.save_config()
 
-        elif self.ui.button_Udp.text() == 'Stop':
-            self.ui.button_Udp.setEnabled(False)
+        elif self.ui.buttonUdpStart.text() == 'Stop':
+            self.ui.buttonUdpStart.setEnabled(False)
             self.udp_server.close()
 
     def on_udp_server_status_update(self, status, addr):
@@ -646,21 +646,21 @@ class MyApp(QtWidgets.QMainWindow):
             self.udp_server.status.disconnect()
             self.udp_server.message.disconnect()
 
-            self.ui.button_Udp.setText('Start')
+            self.ui.buttonUdpStart.setText('Start')
             self.udp_thread.quit()
 
-            self.ui.lineEdit_UdpListenPort.setEnabled(True)
-            self.ui.comboBox_UdpInterface.setEnabled(True)
-            self.ui.button_UdpRefresh.setEnabled(True)
+            self.ui.lineEditUdpListenPort.setEnabled(True)
+            self.ui.comboBoxUdpInterface.setEnabled(True)
+            self.ui.buttonUdpRefresh.setEnabled(True)
             self.status['UDP']['Server'] = '[SERVER] Idle'
 
         elif status == UDPServer.LISTEN:
-            self.ui.button_Udp.setText('Stop')
+            self.ui.buttonUdpStart.setText('Stop')
             self.status['UDP']['Server'] = '[SERVER] Listen on ' +\
                 self.local_tcp_addr+':' +\
                 self.ui.lineEditTcpServerPort.text()
 
-        self.ui.button_Udp.setEnabled(True)
+        self.ui.buttonUdpStart.setEnabled(True)
         self.status['UDP']['Message'] = self.status['UDP']['Server']
         self.on_tab_changed()
 
@@ -676,9 +676,9 @@ class MyApp(QtWidgets.QMainWindow):
 
     def on_udp_message_send(self):
         self.udp_send.send(
-            self.ui.comboBox_UdpSend.currentText(),
-            self.ui.lineEdit_UdpTargetIP.text(),
-            int(self.ui.lineEdit_UdpTargetPort.text())
+            self.ui.comboBoxUdpMessage.currentText(),
+            self.ui.lineEditUdpTargetIp.text(),
+            int(self.ui.lineEditUdpTargetPort.text())
         )
         self.ui.textBrowserMessage.append(
             '<div><strong>— [UDP] ' +
@@ -686,14 +686,14 @@ class MyApp(QtWidgets.QMainWindow):
             ' —</strong></div>')
         self.ui.textBrowserMessage.append(
             '<div>' +
-            self.ui.comboBox_UdpSend.currentText() +
+            self.ui.comboBoxUdpMessage.currentText() +
             '<br></div>')
-        self.ui.comboBox_UdpSend.addItem(
-            self.ui.comboBox_UdpSend.currentText())
-        self.ui.comboBox_UdpSend.clearEditText()
+        self.ui.comboBoxUdpMessage.addItem(
+            self.ui.comboBoxUdpMessage.currentText())
+        self.ui.comboBoxUdpMessage.clearEditText()
 
-        self.config['UDP_Target_IP'] = self.ui.lineEdit_UdpTargetIP.text()
-        self.config['UDP_Target_Port'] = self.ui.lineEdit_UdpTargetPort.text()
+        self.config['UDP_Target_IP'] = self.ui.lineEditUdpTargetIp.text()
+        self.config['UDP_Target_Port'] = self.ui.lineEditUdpTargetPort.text()
         self.save_config()
 
     # Bluetooth Server
