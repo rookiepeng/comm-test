@@ -176,15 +176,15 @@ class MyApp(QtWidgets.QMainWindow):
         )
 
         # GPIB
-        self.ui.button_GpibRefresh.clicked.connect(
+        self.ui.buttonGpibRefresh.clicked.connect(
             self.on_gpib_refresh_button_clicked)
-        self.ui.button_gpib.clicked.connect(
+        self.ui.buttonGpibOpen.clicked.connect(
             self.on_gpib_button_clicked
         )
-        self.ui.button_GPIBSend.clicked.connect(
+        self.ui.buttonGpibSend.clicked.connect(
             self.on_gpib_message_send
         )
-        self.ui.comboBox_GPIBSend.lineEdit().returnPressed.connect(
+        self.ui.comboBoxGpibMessage.lineEdit().returnPressed.connect(
             self.on_gpib_message_send
         )
 
@@ -254,42 +254,42 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.groupBox_GpibMessage.setEnabled(False)
 
     def on_gpib_button_clicked(self):
-        self.ui.button_gpib.setEnabled(False)
-        if self.ui.button_gpib.text() == 'Open':
+        self.ui.buttonGpibOpen.setEnabled(False)
+        if self.ui.buttonGpibOpen.text() == 'Open':
             self.device = self.gpib_manager.open_resource(
-                self.ui.comboBox_GpibInterface.currentText())
-            self.ui.button_gpib.setText('Close')
+                self.ui.comboBoxGpibInterface.currentText())
+            self.ui.buttonGpibOpen.setText('Close')
             self.ui.groupBox_GpibMessage.setEnabled(True)
 
-            self.ui.comboBox_GpibInterface.setEnabled(False)
-            self.ui.button_GpibRefresh.setEnabled(False)
-        elif self.ui.button_gpib.text() == 'Close':
+            self.ui.comboBoxGpibInterface.setEnabled(False)
+            self.ui.buttonGpibRefresh.setEnabled(False)
+        elif self.ui.buttonGpibOpen.text() == 'Close':
             self.device.close()
-            self.ui.button_gpib.setText('Open')
+            self.ui.buttonGpibOpen.setText('Open')
             self.ui.groupBox_GpibMessage.setEnabled(False)
 
-            self.ui.comboBox_GpibInterface.setEnabled(True)
-            self.ui.button_GpibRefresh.setEnabled(True)
+            self.ui.comboBoxGpibInterface.setEnabled(True)
+            self.ui.buttonGpibRefresh.setEnabled(True)
 
-        self.ui.button_gpib.setEnabled(True)
+        self.ui.buttonGpibOpen.setEnabled(True)
 
     def update_gpib_interfaces(self):
         self.gpib_manager = visa.ResourceManager()
         self.gpib_list = self.gpib_manager.list_resources()
 
         gpib_interface_idx = self.config.get('GPIBInterface', 0)
-        self.ui.comboBox_GpibInterface.clear()
+        self.ui.comboBoxGpibInterface.clear()
         for if_name in self.gpib_list:
-            self.ui.comboBox_GpibInterface.addItem(if_name)
+            self.ui.comboBoxGpibInterface.addItem(if_name)
 
-        self.config['GPIBInterface'] = self.ui.comboBox_GpibInterface.currentIndex()
+        self.config['GPIBInterface'] = self.ui.comboBoxGpibInterface.currentIndex()
 
         if len(self.gpib_list) > 0:
             self.gpib_interface = self.gpib_list[gpib_interface_idx]
-            self.ui.button_gpib.setEnabled(True)
+            self.ui.buttonGpibOpen.setEnabled(True)
         else:
             self.gpib_interface = ''
-            self.ui.button_gpib.setEnabled(False)
+            self.ui.buttonGpibOpen.setEnabled(False)
 
         self.save_config()
 
@@ -392,43 +392,44 @@ class MyApp(QtWidgets.QMainWindow):
         if len(self.gpib_list) > 0:
             # self.local_tcp_addr = self.gpib_list[self.ui.comboBoxTcpInterface.currentIndex(
             # )]
-            self.ui.button_gpib.setEnabled(True)
+            self.ui.buttonGpibOpen.setEnabled(True)
         else:
             # self.local_tcp_addr = ''
-            self.ui.button_gpib.setEnabled(False)
+            self.ui.buttonGpibOpen.setEnabled(False)
         self.save_config()
 
     def on_gpib_message_send(self):
         if self.ui.comboBox_GPIB_SendType.currentText() == 'Write':
-            self.device.write(self.ui.comboBox_GPIBSend.currentText())
+            self.device.write(self.ui.comboBoxGpibMessage.currentText())
             self.ui.textBrowserMessage.append(
                 '<div><strong>— ' +
                 '[GPIB] local' +
                 ' —</strong></div>')
             self.ui.textBrowserMessage.append(
                 '<div>' +
-                self.ui.comboBox_GPIBSend.currentText() +
+                self.ui.comboBoxGpibMessage.currentText() +
                 '<br></div>')
-            self.ui.comboBox_GPIBSend.addItem(
-                self.ui.comboBox_GPIBSend.currentText())
-            self.ui.comboBox_GPIBSend.clearEditText()
+            self.ui.comboBoxGpibMessage.addItem(
+                self.ui.comboBoxGpibMessage.currentText())
+            self.ui.comboBoxGpibMessage.clearEditText()
         elif self.ui.comboBox_GPIB_SendType.currentText() == 'Query':
-            output = self.device.query(self.ui.comboBox_GPIBSend.currentText())
+            output = self.device.query(
+                self.ui.comboBoxGpibMessage.currentText())
             self.ui.textBrowserMessage.append(
                 '<div><strong>— ' +
                 '[GPIB] local' +
                 ' —</strong></div>')
             self.ui.textBrowserMessage.append(
                 '<div>' +
-                self.ui.comboBox_GPIBSend.currentText() +
+                self.ui.comboBoxGpibMessage.currentText() +
                 '<br></div>')
-            self.ui.comboBox_GPIBSend.addItem(
-                self.ui.comboBox_GPIBSend.currentText())
-            self.ui.comboBox_GPIBSend.clearEditText()
+            self.ui.comboBoxGpibMessage.addItem(
+                self.ui.comboBoxGpibMessage.currentText())
+            self.ui.comboBoxGpibMessage.clearEditText()
 
             self.ui.textBrowserMessage.append(
                 '<div style="color: #2196F3;><strong>— [GPIB] ' +
-                self.ui.comboBox_GpibInterface.currentText() +
+                self.ui.comboBoxGpibInterface.currentText() +
                 ' —</strong></div>')
             self.ui.textBrowserMessage.append(
                 '<div style="color: #2196F3;>' +
