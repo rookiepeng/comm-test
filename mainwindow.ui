@@ -417,7 +417,7 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_4">
                 <item>
-                 <widget class="QComboBox" name="comboBox_UdpInterface">
+                 <widget class="QComboBox" name="comboBoxUdpInterface">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                     <horstretch>1</horstretch>
@@ -427,7 +427,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="button_UdpRefresh">
+                 <widget class="QPushButton" name="buttonUdpRefresh">
                   <property name="text">
                    <string/>
                   </property>
@@ -445,7 +445,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="lineEdit_UdpListenPort">
+                 <widget class="QLineEdit" name="lineEditUdpListenPort">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                     <horstretch>0</horstretch>
@@ -467,7 +467,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="button_Udp">
+                 <widget class="QPushButton" name="buttonUdpStart">
                   <property name="text">
                    <string>Start</string>
                   </property>
@@ -607,7 +607,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="groupBox_UdpMessage">
+            <widget class="QGroupBox" name="groupBoxUdpMessage">
              <property name="font">
               <font>
                <bold>false</bold>
@@ -620,7 +620,7 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_6">
                 <item>
-                 <widget class="QComboBox" name="comboBox_UdpSend">
+                 <widget class="QComboBox" name="comboBoxUdpMessage">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                     <horstretch>1</horstretch>
@@ -633,7 +633,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="button_UdpSend">
+                 <widget class="QPushButton" name="buttonUdpSend">
                   <property name="text">
                    <string>Send</string>
                   </property>
