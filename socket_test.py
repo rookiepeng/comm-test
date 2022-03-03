@@ -112,14 +112,17 @@ class MyApp(QtWidgets.QMainWindow):
 
         # TCP server
         self.ui.comboBoxTcpInterface.currentIndexChanged.connect(
-            self.on_tcp_interface_selection_change)
+            self.on_tcp_interface_selection_change
+        )
         self.ui.buttonTcpServerStart.clicked.connect(
-            self.on_tcp_server_start_stop_button_clicked)
+            self.on_tcp_server_start_stop_button_clicked
+        )
         self.ui.buttonTcpServerSend.clicked.connect(
             self.on_tcp_server_message_send
         )
         self.ui.buttonTcpRefresh.clicked.connect(
-            self.on_refresh_button_clicked)
+            self.on_refresh_button_clicked
+        )
         self.ui.comboBoxTcpServerMessage.lineEdit().returnPressed.connect(
             self.on_tcp_server_message_send
         )
@@ -137,9 +140,11 @@ class MyApp(QtWidgets.QMainWindow):
 
         # UDP
         self.ui.comboBoxUdpInterface.currentIndexChanged.connect(
-            self.on_udp_interface_selection_change)
+            self.on_udp_interface_selection_change
+        )
         self.ui.buttonUdpRefresh.clicked.connect(
-            self.on_refresh_button_clicked)
+            self.on_refresh_button_clicked
+        )
         self.ui.buttonUdpStart.clicked.connect(
             self.on_udp_server_start_stop_button_clicked
         )
@@ -156,7 +161,8 @@ class MyApp(QtWidgets.QMainWindow):
 
         # Bluetooth server
         self.ui.buttonBtServerStart.clicked.connect(
-            self.on_bt_server_start_stop_button_clicked)
+            self.on_bt_server_start_stop_button_clicked
+        )
         self.ui.buttonBtServerSend.clicked.connect(
             self.on_bt_server_message_send
         )
@@ -177,7 +183,8 @@ class MyApp(QtWidgets.QMainWindow):
 
         # GPIB
         self.ui.buttonGpibRefresh.clicked.connect(
-            self.on_gpib_refresh_button_clicked)
+            self.on_gpib_refresh_button_clicked
+        )
         self.ui.buttonGpibOpen.clicked.connect(
             self.on_gpib_button_clicked
         )
