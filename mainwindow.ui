@@ -162,7 +162,7 @@
             </widget>
            </item>
            <item>
-            <widget class="QGroupBox" name="groupBox_TcpServerMessage">
+            <widget class="QGroupBox" name="groupBoxTcpServerMessage">
              <property name="font">
               <font>
                <bold>false</bold>
@@ -175,7 +175,7 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_2">
                 <item>
-                 <widget class="QComboBox" name="comboBox_TcpServerSend">
+                 <widget class="QComboBox" name="comboBoxTcpServerMessage">
                   <property name="sizePolicy">
                    <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
                     <horstretch>1</horstretch>
@@ -262,7 +262,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="lineEdit_TcpClientTargetIP">
+                 <widget class="QLineEdit" name="lineEditTcpTargetIp">
                   <property name="minimumSize">
                    <size>
                     <width>150</width>
@@ -297,7 +297,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QLineEdit" name="lineEdit_TcpClientTargetPort">
+                 <widget class="QLineEdit" name="lineEditTcpTargetPort">
                   <property name="minimumSize">
                    <size>
                     <width>80</width>
@@ -313,7 +313,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="button_TcpClient">
+                 <widget class="QPushButton" name="buttonTcpClientConnect">
                   <property name="text">
                    <string>Connect</string>
                   </property>
@@ -351,7 +351,7 @@
                  </widget>
                 </item>
                 <item>
-                 <widget class="QPushButton" name="button_TcpClientSend">
+                 <widget class="QPushButton" name="buttonTcpClientSend">
                   <property name="text">
                    <string>Send</string>
                   </property>
@@ -1200,7 +1200,7 @@
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <widget class="QTextBrowser" name="textBrowser_Message">
+        <widget class="QTextBrowser" name="textBrowserMessage">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>1</horstretch>
@@ -1213,7 +1213,7 @@
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_clear">
+        <widget class="QPushButton" name="buttonClear">
          <property name="text">
           <string>Clear</string>
          </property>
