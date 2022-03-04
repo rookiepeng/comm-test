@@ -270,6 +270,9 @@ class MyApp(QtWidgets.QMainWindow):
 
             self.ui.comboBoxGpibInterface.setEnabled(False)
             self.ui.buttonGpibRefresh.setEnabled(False)
+
+            self.status['GPIB']['Message'] = 'Connected to ' + \
+                self.ui.comboBoxGpibInterface.currentText()
         elif self.ui.buttonGpibOpen.text() == 'Close':
             self.device.close()
             self.ui.buttonGpibOpen.setText('Open')
@@ -277,6 +280,10 @@ class MyApp(QtWidgets.QMainWindow):
 
             self.ui.comboBoxGpibInterface.setEnabled(True)
             self.ui.buttonGpibRefresh.setEnabled(True)
+
+            self.status['GPIB']['Message'] = 'Idle'
+
+        self.on_tab_changed()
 
         self.ui.buttonGpibOpen.setEnabled(True)
 
