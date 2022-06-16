@@ -200,6 +200,30 @@
                 </item>
                </layout>
               </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_TcpServerSendTimer">
+                <item>
+                 <widget class="QCheckBox" name="checkBoxTcpServerSendTimer">
+                  <property name="text">
+                   <string>Send every</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="spinBoxTcpServerSendTimerInterval">
+                  <property name="suffix">
+                   <string> ms</string>
+                  </property>
+                  <property name="minimum">
+                   <number>5000</number>
+                  </property>
+                  <property name="maximum">
+                   <number>60000</number>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
              </layout>
             </widget>
            </item>
@@ -358,6 +382,30 @@
                   <property name="icon">
                    <iconset>
                     <normaloff>res/paper-plane-solid.svg</normaloff>res/paper-plane-solid.svg</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_TcpClientSendTimer">
+                <item>
+                 <widget class="QCheckBox" name="checkBoxTcpClientSendTimer">
+                  <property name="text">
+                   <string>Send every</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="spinBoxTcpClientSendTimerInterval">
+                  <property name="suffix">
+                   <string> ms</string>
+                  </property>
+                  <property name="minimum">
+                   <number>5000</number>
+                  </property>
+                  <property name="maximum">
+                   <number>60000</number>
                   </property>
                  </widget>
                 </item>
@@ -640,6 +688,30 @@
                   <property name="icon">
                    <iconset>
                     <normaloff>res/paper-plane-solid.svg</normaloff>res/paper-plane-solid.svg</iconset>
+                  </property>
+                 </widget>
+                </item>
+               </layout>
+              </item>
+              <item>
+               <layout class="QHBoxLayout" name="horizontalLayout_UdpSendTimer">
+                <item>
+                 <widget class="QCheckBox" name="checkBoxUdpSendTimer">
+                  <property name="text">
+                   <string>Send every</string>
+                  </property>
+                 </widget>
+                </item>
+                <item>
+                 <widget class="QSpinBox" name="spinBoxUdpSendTimerInterval">
+                  <property name="suffix">
+                   <string> ms</string>
+                  </property>
+                  <property name="minimum">
+                   <number>5000</number>
+                  </property>
+                  <property name="maximum">
+                   <number>60000</number>
                   </property>
                  </widget>
                 </item>

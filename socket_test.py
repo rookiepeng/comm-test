@@ -126,7 +126,13 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.comboBoxTcpServerMessage.lineEdit().returnPressed.connect(
             self.on_tcp_server_message_send
         )
-
+        # TCP server send timer
+        self.ui.spinBoxTcpServerSendTimerInterval.valueChanged.connect(
+            self.on_tcp_server_send_timer_interval_changed
+        )
+        self.ui.checkBoxTcpServerSendTimer.stateChanged.connect(
+            self.on_tcp_server_send_timer_state_changed
+        )
         # TCP client
         self.ui.buttonTcpClientConnect.clicked.connect(
             self.on_tcp_client_connect_button_clicked
@@ -136,6 +142,13 @@ class MyApp(QtWidgets.QMainWindow):
         )
         self.ui.comboBoxTcpClientMessage.lineEdit().returnPressed.connect(
             self.on_tcp_client_message_send
+        )
+        # TCP client send timer
+        self.ui.spinBoxTcpClientSendTimerInterval.valueChanged.connect(
+            self.on_tcp_client_send_timer_interval_changed
+        )
+        self.ui.checkBoxTcpClientSendTimer.stateChanged.connect(
+            self.on_tcp_client_send_timer_state_changed
         )
 
         # UDP
@@ -158,6 +171,14 @@ class MyApp(QtWidgets.QMainWindow):
         self.udp_send = UDPServer(
             '0.0.0.0',
             1234)
+
+        # UDP send timer
+        self.ui.spinBoxUdpSendTimerInterval.valueChanged.connect(
+            self.on_udp_send_timer_interval_changed
+        )
+        self.ui.checkBoxUdpSendTimer.stateChanged.connect(
+            self.on_udp_send_timer_state_changed
+        )
 
         # Bluetooth server
         self.ui.buttonBtServerStart.clicked.connect(
@@ -497,6 +518,8 @@ class MyApp(QtWidgets.QMainWindow):
 
             self.ui.groupBoxTcpClientMessage.setEnabled(False)
             self.status['TCP']['Client'] = '[CLIENT] Idle'
+            # reset the send timer
+            self.ui.checkBoxTcpClientSendTimer.setChecked(False)
 
         elif status == TCPClient.CONNECTED:
             self.ui.buttonTcpClientConnect.setText('Disconnect')
@@ -521,7 +544,7 @@ class MyApp(QtWidgets.QMainWindow):
             msg +
             '<br></div>')
 
-    def on_tcp_client_message_send(self):
+    def on_tcp_client_message_send(self, clear_message=True):
         self.tcp_client.send(self.ui.comboBoxTcpClientMessage.currentText())
         self.ui.textBrowserMessage.append(
             '<div><strong>— [TCP Client] ' +
@@ -531,9 +554,29 @@ class MyApp(QtWidgets.QMainWindow):
             '<div>' +
             self.ui.comboBoxTcpClientMessage.currentText() +
             '<br></div>')
-        self.ui.comboBoxTcpClientMessage.addItem(
-            self.ui.comboBoxTcpClientMessage.currentText())
-        self.ui.comboBoxTcpClientMessage.clearEditText()
+        if clear_message:
+            self.ui.comboBoxTcpClientMessage.addItem(
+                self.ui.comboBoxTcpClientMessage.currentText())
+            self.ui.comboBoxTcpClientMessage.clearEditText()
+
+    def on_tcp_client_send_timer_callback(self):
+        self.on_tcp_client_message_send(False)
+
+    def on_tcp_client_send_timer_interval_changed(self, val):
+        if self._tcp_client_send_timer:
+            self._tcp_client_send_timer.stop()
+            self._tcp_client_send_timer.start(self.ui.spinBoxTcpClientSendTimerInterval.value())
+
+    def on_tcp_client_send_timer_state_changed(self, val):
+        if val == Qt.Checked:
+            self._tcp_client_send_timer = QtCore.QTimer(self)
+            self._tcp_client_send_timer.timeout.connect(self.on_tcp_client_send_timer_callback)
+            self._tcp_client_send_timer.start(self.ui.spinBoxTcpClientSendTimerInterval.value())
+        else:
+            if self._tcp_client_send_timer:
+                self._tcp_client_send_timer.stop()
+                self._tcp_client_send_timer = None
+        pass
 
     # TCP Server
     def on_tcp_server_start_stop_button_clicked(self):
@@ -586,6 +629,9 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.buttonTcpRefresh.setEnabled(True)
             self.status['TCP']['Server'] = '[SERVER] Idle'
 
+            # reset the send timer
+            self.ui.checkBoxTcpServerSendTimer.setChecked(False)
+
         elif status == TCPServer.LISTEN:
             self.ui.buttonTcpServerStart.setText('Stop')
 
@@ -593,6 +639,9 @@ class MyApp(QtWidgets.QMainWindow):
             self.status['TCP']['Server'] = '[SERVER] Listen on ' +\
                 self.local_tcp_addr+':' +\
                 self.ui.lineEditTcpServerPort.text()
+
+            # reset the send timer
+            self.ui.checkBoxTcpServerSendTimer.setChecked(False)
 
         elif status == TCPServer.CONNECTED:
             self.ui.buttonTcpServerStart.setText('Disconnect')
@@ -615,7 +664,7 @@ class MyApp(QtWidgets.QMainWindow):
             msg +
             '<br></div>')
 
-    def on_tcp_server_message_send(self):
+    def on_tcp_server_message_send(self, clear_message=True):
         self.tcp_server.send(self.ui.comboBoxTcpServerMessage.currentText())
         self.ui.textBrowserMessage.append(
             '<div><strong>— [TCP Server] ' +
@@ -625,9 +674,28 @@ class MyApp(QtWidgets.QMainWindow):
             '<div>' +
             self.ui.comboBoxTcpServerMessage.currentText() +
             '<br></div>')
-        self.ui.comboBoxTcpServerMessage.addItem(
-            self.ui.comboBoxTcpServerMessage.currentText())
-        self.ui.comboBoxTcpServerMessage.clearEditText()
+        if clear_message:
+            self.ui.comboBoxTcpServerMessage.addItem(
+                self.ui.comboBoxTcpServerMessage.currentText())
+            self.ui.comboBoxTcpServerMessage.clearEditText()
+
+    def on_tcp_server_send_timer_callback(self):
+        self.on_tcp_server_message_send(False)
+
+    def on_tcp_server_send_timer_interval_changed(self, val):
+        if self._tcp_server_send_timer:
+            self._tcp_server_send_timer.stop()
+            self._tcp_server_send_timer.start(self.ui.spinBoxTcpServerSendTimerInterval.value())
+
+    def on_tcp_server_send_timer_state_changed(self, val):
+        if val == Qt.Checked:
+            self._tcp_server_send_timer = QtCore.QTimer(self)
+            self._tcp_server_send_timer.timeout.connect(self.on_tcp_server_send_timer_callback)
+            self._tcp_server_send_timer.start(self.ui.spinBoxTcpServerSendTimerInterval.value())
+        else:
+            if self._tcp_server_send_timer:
+                self._tcp_server_send_timer.stop()
+                self._tcp_server_send_timer = None
 
     # UDP
     def on_udp_server_start_stop_button_clicked(self):
@@ -689,7 +757,7 @@ class MyApp(QtWidgets.QMainWindow):
             msg +
             '<br></div>')
 
-    def on_udp_message_send(self):
+    def on_udp_message_send(self, clear_message=True):
         self.udp_send.send(
             self.ui.comboBoxUdpMessage.currentText(),
             self.ui.lineEditUdpTargetIp.text(),
@@ -703,13 +771,32 @@ class MyApp(QtWidgets.QMainWindow):
             '<div>' +
             self.ui.comboBoxUdpMessage.currentText() +
             '<br></div>')
-        self.ui.comboBoxUdpMessage.addItem(
-            self.ui.comboBoxUdpMessage.currentText())
-        self.ui.comboBoxUdpMessage.clearEditText()
+        if clear_message:
+            self.ui.comboBoxUdpMessage.addItem(
+                self.ui.comboBoxUdpMessage.currentText())
+            self.ui.comboBoxUdpMessage.clearEditText()
 
-        self.config['UDP_Target_IP'] = self.ui.lineEditUdpTargetIp.text()
-        self.config['UDP_Target_Port'] = self.ui.lineEditUdpTargetPort.text()
-        self.save_config()
+            self.config['UDP_Target_IP'] = self.ui.lineEditUdpTargetIp.text()
+            self.config['UDP_Target_Port'] = self.ui.lineEditUdpTargetPort.text()
+            self.save_config()
+
+    def on_udp_send_timer_callback(self):
+        self.on_udp_message_send(False)
+
+    def on_udp_send_timer_interval_changed(self, val):
+        if self._udp_send_timer:
+            self._udp_send_timer.stop()
+            self._udp_send_timer.start(self.ui.spinBoxUdpSendTimerInterval.value())
+
+    def on_udp_send_timer_state_changed(self, val):
+        if val == Qt.Checked:
+            self._udp_send_timer = QtCore.QTimer(self)
+            self._udp_send_timer.timeout.connect(self.on_udp_send_timer_callback)
+            self._udp_send_timer.start(self.ui.spinBoxUdpSendTimerInterval.value())
+        else:
+            if self._udp_send_timer:
+                self._udp_send_timer.stop()
+                self._udp_send_timer = None
 
     # Bluetooth Server
     def on_bt_server_start_stop_button_clicked(self):
