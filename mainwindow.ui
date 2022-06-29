@@ -215,7 +215,7 @@
                    <string> ms</string>
                   </property>
                   <property name="minimum">
-                   <number>5000</number>
+                   <number>1000</number>
                   </property>
                   <property name="maximum">
                    <number>60000</number>
@@ -402,7 +402,7 @@
                    <string> ms</string>
                   </property>
                   <property name="minimum">
-                   <number>5000</number>
+                   <number>1000</number>
                   </property>
                   <property name="maximum">
                    <number>60000</number>
@@ -708,7 +708,7 @@
                    <string> ms</string>
                   </property>
                   <property name="minimum">
-                   <number>5000</number>
+                   <number>1000</number>
                   </property>
                   <property name="maximum">
                    <number>60000</number>
