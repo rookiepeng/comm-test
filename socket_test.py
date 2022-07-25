@@ -127,6 +127,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.on_tcp_server_message_send
         )
         # TCP server send timer
+        self._tcp_server_send_timer = None
         self.ui.spinBoxTcpServerSendTimerInterval.valueChanged.connect(
             self.on_tcp_server_send_timer_interval_changed
         )
@@ -144,6 +145,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.on_tcp_client_message_send
         )
         # TCP client send timer
+        self._tcp_client_send_timer = None
         self.ui.spinBoxTcpClientSendTimerInterval.valueChanged.connect(
             self.on_tcp_client_send_timer_interval_changed
         )
@@ -173,6 +175,7 @@ class MyApp(QtWidgets.QMainWindow):
             1234)
 
         # UDP send timer
+        self._udp_send_timer = None
         self.ui.spinBoxUdpSendTimerInterval.valueChanged.connect(
             self.on_udp_send_timer_interval_changed
         )

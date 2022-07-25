@@ -97,6 +97,10 @@ class TCPServer(QObject):
                                     data = self.connection.recv(4096)
                                 except socket.timeout as t_out:
                                     pass
+                                except ConnectionError:
+                                    self.connection.close()
+                                    self.status.emit(self.LISTEN, '')
+                                    break
                                 else:
                                     if data:
                                         self.message.emit(
