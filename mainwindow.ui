@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>922</width>
-    <height>480</height>
+    <height>540</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -203,9 +203,22 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_TcpServerSendTimer">
                 <item>
+                 <spacer name="horizontalSpacer">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
                  <widget class="QCheckBox" name="checkBoxTcpServerSendTimer">
                   <property name="text">
-                   <string>Send every</string>
+                   <string>Repeat every</string>
                   </property>
                  </widget>
                 </item>
@@ -390,9 +403,22 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_TcpClientSendTimer">
                 <item>
+                 <spacer name="horizontalSpacer_3">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
                  <widget class="QCheckBox" name="checkBoxTcpClientSendTimer">
                   <property name="text">
-                   <string>Send every</string>
+                   <string>Repeat every</string>
                   </property>
                  </widget>
                 </item>
@@ -696,9 +722,22 @@
               <item>
                <layout class="QHBoxLayout" name="horizontalLayout_UdpSendTimer">
                 <item>
+                 <spacer name="horizontalSpacer_4">
+                  <property name="orientation">
+                   <enum>Qt::Horizontal</enum>
+                  </property>
+                  <property name="sizeHint" stdset="0">
+                   <size>
+                    <width>40</width>
+                    <height>20</height>
+                   </size>
+                  </property>
+                 </spacer>
+                </item>
+                <item>
                  <widget class="QCheckBox" name="checkBoxUdpSendTimer">
                   <property name="text">
-                   <string>Send every</string>
+                   <string>Repeat every</string>
                   </property>
                  </widget>
                 </item>
@@ -1196,7 +1235,7 @@
         <item>
          <widget class="QLabel" name="label_AppVersion">
           <property name="text">
-           <string>v4.1</string>
+           <string>v4.2</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
