@@ -1,4 +1,4 @@
-# Socket Test
+# CommTest
 
 <img src="https://raw.githubusercontent.com/rookiepeng/socket-test/master/res/socket_test.png" width="128">
 
