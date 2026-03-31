@@ -210,6 +210,19 @@
          </widget>
         </item>
         <item>
+         <widget class="QLabel" name="labelTcpArrow">
+          <property name="text">
+           <string>⇅</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="styleSheet">
+           <string>color: #90A4AE; font-size: 18px;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
          <widget class="QGroupBox" name="groupBox_16">
           <property name="title">
            <string>Client</string>
@@ -446,6 +459,19 @@
             </widget>
            </item>
           </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelUdpArrow">
+          <property name="text">
+           <string>⇅</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="styleSheet">
+           <string>color: #90A4AE; font-size: 18px;</string>
+          </property>
          </widget>
         </item>
         <item>
@@ -712,6 +738,19 @@
             </widget>
            </item>
           </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelBtArrow">
+          <property name="text">
+           <string>⇅</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="styleSheet">
+           <string>color: #90A4AE; font-size: 18px;</string>
+          </property>
          </widget>
         </item>
         <item>

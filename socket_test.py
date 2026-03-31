@@ -331,6 +331,25 @@ class MyApp(QtWidgets.QMainWindow):
             central_layout.takeAt(0)
         central_layout.addWidget(splitter)
 
+        # Initialize groupbox border states
+        for gb in (self.ui.groupBox_14, self.ui.groupBox_16,
+                   self.ui.groupBox_15, self.ui.groupBox_8,
+                   self.ui.groupBox_17, self.ui.groupBox_10):
+            self._set_groupbox_state(gb, 'idle')
+
+    def _set_groupbox_state(self, groupbox, state):
+        _COLORS = {
+            'idle': '#bdbdbd',
+            'listening': '#FF9800',
+            'connected': '#4CAF50',
+            'error': '#F44336',
+        }
+        color = _COLORS.get(state, '#bdbdbd')
+        groupbox.setStyleSheet(
+            f"QGroupBox {{ border: 2px solid {color}; border-radius: 4px; margin: 3px; margin-top: 10px; padding: 2px; }} "
+            f"QGroupBox::title {{ subcontrol-origin: margin; left: 8px; padding: 0 4px; }}"
+        )
+
     # CAN
     def on_can_start_stop_button_clicked(self):
         if self.ui.buttonCanStart.text() == 'Start':
@@ -666,6 +685,7 @@ class MyApp(QtWidgets.QMainWindow):
 
             self.ui.groupBoxTcpClientMessage.setEnabled(False)
             self.status['TCP']['Client'] = '[CLIENT] Idle'
+            self._set_groupbox_state(self.ui.groupBox_16, 'idle')
             # reset the send timer
             self.ui.checkBoxTcpClientSendTimer.setChecked(False)
 
@@ -676,6 +696,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.status['TCP']['Client'] = '[CLIENT] Connected to ' +\
                 self.ui.lineEditTcpTargetIp.text() +\
                 ':'+self.ui.lineEditTcpTargetPort.text()
+            self._set_groupbox_state(self.ui.groupBox_16, 'connected')
 
         self.ui.buttonTcpClientConnect.setEnabled(True)
         self.status['TCP']['Message'] = self.status['TCP']['Server'] + \
@@ -776,6 +797,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.comboBoxTcpInterface.setEnabled(True)
             self.ui.buttonTcpRefresh.setEnabled(True)
             self.status['TCP']['Server'] = '[SERVER] Idle'
+            self._set_groupbox_state(self.ui.groupBox_14, 'idle')
 
             # reset the send timer
             self.ui.checkBoxTcpServerSendTimer.setChecked(False)
@@ -787,6 +809,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.status['TCP']['Server'] = '[SERVER] Listen on ' +\
                 self.local_tcp_addr+':' +\
                 self.ui.lineEditTcpServerPort.text()
+            self._set_groupbox_state(self.ui.groupBox_14, 'listening')
 
             # reset the send timer
             self.ui.checkBoxTcpServerSendTimer.setChecked(False)
@@ -796,6 +819,7 @@ class MyApp(QtWidgets.QMainWindow):
 
             self.ui.groupBoxTcpServerMessage.setEnabled(True)
             self.status['TCP']['Server'] = '[SERVER] Connected with '+addr
+            self._set_groupbox_state(self.ui.groupBox_14, 'connected')
 
         self.ui.buttonTcpServerStart.setEnabled(True)
         self.status['TCP']['Message'] = self.status['TCP']['Server'] + \
@@ -884,12 +908,14 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.comboBoxUdpInterface.setEnabled(True)
             self.ui.buttonUdpRefresh.setEnabled(True)
             self.status['UDP']['Server'] = '[SERVER] Idle'
+            self._set_groupbox_state(self.ui.groupBox_15, 'idle')
 
         elif status == UDPServer.LISTEN:
             self.ui.buttonUdpStart.setText('Stop')
             self.status['UDP']['Server'] = '[SERVER] Listen on ' +\
                 self.local_tcp_addr+':' +\
                 self.ui.lineEditTcpServerPort.text()
+            self._set_groupbox_state(self.ui.groupBox_15, 'listening')
 
         self.ui.buttonUdpStart.setEnabled(True)
         self.status['UDP']['Message'] = self.status['UDP']['Server']
@@ -996,6 +1022,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.lineEditBtServerPort.setEnabled(True)
             self.ui.lineEditBtHostMac.setEnabled(True)
             self.status['Bluetooth']['Server'] = '[SERVER] Idle'
+            self._set_groupbox_state(self.ui.groupBox_17, 'idle')
 
         elif status == BluetoothServer.LISTEN:
             self.ui.buttonBtServerStart.setText('Stop')
@@ -1004,12 +1031,14 @@ class MyApp(QtWidgets.QMainWindow):
             self.status['Bluetooth']['Server'] = '[SERVER] Listen on ' +\
                 self.ui.lineEditBtHostMac.text()+' (' +\
                 self.ui.lineEditBtServerPort.text()+')'
+            self._set_groupbox_state(self.ui.groupBox_17, 'listening')
 
         elif status == BluetoothServer.CONNECTED:
             self.ui.buttonBtServerStart.setText('Disconnect')
 
             self.ui.groupBoxBtServerMessage.setEnabled(True)
             self.status['Bluetooth']['Server'] = '[SERVER] Connected to '+addr
+            self._set_groupbox_state(self.ui.groupBox_17, 'connected')
 
         self.ui.buttonBtServerStart.setEnabled(True)
         self.status['Bluetooth']['Message'] = self.status['Bluetooth']['Server'] + \
@@ -1082,6 +1111,7 @@ class MyApp(QtWidgets.QMainWindow):
 
             self.ui.groupBoxBtClientMessage.setEnabled(False)
             self.status['Bluetooth']['Client'] = '[CLIENT] Idle'
+            self._set_groupbox_state(self.ui.groupBox_10, 'idle')
 
         elif status == BluetoothClient.CONNECTED:
             self.ui.buttonBtClientConnect.setText('Disconnect')
@@ -1090,6 +1120,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.status['Bluetooth']['Client'] = '[CLIENT] Connected to ' +\
                 addr +\
                 ' ('+self.ui.lineEditBtTargetPort.text()+')'
+            self._set_groupbox_state(self.ui.groupBox_10, 'connected')
 
         self.ui.buttonBtClientConnect.setEnabled(True)
         self.status['Bluetooth']['Message'] = self.status['Bluetooth']['Server'] + \
