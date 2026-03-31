@@ -285,6 +285,8 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.groupBox_GpibMessage.setEnabled(False)
 
     def on_gpib_button_clicked(self):
+        if self.gpib_manager is None:
+            return
         self.ui.buttonGpibOpen.setEnabled(False)
         if self.ui.buttonGpibOpen.text() == 'Open':
             self.device = self.gpib_manager.open_resource(
@@ -312,8 +314,12 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.buttonGpibOpen.setEnabled(True)
 
     def update_gpib_interfaces(self):
-        self.gpib_manager = visa.ResourceManager()
-        self.gpib_list = self.gpib_manager.list_resources()
+        try:
+            self.gpib_manager = visa.ResourceManager()
+            self.gpib_list = self.gpib_manager.list_resources()
+        except visa.errors.VisaIOError:
+            self.gpib_manager = None
+            self.gpib_list = []
 
         gpib_interface_idx = self.config.get('GPIBInterface', 0)
         self.ui.comboBoxGpibInterface.clear()
