@@ -1184,6 +1184,33 @@ if __name__ == "__main__":
             background-color: #B0BEC5;
             color: #78909C;
         }
+        QPushButton#checkBoxTcpServerSendTimer,
+        QPushButton#checkBoxTcpClientSendTimer,
+        QPushButton#checkBoxUdpSendTimer {
+            background-color: transparent;
+            color: #546E7A;
+            border: 1px solid #90A4AE;
+            padding: 3px 10px;
+        }
+        QPushButton#checkBoxTcpServerSendTimer:hover,
+        QPushButton#checkBoxTcpClientSendTimer:hover,
+        QPushButton#checkBoxUdpSendTimer:hover {
+            background-color: #ECEFF1;
+            border-color: #607D8B;
+            color: #37474F;
+        }
+        QPushButton#checkBoxTcpServerSendTimer:checked,
+        QPushButton#checkBoxTcpClientSendTimer:checked,
+        QPushButton#checkBoxUdpSendTimer:checked {
+            background-color: #2E7D32;
+            color: white;
+            border: 1px solid #1B5E20;
+        }
+        QPushButton#checkBoxTcpServerSendTimer:checked:hover,
+        QPushButton#checkBoxTcpClientSendTimer:checked:hover,
+        QPushButton#checkBoxUdpSendTimer:checked:hover {
+            background-color: #1B5E20;
+        }
         QTextBrowser {
             font-family: Consolas, "Courier New", monospace;
             font-size: 12px;

@@ -182,9 +182,12 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QCheckBox" name="checkBoxTcpServerSendTimer">
+                 <widget class="QPushButton" name="checkBoxTcpServerSendTimer">
                   <property name="text">
-                   <string>Repeat every</string>
+                   <string>Repeat</string>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
@@ -340,9 +343,12 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QCheckBox" name="checkBoxTcpClientSendTimer">
+                 <widget class="QPushButton" name="checkBoxTcpClientSendTimer">
                   <property name="text">
-                   <string>Repeat every</string>
+                   <string>Repeat</string>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
@@ -598,9 +604,12 @@
                  </spacer>
                 </item>
                 <item>
-                 <widget class="QCheckBox" name="checkBoxUdpSendTimer">
+                 <widget class="QPushButton" name="checkBoxUdpSendTimer">
                   <property name="text">
-                   <string>Repeat every</string>
+                   <string>Repeat</string>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
                   </property>
                  </widget>
                 </item>
