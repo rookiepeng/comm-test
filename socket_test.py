@@ -65,10 +65,7 @@ try:
 except ImportError:
     _CAN_AVAILABLE = False
 
-QtWidgets.QApplication.setAttribute(
-    QtCore.Qt.AA_EnableHighDpiScaling, True)  # enable highdpi scaling
-QtWidgets.QApplication.setAttribute(
-    QtCore.Qt.AA_UseHighDpiPixmaps, True)  # use highdpi icons
+# warnings.filterwarnings('ignore', category=UserWarning, module='pyvisa')
 
 
 class MyApp(QtWidgets.QMainWindow):
