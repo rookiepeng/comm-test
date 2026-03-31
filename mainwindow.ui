@@ -1086,6 +1086,226 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tab_can">
+       <attribute name="title">
+        <string>CAN</string>
+       </attribute>
+       <layout class="QVBoxLayout" name="verticalLayout_can">
+        <item>
+         <widget class="QGroupBox" name="groupBox_CanInterface">
+          <property name="font">
+           <font>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="title">
+           <string>Interface</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_canIface">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_canIface">
+             <item>
+              <widget class="QLabel" name="labelCanBusType">
+               <property name="text">
+                <string>Bus Type:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="comboBoxCanBusType">
+               <item>
+                <property name="text">
+                 <string>socketcan</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>pcan</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>vector</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>kvaser</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>virtual</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelCanChannel">
+               <property name="text">
+                <string>Channel:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="lineEditCanChannel">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>1</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="placeholderText">
+                <string>can0 / PCAN_USBBUS1</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelCanBitrate">
+               <property name="text">
+                <string>Bitrate:</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QComboBox" name="comboBoxCanBitrate">
+               <property name="editable">
+                <bool>true</bool>
+               </property>
+               <item>
+                <property name="text">
+                 <string>125000</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>250000</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>500000</string>
+                </property>
+               </item>
+               <item>
+                <property name="text">
+                 <string>1000000</string>
+                </property>
+               </item>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="buttonCanStart">
+               <property name="text">
+                <string>Start</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="groupBox_CanMessage">
+          <property name="font">
+           <font>
+            <bold>false</bold>
+           </font>
+          </property>
+          <property name="title">
+           <string>Send Message:</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_canMsg">
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_canMsg">
+             <item>
+              <widget class="QLabel" name="labelCanArbId">
+               <property name="text">
+                <string>Arb ID (hex):</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="lineEditCanArbId">
+               <property name="minimumSize">
+                <size>
+                 <width>80</width>
+                 <height>0</height>
+                </size>
+               </property>
+               <property name="maximumSize">
+                <size>
+                 <width>100</width>
+                 <height>16777215</height>
+                </size>
+               </property>
+               <property name="placeholderText">
+                <string>000</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="labelCanData">
+               <property name="text">
+                <string>Data (hex):</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="lineEditCanData">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
+                 <horstretch>1</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="placeholderText">
+                <string>01 02 03 04</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="checkBoxCanExtendedId">
+               <property name="text">
+                <string>Extended</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QPushButton" name="buttonCanSend">
+               <property name="text">
+                <string>Send</string>
+               </property>
+               <property name="icon">
+                <iconset>
+                 <normaloff>res/paper-plane-solid.svg</normaloff>res/paper-plane-solid.svg</iconset>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_can">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>0</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+       </layout>
+      </widget>
       <widget class="QWidget" name="tab_3">
        <attribute name="title">
         <string>GPIB</string>
@@ -1130,6 +1350,19 @@
             </layout>
            </item>
           </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="labelGpibUnavailable">
+          <property name="text">
+           <string>VISA library not found. Install NI-VISA or pyvisa-py to use GPIB.</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="styleSheet">
+           <string>color: #e53935; font-style: italic; padding: 4px;</string>
+          </property>
          </widget>
         </item>
         <item>
@@ -1307,7 +1540,7 @@
        </sizepolicy>
       </property>
       <property name="title">
-       <string/>
+       <string>Messages</string>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>

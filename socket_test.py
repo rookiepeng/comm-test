@@ -59,6 +59,12 @@ from btclient import BluetoothClient
 
 import pyvisa as visa
 
+try:
+    from canbus import CanBus
+    _CAN_AVAILABLE = True
+except ImportError:
+    _CAN_AVAILABLE = False
+
 QtWidgets.QApplication.setAttribute(
     QtCore.Qt.AA_EnableHighDpiScaling, True)  # enable highdpi scaling
 QtWidgets.QApplication.setAttribute(
@@ -84,6 +90,9 @@ class MyApp(QtWidgets.QMainWindow):
                 Server='[SERVER] Idle',
                 Client='[CLIENT] Idle',
                 Message='[SERVER] Idle ● [CLIENT] Idle'
+            ),
+            CAN=dict(
+                Message='Idle'
             ),
             GPIB=dict(
                 Message='Idle'
@@ -131,7 +140,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.spinBoxTcpServerSendTimerInterval.valueChanged.connect(
             self.on_tcp_server_send_timer_interval_changed
         )
-        self.ui.checkBoxTcpServerSendTimer.stateChanged.connect(
+        self.ui.checkBoxTcpServerSendTimer.toggled.connect(
             self.on_tcp_server_send_timer_state_changed
         )
         # TCP client
@@ -149,7 +158,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.spinBoxTcpClientSendTimerInterval.valueChanged.connect(
             self.on_tcp_client_send_timer_interval_changed
         )
-        self.ui.checkBoxTcpClientSendTimer.stateChanged.connect(
+        self.ui.checkBoxTcpClientSendTimer.toggled.connect(
             self.on_tcp_client_send_timer_state_changed
         )
 
@@ -179,7 +188,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.spinBoxUdpSendTimerInterval.valueChanged.connect(
             self.on_udp_send_timer_interval_changed
         )
-        self.ui.checkBoxUdpSendTimer.stateChanged.connect(
+        self.ui.checkBoxUdpSendTimer.toggled.connect(
             self.on_udp_send_timer_state_changed
         )
 
@@ -203,6 +212,17 @@ class MyApp(QtWidgets.QMainWindow):
         )
         self.ui.comboBoxBtClientMessage.lineEdit().returnPressed.connect(
             self.on_bt_client_message_send
+        )
+
+        # CAN
+        self.ui.buttonCanStart.clicked.connect(
+            self.on_can_start_stop_button_clicked
+        )
+        self.ui.buttonCanSend.clicked.connect(
+            self.on_can_message_send
+        )
+        self.ui.lineEditCanData.returnPressed.connect(
+            self.on_can_message_send
         )
 
         # GPIB
@@ -277,12 +297,132 @@ class MyApp(QtWidgets.QMainWindow):
             self.config.get('Bluetooth_Client_Port', '11'))
         self.ui.groupBoxBtClientMessage.setEnabled(False)
 
-        # GPIO
+        # CAN
+        self.ui.groupBox_CanMessage.setEnabled(False)
+        self.ui.lineEditCanChannel.setText(
+            self.config.get('CAN_Channel', ''))
+        bustype_idx = self.config.get('CAN_BusType_Idx', 0)
+        bitrate_idx = self.config.get('CAN_Bitrate_Idx', 2)  # 500000
+        self.ui.comboBoxCanBusType.setCurrentIndex(bustype_idx)
+        self.ui.comboBoxCanBitrate.setCurrentIndex(bitrate_idx)
+
+        # GPIB
         self.ui.comboBoxGpibSendType.addItem('Query')
         self.ui.comboBoxGpibSendType.addItem('Write')
         # self.ui.comboBoxGpibSendType.addItem('Write Binary')
         # self.ui.comboBoxGpibSendType.addItem('Query Binary')
         self.ui.groupBox_GpibMessage.setEnabled(False)
+
+        # Tooltips
+        self.ui.buttonTcpRefresh.setToolTip('Refresh network interfaces')
+        self.ui.buttonUdpRefresh.setToolTip('Refresh network interfaces')
+        self.ui.buttonGpibRefresh.setToolTip('Refresh VISA/GPIB interfaces')
+        self.ui.buttonClear.setToolTip('Clear message log')
+        self.ui.checkBoxTcpServerSendTimer.setToolTip('Repeat last message on a timer')
+        self.ui.checkBoxTcpClientSendTimer.setToolTip('Repeat last message on a timer')
+        self.ui.checkBoxUdpSendTimer.setToolTip('Repeat last message on a timer')
+        self.ui.checkBoxCanExtendedId.setToolTip('Use 29-bit extended CAN ID')
+
+        # Splitter between tab panel and message browser
+        splitter = QtWidgets.QSplitter(Qt.Horizontal)
+        central_layout = self.ui.centralWidget().layout()
+        splitter.addWidget(self.ui.tabWidget)
+        splitter.addWidget(self.ui.groupBox_3)
+        splitter.setSizes([480, 440])
+        splitter.setHandleWidth(6)
+        while central_layout.count():
+            central_layout.takeAt(0)
+        central_layout.addWidget(splitter)
+
+    # CAN
+    def on_can_start_stop_button_clicked(self):
+        if self.ui.buttonCanStart.text() == 'Start':
+            self.ui.buttonCanStart.setEnabled(False)
+            self.ui.comboBoxCanBusType.setEnabled(False)
+            self.ui.lineEditCanChannel.setEnabled(False)
+            self.ui.comboBoxCanBitrate.setEnabled(False)
+
+            if not _CAN_AVAILABLE:
+                self.status['CAN']['Message'] = 'python-can not installed'
+                self.on_tab_changed()
+                self.ui.buttonCanStart.setEnabled(True)
+                self.ui.comboBoxCanBusType.setEnabled(True)
+                self.ui.lineEditCanChannel.setEnabled(True)
+                self.ui.comboBoxCanBitrate.setEnabled(True)
+                return
+
+            self.can_thread = QThread()
+            self.can_bus = CanBus(
+                self.ui.comboBoxCanBusType.currentText(),
+                self.ui.lineEditCanChannel.text(),
+                self.ui.comboBoxCanBitrate.currentText()
+            )
+            self.can_thread.started.connect(self.can_bus.start)
+            self.can_bus.status.connect(self.on_can_status_update)
+            self.can_bus.message.connect(self.on_can_message_ready)
+            self.can_bus.moveToThread(self.can_thread)
+            self.can_thread.start()
+
+            self.config['CAN_Channel'] = self.ui.lineEditCanChannel.text()
+            self.config['CAN_BusType_Idx'] = self.ui.comboBoxCanBusType.currentIndex()
+            self.config['CAN_Bitrate_Idx'] = self.ui.comboBoxCanBitrate.currentIndex()
+            self.save_config()
+
+        elif self.ui.buttonCanStart.text() == 'Stop':
+            self.ui.buttonCanStart.setEnabled(False)
+            self.can_bus.close()
+
+    def on_can_status_update(self, status, info):
+        if status == CanBus.STOP:
+            try:
+                self.can_bus.status.disconnect()
+                self.can_bus.message.disconnect()
+            except Exception:
+                pass
+            self.ui.buttonCanStart.setText('Start')
+            self.can_thread.quit()
+            self.ui.comboBoxCanBusType.setEnabled(True)
+            self.ui.lineEditCanChannel.setEnabled(True)
+            self.ui.comboBoxCanBitrate.setEnabled(True)
+            self.ui.groupBox_CanMessage.setEnabled(False)
+            if info:
+                self.status['CAN']['Message'] = f'Error: {info}'
+            else:
+                self.status['CAN']['Message'] = 'Idle'
+
+        elif status == CanBus.CONNECTED:
+            self.ui.buttonCanStart.setText('Stop')
+            self.ui.groupBox_CanMessage.setEnabled(True)
+            self.status['CAN']['Message'] = (
+                f'Connected — {self.ui.comboBoxCanBusType.currentText()} '
+                f'{self.ui.lineEditCanChannel.text()} '
+                f'@ {self.ui.comboBoxCanBitrate.currentText()} bps'
+            )
+
+        self.ui.buttonCanStart.setEnabled(True)
+        self.on_tab_changed()
+
+    def on_can_message_ready(self, arb_id, data):
+        self.ui.textBrowserMessage.append(
+            '<div style="color: #2196F3;"><strong>— [CAN RX] Arb ID: ' +
+            arb_id +
+            ' —</strong></div>')
+        self.ui.textBrowserMessage.append(
+            '<div style="color: #2196F3;">' +
+            data +
+            '<br></div>')
+
+    def on_can_message_send(self):
+        arb_id = self.ui.lineEditCanArbId.text().strip()
+        data = self.ui.lineEditCanData.text().strip()
+        extended = self.ui.checkBoxCanExtendedId.isChecked()
+        if not arb_id:
+            return
+        self.can_bus.send(arb_id, data, extended)
+        self.ui.textBrowserMessage.append(
+            '<div><strong>— [CAN TX] Arb ID: ' + arb_id + ' —</strong></div>')
+        self.ui.textBrowserMessage.append(
+            '<div>' + data + '<br></div>')
 
     def on_gpib_button_clicked(self):
         if self.gpib_manager is None:
@@ -320,6 +460,8 @@ class MyApp(QtWidgets.QMainWindow):
         except visa.errors.VisaIOError:
             self.gpib_manager = None
             self.gpib_list = []
+
+        self.ui.labelGpibUnavailable.setVisible(self.gpib_manager is None)
 
         gpib_interface_idx = self.config.get('GPIBInterface', 0)
         self.ui.comboBoxGpibInterface.clear()
@@ -577,7 +719,7 @@ class MyApp(QtWidgets.QMainWindow):
             self._tcp_client_send_timer.start(self.ui.spinBoxTcpClientSendTimerInterval.value())
 
     def on_tcp_client_send_timer_state_changed(self, val):
-        if val == Qt.Checked:
+        if val:
             self._tcp_client_send_timer = QtCore.QTimer(self)
             self._tcp_client_send_timer.timeout.connect(self.on_tcp_client_send_timer_callback)
             self._tcp_client_send_timer.start(self.ui.spinBoxTcpClientSendTimerInterval.value())
@@ -697,7 +839,7 @@ class MyApp(QtWidgets.QMainWindow):
             self._tcp_server_send_timer.start(self.ui.spinBoxTcpServerSendTimerInterval.value())
 
     def on_tcp_server_send_timer_state_changed(self, val):
-        if val == Qt.Checked:
+        if val:
             self._tcp_server_send_timer = QtCore.QTimer(self)
             self._tcp_server_send_timer.timeout.connect(self.on_tcp_server_send_timer_callback)
             self._tcp_server_send_timer.start(self.ui.spinBoxTcpServerSendTimerInterval.value())
@@ -798,7 +940,7 @@ class MyApp(QtWidgets.QMainWindow):
             self._udp_send_timer.start(self.ui.spinBoxUdpSendTimerInterval.value())
 
     def on_udp_send_timer_state_changed(self, val):
-        if val == Qt.Checked:
+        if val:
             self._udp_send_timer = QtCore.QTimer(self)
             self._udp_send_timer.timeout.connect(self.on_udp_send_timer_callback)
             self._udp_send_timer.start(self.ui.spinBoxUdpSendTimerInterval.value())
@@ -994,6 +1136,33 @@ class MyApp(QtWidgets.QMainWindow):
 if __name__ == "__main__":
     QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
     app = QtWidgets.QApplication(sys.argv)
+    app.setStyle('Fusion')
+    app.setStyleSheet("""
+        QPushButton {
+            background-color: #1976D2;
+            color: white;
+            border: none;
+            padding: 4px 12px;
+            border-radius: 3px;
+            min-width: 55px;
+        }
+        QPushButton:hover {
+            background-color: #1565C0;
+        }
+        QPushButton:pressed {
+            background-color: #0D47A1;
+        }
+        QPushButton:disabled {
+            background-color: #B0BEC5;
+            color: #78909C;
+        }
+        QTextBrowser {
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 12px;
+            border: 1px solid #c8c8c8;
+            border-radius: 4px;
+        }
+    """)
     window = MyApp()
 
     sys.exit(app.exec())
