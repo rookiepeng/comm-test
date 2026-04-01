@@ -40,7 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import sys
-from PySide6 import QtWidgets, QtCore, QtGui
+from PySide6 import QtWidgets, QtCore
 from PySide6.QtCore import Qt, QFile
 from PySide6.QtUiTools import QUiLoader
 
@@ -125,12 +125,6 @@ class MyApp(
 
         self.ui.tabWidget.setCurrentIndex(self.config.get("Tab_Index", 0))
         self.on_tab_changed()
-
-        # Scale the About page icon with correct aspect ratio
-        icon_pixmap = QtGui.QPixmap("res/commprobe.png")
-        self.ui.label_AppIcon.setPixmap(
-            icon_pixmap.scaledToHeight(64, Qt.SmoothTransformation)
-        )
 
         self.init_tcp_ui()
         self.init_udp_ui()
