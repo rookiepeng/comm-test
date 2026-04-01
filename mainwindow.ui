@@ -182,6 +182,16 @@
                  </spacer>
                 </item>
                 <item>
+                 <widget class="QPushButton" name="checkBoxTcpServerEcho">
+                  <property name="text">
+                   <string>Echo</string>
+                  </property>
+                  <property name="checkable">
+                   <bool>true</bool>
+                  </property>
+                 </widget>
+                </item>
+                <item>
                  <widget class="QPushButton" name="checkBoxTcpServerSendTimer">
                   <property name="text">
                    <string>Repeat</string>

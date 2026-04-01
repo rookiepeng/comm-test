@@ -50,6 +50,7 @@ import socket
 
 from pathlib import Path
 import json
+from datetime import datetime
 
 from tcpserver import TCPServer
 from tcpclient import TCPClient
@@ -124,7 +125,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.on_tcp_server_start_stop_button_clicked
         )
         self.ui.buttonTcpServerSend.clicked.connect(
-            self.on_tcp_server_message_send
+            lambda: self.on_tcp_server_message_send()
         )
         self.ui.buttonTcpRefresh.clicked.connect(
             self.on_refresh_button_clicked
@@ -140,12 +141,13 @@ class MyApp(QtWidgets.QMainWindow):
         self.ui.checkBoxTcpServerSendTimer.toggled.connect(
             self.on_tcp_server_send_timer_state_changed
         )
+        self.ui.checkBoxTcpServerEcho.setToolTip('Echo received messages back to client')
         # TCP client
         self.ui.buttonTcpClientConnect.clicked.connect(
             self.on_tcp_client_connect_button_clicked
         )
         self.ui.buttonTcpClientSend.clicked.connect(
-            self.on_tcp_client_message_send
+            lambda: self.on_tcp_client_message_send()
         )
         self.ui.comboBoxTcpClientMessage.lineEdit().returnPressed.connect(
             self.on_tcp_client_message_send
@@ -170,7 +172,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.on_udp_server_start_stop_button_clicked
         )
         self.ui.buttonUdpSend.clicked.connect(
-            self.on_udp_message_send
+            lambda: self.on_udp_message_send()
         )
 
         self.ui.comboBoxUdpMessage.lineEdit().returnPressed.connect(
@@ -346,9 +348,21 @@ class MyApp(QtWidgets.QMainWindow):
         }
         color = _COLORS.get(state, '#bdbdbd')
         groupbox.setStyleSheet(
-            f"QGroupBox {{ border: 2px solid {color}; border-radius: 4px; margin: 3px; margin-top: 10px; padding: 2px; }} "
+            f"QGroupBox {{ border: 1px solid {color}; border-radius: 4px; margin: 3px; margin-top: 10px; padding: 2px; }} "
             f"QGroupBox::title {{ subcontrol-origin: margin; left: 8px; padding: 0 4px; }}"
         )
+
+    def _log_message(self, label, source, msg, incoming=False):
+        ts = datetime.now().strftime('%H:%M:%S.%f')[:-3]
+        ts_html = f'<span style="color:#90A4AE;font-size:small;">[{ts}]</span>'
+        if incoming:
+            self.ui.textBrowserMessage.append(
+                f'<div style="color:#2196F3;">{ts_html} <strong>&#8595; [{label}] {source}</strong><br>{msg}</div>'
+            )
+        else:
+            self.ui.textBrowserMessage.append(
+                f'<div>{ts_html} <strong>&#8593; [{label}] {source}</strong><br>{msg}</div>'
+            )
 
     # CAN
     def on_can_start_stop_button_clicked(self):
@@ -419,14 +433,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.on_tab_changed()
 
     def on_can_message_ready(self, arb_id, data):
-        self.ui.textBrowserMessage.append(
-            '<div style="color: #2196F3;"><strong>— [CAN RX] Arb ID: ' +
-            arb_id +
-            ' —</strong></div>')
-        self.ui.textBrowserMessage.append(
-            '<div style="color: #2196F3;">' +
-            data +
-            '<br></div>')
+        self._log_message('CAN RX', f'Arb ID: {arb_id}', data, incoming=True)
 
     def on_can_message_send(self):
         arb_id = self.ui.lineEditCanArbId.text().strip()
@@ -435,10 +442,7 @@ class MyApp(QtWidgets.QMainWindow):
         if not arb_id:
             return
         self.can_bus.send(arb_id, data, extended)
-        self.ui.textBrowserMessage.append(
-            '<div><strong>— [CAN TX] Arb ID: ' + arb_id + ' —</strong></div>')
-        self.ui.textBrowserMessage.append(
-            '<div>' + data + '<br></div>')
+        self._log_message('CAN TX', f'Arb ID: {arb_id}', data)
 
     def on_gpib_button_clicked(self):
         if self.gpib_manager is None:
@@ -476,6 +480,10 @@ class MyApp(QtWidgets.QMainWindow):
         except visa.errors.VisaIOError:
             self.gpib_manager = None
             self.gpib_list = []
+        except ValueError:
+            self.gpib_manager = None
+            self.gpib_list = []
+        
 
         self.ui.labelGpibUnavailable.setVisible(self.gpib_manager is None)
 
@@ -603,40 +611,18 @@ class MyApp(QtWidgets.QMainWindow):
     def on_gpib_message_send(self):
         if self.ui.comboBoxGpibSendType.currentText() == 'Write':
             self.device.write(self.ui.comboBoxGpibMessage.currentText())
-            self.ui.textBrowserMessage.append(
-                '<div><strong>— ' +
-                '[GPIB] local' +
-                ' —</strong></div>')
-            self.ui.textBrowserMessage.append(
-                '<div>' +
-                self.ui.comboBoxGpibMessage.currentText() +
-                '<br></div>')
+            self._log_message('GPIB', 'local', self.ui.comboBoxGpibMessage.currentText())
             self.ui.comboBoxGpibMessage.addItem(
                 self.ui.comboBoxGpibMessage.currentText())
             self.ui.comboBoxGpibMessage.clearEditText()
         elif self.ui.comboBoxGpibSendType.currentText() == 'Query':
             output = self.device.query(
                 self.ui.comboBoxGpibMessage.currentText())
-            self.ui.textBrowserMessage.append(
-                '<div><strong>— ' +
-                '[GPIB] local' +
-                ' —</strong></div>')
-            self.ui.textBrowserMessage.append(
-                '<div>' +
-                self.ui.comboBoxGpibMessage.currentText() +
-                '<br></div>')
+            self._log_message('GPIB', 'local', self.ui.comboBoxGpibMessage.currentText())
             self.ui.comboBoxGpibMessage.addItem(
                 self.ui.comboBoxGpibMessage.currentText())
             self.ui.comboBoxGpibMessage.clearEditText()
-
-            self.ui.textBrowserMessage.append(
-                '<div style="color: #2196F3;><strong>— [GPIB] ' +
-                self.ui.comboBoxGpibInterface.currentText() +
-                ' —</strong></div>')
-            self.ui.textBrowserMessage.append(
-                '<div style="color: #2196F3;>' +
-                output +
-                '<br></div>')
+            self._log_message('GPIB', self.ui.comboBoxGpibInterface.currentText(), output, incoming=True)
 
     def on_refresh_button_clicked(self):
         self.update_network_interfaces()
@@ -704,25 +690,11 @@ class MyApp(QtWidgets.QMainWindow):
         self.on_tab_changed()
 
     def on_tcp_client_message_ready(self, source, msg):
-        self.ui.textBrowserMessage.append(
-            '<div style="color: #2196F3;"><strong>— [TCP Server] ' +
-            source +
-            ' —</strong></div>')
-        self.ui.textBrowserMessage.append(
-            '<div style="color: #2196F3;">' +
-            msg +
-            '<br></div>')
+        self._log_message('TCP Server', source, msg, incoming=True)
 
     def on_tcp_client_message_send(self, clear_message=True):
         self.tcp_client.send(self.ui.comboBoxTcpClientMessage.currentText())
-        self.ui.textBrowserMessage.append(
-            '<div><strong>— [TCP Client] ' +
-            self.local_tcp_addr +
-            ' —</strong></div>')
-        self.ui.textBrowserMessage.append(
-            '<div>' +
-            self.ui.comboBoxTcpClientMessage.currentText() +
-            '<br></div>')
+        self._log_message('TCP Client', self.local_tcp_addr, self.ui.comboBoxTcpClientMessage.currentText())
         if clear_message:
             self.ui.comboBoxTcpClientMessage.addItem(
                 self.ui.comboBoxTcpClientMessage.currentText())
@@ -827,25 +799,14 @@ class MyApp(QtWidgets.QMainWindow):
         self.on_tab_changed()
 
     def on_tcp_server_message_ready(self, source, msg):
-        self.ui.textBrowserMessage.append(
-            '<div style="color: #2196F3;"><strong>— [TCP Client] ' +
-            source +
-            ' —</strong></div>')
-        self.ui.textBrowserMessage.append(
-            '<div style="color: #2196F3;">' +
-            msg +
-            '<br></div>')
+        self._log_message('TCP Client', source, msg, incoming=True)
+        if self.ui.checkBoxTcpServerEcho.isChecked():
+            self.tcp_server.send(msg)
+            self._log_message('TCP Server', f'{self.local_tcp_addr}:{self.ui.lineEditTcpServerPort.text()}', msg)
 
     def on_tcp_server_message_send(self, clear_message=True):
         self.tcp_server.send(self.ui.comboBoxTcpServerMessage.currentText())
-        self.ui.textBrowserMessage.append(
-            '<div><strong>— [TCP Server] ' +
-            self.local_tcp_addr + ":"+self.ui.lineEditTcpServerPort.text() +
-            ' —</strong></div>')
-        self.ui.textBrowserMessage.append(
-            '<div>' +
-            self.ui.comboBoxTcpServerMessage.currentText() +
-            '<br></div>')
+        self._log_message('TCP Server', f'{self.local_tcp_addr}:{self.ui.lineEditTcpServerPort.text()}', self.ui.comboBoxTcpServerMessage.currentText())
         if clear_message:
             self.ui.comboBoxTcpServerMessage.addItem(
                 self.ui.comboBoxTcpServerMessage.currentText())
@@ -922,14 +883,7 @@ class MyApp(QtWidgets.QMainWindow):
         self.on_tab_changed()
 
     def on_udp_server_message_ready(self, source, msg):
-        self.ui.textBrowserMessage.append(
-            '<div style="color: #2196F3;"><strong>— [UDP] ' +
-            source +
-            ' —</strong></div>')
-        self.ui.textBrowserMessage.append(
-            '<div style="color: #2196F3;">' +
-            msg +
-            '<br></div>')
+        self._log_message('UDP Server', source, msg, incoming=True)
 
     def on_udp_message_send(self, clear_message=True):
         self.udp_send.send(
@@ -937,14 +891,7 @@ class MyApp(QtWidgets.QMainWindow):
             self.ui.lineEditUdpTargetIp.text(),
             int(self.ui.lineEditUdpTargetPort.text())
         )
-        self.ui.textBrowserMessage.append(
-            '<div><strong>— [UDP] ' +
-            self.local_udp_addr +
-            ' —</strong></div>')
-        self.ui.textBrowserMessage.append(
-            '<div>' +
-            self.ui.comboBoxUdpMessage.currentText() +
-            '<br></div>')
+        self._log_message('UDP Client', self.local_udp_addr, self.ui.comboBoxUdpMessage.currentText())
         if clear_message:
             self.ui.comboBoxUdpMessage.addItem(
                 self.ui.comboBoxUdpMessage.currentText())
@@ -1046,25 +993,11 @@ class MyApp(QtWidgets.QMainWindow):
         self.on_tab_changed()
 
     def on_bt_server_message_ready(self, source, msg):
-        self.ui.textBrowserMessage.append(
-            '<div style="color: #2196F3;"><strong>— [Bluetooth Client] ' +
-            source +
-            ' —</strong></div>')
-        self.ui.textBrowserMessage.append(
-            '<div style="color: #2196F3;">' +
-            msg +
-            '<br></div>')
+        self._log_message('Bluetooth Client', source, msg, incoming=True)
 
     def on_bt_server_message_send(self):
         self.bt_server.send(self.ui.comboBoxBtServerMessage.currentText())
-        self.ui.textBrowserMessage.append(
-            '<div><strong>— [Bluetooth Server] ' +
-            self.ui.lineEditBtTargetMac.text() +
-            ' —</strong></div>')
-        self.ui.textBrowserMessage.append(
-            '<div>' +
-            self.ui.comboBoxBtServerMessage.currentText() +
-            '<br></div>')
+        self._log_message('Bluetooth Server', self.ui.lineEditBtHostMac.text(), self.ui.comboBoxBtServerMessage.currentText())
         self.ui.comboBoxBtServerMessage.addItem(
             self.ui.comboBoxBtServerMessage.currentText())
         self.ui.comboBoxBtServerMessage.clearEditText()
@@ -1128,25 +1061,11 @@ class MyApp(QtWidgets.QMainWindow):
         self.on_tab_changed()
 
     def on_bt_client_message_ready(self, source, msg):
-        self.ui.textBrowserMessage.append(
-            '<div style="color: #2196F3;"><strong>— [Bluetooth Server] ' +
-            source +
-            ' —</strong></div>')
-        self.ui.textBrowserMessage.append(
-            '<div style="color: #2196F3;">' +
-            msg +
-            '<br></div>')
+        self._log_message('Bluetooth Server', source, msg, incoming=True)
 
     def on_bt_client_message_send(self):
         self.bt_client.send(self.ui.comboBoxBtClientMessage.currentText())
-        self.ui.textBrowserMessage.append(
-            '<div><strong>— [Bluetooth Client] ' +
-            self.ui.lineEditBtHostMac.text() +
-            ' —</strong></div>')
-        self.ui.textBrowserMessage.append(
-            '<div>' +
-            self.ui.comboBoxBtClientMessage.currentText() +
-            '<br></div>')
+        self._log_message('Bluetooth Client', self.ui.lineEditBtHostMac.text(), self.ui.comboBoxBtClientMessage.currentText())
         self.ui.comboBoxBtClientMessage.addItem(
             self.ui.comboBoxBtClientMessage.currentText())
         self.ui.comboBoxBtClientMessage.clearEditText()
@@ -1184,6 +1103,70 @@ if __name__ == "__main__":
             background-color: #B0BEC5;
             color: #78909C;
         }
+
+        /* Send buttons — blue (default, already inherited) */
+
+        /* Start / Connect / Open buttons — teal */
+        QPushButton#buttonTcpServerStart,
+        QPushButton#buttonTcpClientConnect,
+        QPushButton#buttonUdpStart,
+        QPushButton#buttonBtServerStart,
+        QPushButton#buttonBtClientConnect,
+        QPushButton#buttonCanStart,
+        QPushButton#buttonGpibOpen {
+            background-color: #00796B;
+        }
+        QPushButton#buttonTcpServerStart:hover,
+        QPushButton#buttonTcpClientConnect:hover,
+        QPushButton#buttonUdpStart:hover,
+        QPushButton#buttonBtServerStart:hover,
+        QPushButton#buttonBtClientConnect:hover,
+        QPushButton#buttonCanStart:hover,
+        QPushButton#buttonGpibOpen:hover {
+            background-color: #00695C;
+        }
+        QPushButton#buttonTcpServerStart:pressed,
+        QPushButton#buttonTcpClientConnect:pressed,
+        QPushButton#buttonUdpStart:pressed,
+        QPushButton#buttonBtServerStart:pressed,
+        QPushButton#buttonBtClientConnect:pressed,
+        QPushButton#buttonCanStart:pressed,
+        QPushButton#buttonGpibOpen:pressed {
+            background-color: #004D40;
+        }
+
+        /* Refresh buttons — grey */
+        QPushButton#buttonTcpRefresh,
+        QPushButton#buttonUdpRefresh,
+        QPushButton#buttonGpibRefresh {
+            background-color: #546E7A;
+            min-width: 28px;
+            padding: 4px 6px;
+        }
+        QPushButton#buttonTcpRefresh:hover,
+        QPushButton#buttonUdpRefresh:hover,
+        QPushButton#buttonGpibRefresh:hover {
+            background-color: #455A64;
+        }
+        QPushButton#buttonTcpRefresh:pressed,
+        QPushButton#buttonUdpRefresh:pressed,
+        QPushButton#buttonGpibRefresh:pressed {
+            background-color: #37474F;
+        }
+
+        /* Clear button — amber */
+        QPushButton#buttonClear {
+            background-color: #F57C00;
+        }
+        QPushButton#buttonClear:hover {
+            background-color: #E65100;
+        }
+        QPushButton#buttonClear:pressed {
+            background-color: #BF360C;
+        }
+
+        /* Toggle buttons — Echo and Repeat */
+        QPushButton#checkBoxTcpServerEcho,
         QPushButton#checkBoxTcpServerSendTimer,
         QPushButton#checkBoxTcpClientSendTimer,
         QPushButton#checkBoxUdpSendTimer {
@@ -1191,7 +1174,9 @@ if __name__ == "__main__":
             color: #546E7A;
             border: 1px solid #90A4AE;
             padding: 3px 10px;
+            margin: 1px;
         }
+        QPushButton#checkBoxTcpServerEcho:hover,
         QPushButton#checkBoxTcpServerSendTimer:hover,
         QPushButton#checkBoxTcpClientSendTimer:hover,
         QPushButton#checkBoxUdpSendTimer:hover {
@@ -1199,6 +1184,7 @@ if __name__ == "__main__":
             border-color: #607D8B;
             color: #37474F;
         }
+        QPushButton#checkBoxTcpServerEcho:checked,
         QPushButton#checkBoxTcpServerSendTimer:checked,
         QPushButton#checkBoxTcpClientSendTimer:checked,
         QPushButton#checkBoxUdpSendTimer:checked {
@@ -1206,6 +1192,7 @@ if __name__ == "__main__":
             color: white;
             border: 1px solid #1B5E20;
         }
+        QPushButton#checkBoxTcpServerEcho:checked:hover,
         QPushButton#checkBoxTcpServerSendTimer:checked:hover,
         QPushButton#checkBoxTcpClientSendTimer:checked:hover,
         QPushButton#checkBoxUdpSendTimer:checked:hover {
