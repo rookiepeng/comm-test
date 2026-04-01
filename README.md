@@ -1,6 +1,6 @@
 # CommProbe
 
-<img src="https://raw.githubusercontent.com/rookiepeng/comm-test/master/res/commprobe.png" width="128">
+<img src="https://raw.githubusercontent.com/rookiepeng/comm-probe/master/res/commprobe.png" width="128">
 
 A multi-protocol communication testing tool built with Python and PySide6.
 Supports TCP, UDP, Bluetooth, CAN, and GPIB.
@@ -25,15 +25,15 @@ Select a protocol tab — **TCP**, **UDP**, **Bluetooth**, **CAN**, or **GPIB** 
 
 ### TCP
 
-<img src="https://raw.githubusercontent.com/rookiepeng/comm-test/master/docs/TCP.png" width="800">
+<img src="https://raw.githubusercontent.com/rookiepeng/comm-probe/master/docs/TCP.png" width="800">
 
 ### UDP
 
-<img src="https://raw.githubusercontent.com/rookiepeng/comm-test/master/docs/UDP.png" width="800">
+<img src="https://raw.githubusercontent.com/rookiepeng/comm-probe/master/docs/UDP.png" width="800">
 
 ### Bluetooth
 
-<img src="https://raw.githubusercontent.com/rookiepeng/comm-test/master/docs/Bluetooth.png" width="800">
+<img src="https://raw.githubusercontent.com/rookiepeng/comm-probe/master/docs/Bluetooth.png" width="800">
 
 ### CAN
 
@@ -41,10 +41,10 @@ Supports socketcan, PCAN, Vector, Kvaser, and virtual interfaces via [python-can
 
 For **Vector** hardware, enter the 0-based channel index (e.g. `0`) in the Channel field. The app registers under the `CANalyzer` application name in Vector Hardware Config.
 
-<img src="https://raw.githubusercontent.com/rookiepeng/comm-test/master/docs/CAN.png" width="800">
+<img src="https://raw.githubusercontent.com/rookiepeng/comm-probe/master/docs/CAN.png" width="800">
 
 ### GPIB
 
 Requires NI-VISA or pyvisa-py. If no VISA library is detected, a warning is shown in the GPIB tab.
 
-<img src="https://raw.githubusercontent.com/rookiepeng/comm-test/master/docs/GPIB.png" width="800">
+<img src="https://raw.githubusercontent.com/rookiepeng/comm-probe/master/docs/GPIB.png" width="800">
