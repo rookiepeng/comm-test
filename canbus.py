@@ -44,11 +44,21 @@ class CanBus(QObject):
             self.status.emit(CanBus.STOP, 'python-can not installed')
             return
         try:
-            self.bus = can.interface.Bus(
+            kwargs = dict(
                 bustype=self.bustype,
                 channel=self.channel,
-                bitrate=self.bitrate
+                bitrate=self.bitrate,
             )
+            if self.bustype == 'vector':
+                # Vector XL driver requires an app_name registered in
+                # Vector Hardware Config. 'CANalyzer' is always present.
+                # Channel must be a 0-based integer index.
+                try:
+                    kwargs['channel'] = int(self.channel)
+                except ValueError:
+                    pass
+                kwargs['app_name'] = 'CANalyzer'
+            self.bus = can.interface.Bus(**kwargs)
         except Exception as e:
             self.status.emit(CanBus.STOP, str(e))
             return

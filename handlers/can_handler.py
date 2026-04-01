@@ -26,6 +26,21 @@ class CanHandler:
         self.ui.comboBoxCanBitrate.setCurrentIndex(
             self.config.get('CAN_Bitrate_Idx', 2))
         self.ui.checkBoxCanExtendedId.setToolTip('Use 29-bit extended CAN ID')
+        self.ui.comboBoxCanBusType.currentTextChanged.connect(
+            self._on_can_bustype_changed)
+        self._on_can_bustype_changed(self.ui.comboBoxCanBusType.currentText())
+
+    _CHANNEL_PLACEHOLDERS = {
+        'socketcan': 'can0',
+        'pcan':      'PCAN_USBBUS1',
+        'vector':    '0  (channel index from Vector Hardware Config)',
+        'kvaser':    '0  (channel index)',
+        'virtual':   '0',
+    }
+
+    def _on_can_bustype_changed(self, bustype):
+        placeholder = self._CHANNEL_PLACEHOLDERS.get(bustype, '')
+        self.ui.lineEditCanChannel.setPlaceholderText(placeholder)
 
     # --- CAN ---
 

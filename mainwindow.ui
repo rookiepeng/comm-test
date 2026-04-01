@@ -907,7 +907,7 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_canIface">
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_canIface">
+            <layout class="QHBoxLayout" name="horizontalLayout_canIface_row1">
              <item>
               <widget class="QLabel" name="labelCanBusType">
                <property name="text">
@@ -964,6 +964,10 @@
                </property>
               </widget>
              </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_canIface_row2">
              <item>
               <widget class="QLabel" name="labelCanBitrate">
                <property name="text">
@@ -999,6 +1003,19 @@
               </widget>
              </item>
              <item>
+              <spacer name="horizontalSpacer_can">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
               <widget class="QPushButton" name="buttonCanStart">
                <property name="text">
                 <string>Start</string>
@@ -1022,7 +1039,7 @@
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_canMsg">
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_canMsg">
+            <layout class="QHBoxLayout" name="horizontalLayout_canMsg_row1">
              <item>
               <widget class="QLabel" name="labelCanArbId">
                <property name="text">
@@ -1040,7 +1057,7 @@
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>100</width>
+                 <width>120</width>
                  <height>16777215</height>
                 </size>
                </property>
@@ -1049,6 +1066,30 @@
                </property>
               </widget>
              </item>
+             <item>
+              <spacer name="horizontalSpacer_canMsg">
+               <property name="orientation">
+                <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>40</width>
+                 <height>20</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item>
+              <widget class="QCheckBox" name="checkBoxCanExtendedId">
+               <property name="text">
+                <string>Extended ID</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_canMsg_row2">
              <item>
               <widget class="QLabel" name="labelCanData">
                <property name="text">
@@ -1066,13 +1107,6 @@
                </property>
                <property name="placeholderText">
                 <string>01 02 03 04</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QCheckBox" name="checkBoxCanExtendedId">
-               <property name="text">
-                <string>Extended</string>
                </property>
               </widget>
              </item>
