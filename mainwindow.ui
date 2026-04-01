@@ -1340,7 +1340,7 @@
            <string>color: #78909C;</string>
           </property>
           <property name="text">
-           <string>v5.0</string>
+           <string>v5.1</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
