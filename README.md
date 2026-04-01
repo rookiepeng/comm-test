@@ -13,6 +13,12 @@ Supports TCP, UDP, Bluetooth, CAN, and GPIB.
 - [pyvisa](https://pypi.org/project/PyVISA/) *(optional, for GPIB support)*
 - [pyvisa-py](https://pypi.org/project/PyVISA-py/) *(optional, pure-Python VISA backend)*
 
+Install all at once:
+
+```bash
+pip install -r requirements.txt
+```
+
 ## Usage
 
 Select a protocol tab — **TCP**, **UDP**, **Bluetooth**, **CAN**, or **GPIB** — to begin testing.

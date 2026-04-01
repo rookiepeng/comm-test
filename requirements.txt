@@ -1,0 +1,9 @@
+PySide6
+psutil
+
+# Optional: CAN bus support
+python-can
+
+# Optional: GPIB support
+pyvisa
+pyvisa-py
