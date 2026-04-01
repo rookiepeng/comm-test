@@ -84,9 +84,6 @@ class UDPServer(QObject):
                         if data:
                             self.message.emit(
                                 addr[0]+':'+str(addr[1]), data.decode())
-                        else:
-                            self.status.emit(self.LISTEN, '')
-                            break
                 elif self.signal == self.SIG_STOP:
                     self.signal = self.SIG_NORMAL
                     self.udp_socket.close()
