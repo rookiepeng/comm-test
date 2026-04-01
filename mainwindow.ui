@@ -1411,7 +1411,7 @@
         <item>
          <widget class="QLabel" name="label_7">
           <property name="text">
-           <string>Zhengyu Peng</string>
+           <string>Dr. Zhengyu Peng</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
