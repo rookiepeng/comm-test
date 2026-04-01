@@ -17,11 +17,11 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>Socket Test</string>
+   <string>CommProbe</string>
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff>res/socket_test.png</normaloff>res/socket_test.png</iconset>
+    <normaloff>res/commprobe.png</normaloff>res/commprobe.png</iconset>
   </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout_5">
@@ -1232,7 +1232,7 @@
            <enum>Qt::Vertical</enum>
           </property>
           <property name="sizeType">
-           <enum>QSizePolicy::Fixed</enum>
+           <enum>QSizePolicy::Expanding</enum>
           </property>
           <property name="sizeHint" stdset="0">
            <size>
@@ -1243,31 +1243,68 @@
          </spacer>
         </item>
         <item>
+         <widget class="QLabel" name="label_AppIcon">
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>64</height>
+           </size>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+          <property name="pixmap">
+           <pixmap>res/commprobe.png</pixmap>
+          </property>
+          <property name="scaledContents">
+           <bool>false</bool>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_iconTitle">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>8</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
          <widget class="QLabel" name="label_5">
           <property name="font">
            <font>
-            <pointsize>18</pointsize>
+            <pointsize>22</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
            </font>
-          </property>
-          <property name="cursor">
-           <cursorShape>ArrowCursor</cursorShape>
           </property>
           <property name="layoutDirection">
            <enum>Qt::LeftToRight</enum>
           </property>
           <property name="text">
-           <string>Socket Test</string>
+           <string>CommProbe</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
           <property name="textInteractionFlags">
-           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+           <set>Qt::TextSelectableByMouse</set>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QLabel" name="label_AppVersion">
+          <property name="styleSheet">
+           <string>color: #78909C;</string>
+          </property>
           <property name="text">
            <string>v4.2</string>
           </property>
@@ -1275,9 +1312,67 @@
            <set>Qt::AlignCenter</set>
           </property>
           <property name="textInteractionFlags">
-           <set>Qt::LinksAccessibleByMouse</set>
+           <set>Qt::TextSelectableByMouse</set>
           </property>
          </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_tagline">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>8</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_Tagline">
+          <property name="styleSheet">
+           <string>color: #546E7A; font-style: italic;</string>
+          </property>
+          <property name="text">
+           <string>Multi-protocol communication testing tool</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_Protocols">
+          <property name="styleSheet">
+           <string>color: #78909C; font-size: small;</string>
+          </property>
+          <property name="text">
+           <string>TCP · UDP · Bluetooth · CAN · GPIB</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_links">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>16</height>
+           </size>
+          </property>
+         </spacer>
         </item>
         <item>
          <widget class="QLabel" name="label_7">
@@ -1292,26 +1387,61 @@
         <item>
          <widget class="QLabel" name="label_GitHub">
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/rookiepeng/socket-test&quot; target=&quot;_blank&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;Source codes on Github&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://github.com/rookiepeng/comm-test&quot; target=&quot;_blank&quot;&gt;Source code on GitHub&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
+          <property name="openExternalLinks">
+           <bool>true</bool>
+          </property>
           <property name="textInteractionFlags">
-           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+           <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse</set>
           </property>
          </widget>
         </item>
         <item>
          <widget class="QLabel" name="label_HomePage">
           <property name="text">
-           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://zpeng.me/&quot; target=&quot;_blank&quot;&gt;&lt;span style=&quot; text-decoration: underline; color:#0000ff;&quot;&gt;My home page&lt;/span&gt;&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;a href=&quot;https://zpeng.me/&quot; target=&quot;_blank&quot;&gt;zpeng.me&lt;/a&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
           </property>
           <property name="alignment">
            <set>Qt::AlignCenter</set>
           </property>
+          <property name="openExternalLinks">
+           <bool>true</bool>
+          </property>
           <property name="textInteractionFlags">
-           <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+           <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse</set>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <spacer name="verticalSpacer_copyright">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+          <property name="sizeType">
+           <enum>QSizePolicy::Fixed</enum>
+          </property>
+          <property name="sizeHint" stdset="0">
+           <size>
+            <width>20</width>
+            <height>16</height>
+           </size>
+          </property>
+         </spacer>
+        </item>
+        <item>
+         <widget class="QLabel" name="label_License">
+          <property name="styleSheet">
+           <string>color: #90A4AE; font-size: small;</string>
+          </property>
+          <property name="text">
+           <string>Released under the GNU General Public License v3</string>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
           </property>
          </widget>
         </item>

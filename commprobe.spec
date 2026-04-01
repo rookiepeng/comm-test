@@ -3,7 +3,7 @@
 block_cipher = None
 
 
-a = Analysis(['socket_test.py'],
+a = Analysis(['commprobe.py'],
              pathex=['./socket-test'],
              binaries=[],
              datas=[('./res', 'res')],
@@ -21,13 +21,13 @@ exe = EXE(pyz,
           a.scripts,
           [],
           exclude_binaries=True,
-          name='socket_test',
+          name='commprobe',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
           upx=True,
           console=False,
-          icon='res/socket_test.ico' )
+          icon='res/commprobe.ico' )
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
@@ -35,4 +35,4 @@ coll = COLLECT(exe,
                strip=False,
                upx=True,
                upx_exclude=[],
-               name='socket_test')
+               name='commprobe')

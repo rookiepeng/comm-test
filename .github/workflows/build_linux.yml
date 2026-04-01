@@ -26,11 +26,11 @@ jobs:
         pip install PySide6 psutil pyinstaller pyvisa pyvisa-py
     - name: PyInstaller
       run: |
-        pyinstaller socket_test.spec
-        cp mainwindow.ui ./dist/socket_test/
+        pyinstaller commprobe.spec
+        cp mainwindow.ui ./dist/commprobe/
     - name: Archive built module
       uses: actions/upload-artifact@v7
       if: success()
       with:
-        name: socket-test_linux
-        path: ./dist/socket_test
+        name: commprobe_linux
+        path: ./dist/commprobe
