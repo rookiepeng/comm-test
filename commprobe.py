@@ -53,6 +53,8 @@ from datetime import datetime
 from handlers import TcpHandler, UdpHandler, BluetoothHandler, CanHandler, GpibHandler
 from style import APP_STYLESHEET
 
+__version__ = "v5.2"
+
 
 class MyApp(
     QtWidgets.QMainWindow,
@@ -125,6 +127,8 @@ class MyApp(
 
         self.ui.tabWidget.setCurrentIndex(self.config.get("Tab_Index", 0))
         self.on_tab_changed()
+
+        self.ui.label_AppVersion.setText(__version__)
 
         self.init_tcp_ui()
         self.init_udp_ui()

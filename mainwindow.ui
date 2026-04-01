@@ -1343,7 +1343,7 @@
            <string>color: #78909C;</string>
           </property>
           <property name="text">
-           <string>v5.1</string>
+           <string/>
           </property>
           <property name="alignment">
            <set>Qt::AlignmentFlag::AlignCenter</set>
