@@ -40,6 +40,7 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
 import sys
+import os
 from PySide6 import QtWidgets, QtCore
 from PySide6.QtCore import Qt, QFile
 from PySide6.QtUiTools import QUiLoader
@@ -248,6 +249,8 @@ class MyApp(
 
 
 if __name__ == "__main__":
+    if getattr(sys, "frozen", False):
+        os.chdir(sys._MEIPASS)
     QtCore.QCoreApplication.setAttribute(QtCore.Qt.AA_ShareOpenGLContexts)
     app = QtWidgets.QApplication(sys.argv)
     app.setStyle("Fusion")
