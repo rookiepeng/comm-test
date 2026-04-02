@@ -54,7 +54,7 @@ from datetime import datetime
 from handlers import TcpHandler, UdpHandler, BluetoothHandler, CanHandler, GpibHandler
 from style import APP_STYLESHEET
 
-__version__ = "v5.2"
+__version__ = "v5.3"
 
 
 class MyApp(
