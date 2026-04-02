@@ -27,7 +27,6 @@ jobs:
     - name: PyInstaller
       run: |
         pyinstaller commprobe.spec
-        cp mainwindow.ui ./dist/commprobe/
     - name: Archive built module
       uses: actions/upload-artifact@v7
       if: success()
