@@ -1,6 +1,6 @@
 # CommProbe
 
-<img src="https://raw.githubusercontent.com/rookiepeng/comm-probe/master/res/commprobe.png" width="128">
+<img src="https://raw.githubusercontent.com/rookiepeng/comm-probe/master/res/commprobe.svg" width="128">
 
 A multi-protocol communication testing tool built with Python and PySide6.
 Supports TCP, UDP, Bluetooth, CAN, and GPIB.
