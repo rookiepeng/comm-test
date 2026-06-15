@@ -1,41 +1,41 @@
 """
-    Copyright (C) 2017 - PRESENT  Zhengyu Peng, https://zpeng.me
+Copyright (C) 2017 - PRESENT  Zhengyu Peng, https://zpeng.me
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-    ----------
+----------
 
-    `                      `
-    -:.                  -#:
-    -//:.              -###:
-    -////:.          -#####:
-    -/:.://:.      -###++##:
-    ..   `://:-  -###+. :##:
-           `:/+####+.   :##:
-    .::::::::/+###.     :##:
-    .////-----+##:    `:###:
-     `-//:.   :##:  `:###/.
-       `-//:. :##:`:###/.
-         `-//:+######/.
-           `-/+####/.
-             `+##+.
-              :##:
-              :##:
-              :##:
-              :##:
-              :##:
-               .+:
+`                      `
+-:.                  -#:
+-//:.              -###:
+-////:.          -#####:
+-/:.://:.      -###++##:
+..   `://:-  -###+. :##:
+       `:/+####+.   :##:
+.::::::::/+###.     :##:
+.////-----+##:    `:###:
+ `-//:.   :##:  `:###/.
+   `-//:. :##:`:###/.
+     `-//:+######/.
+       `-/+####/.
+         `+##+.
+          :##:
+          :##:
+          :##:
+          :##:
+          :##:
+           .+:
 
 """
 
@@ -70,9 +70,9 @@ class UDPServer(QObject):
         try:
             self.udp_socket.bind((self.ip, self.port))
         except OSError as err:
-            self.status.emit(self.STOP, '')
+            self.status.emit(self.STOP, "")
         else:
-            self.status.emit(self.LISTEN, '')
+            self.status.emit(self.LISTEN, "")
             while True:
                 if self.signal == self.SIG_NORMAL:
                     # self.status.emit(self.LISTEN, '')
@@ -82,18 +82,23 @@ class UDPServer(QObject):
                         pass
                     else:
                         if data:
-                            self.message.emit(
-                                addr[0]+':'+str(addr[1]), data.decode())
+                            try:
+                                payload = data.decode("utf-8")
+                            except UnicodeDecodeError:
+                                payload = data
+                            self.message.emit(addr[0] + ":" + str(addr[1]), payload)
                 elif self.signal == self.SIG_STOP:
                     self.signal = self.SIG_NORMAL
                     self.udp_socket.close()
                     # self.status.emit(self.LISTEN, '')
                     break
         finally:
-            self.status.emit(self.STOP, '')
+            self.status.emit(self.STOP, "")
 
     def send(self, msg, ip, port):
-        self.udp_socket.sendto(msg.encode(), (ip, port))
+        if isinstance(msg, str):
+            msg = msg.encode()
+        self.udp_socket.sendto(msg, (ip, port))
 
     def close(self):
         self.signal = self.SIG_STOP

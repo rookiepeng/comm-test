@@ -1,41 +1,41 @@
 """
-    Copyright (C) 2017 - PRESENT  Zhengyu Peng, https://zpeng.me
+Copyright (C) 2017 - PRESENT  Zhengyu Peng, https://zpeng.me
 
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-    ----------
+----------
 
-    `                      `
-    -:.                  -#:
-    -//:.              -###:
-    -////:.          -#####:
-    -/:.://:.      -###++##:
-    ..   `://:-  -###+. :##:
-           `:/+####+.   :##:
-    .::::::::/+###.     :##:
-    .////-----+##:    `:###:
-     `-//:.   :##:  `:###/.
-       `-//:. :##:`:###/.
-         `-//:+######/.
-           `-/+####/.
-             `+##+.
-              :##:
-              :##:
-              :##:
-              :##:
-              :##:
-               .+:
+`                      `
+-:.                  -#:
+-//:.              -###:
+-////:.          -#####:
+-/:.://:.      -###++##:
+..   `://:-  -###+. :##:
+       `:/+####+.   :##:
+.::::::::/+###.     :##:
+.////-----+##:    `:###:
+ `-//:.   :##:  `:###/.
+   `-//:. :##:`:###/.
+     `-//:+######/.
+       `-/+####/.
+         `+##+.
+          :##:
+          :##:
+          :##:
+          :##:
+          :##:
+           .+:
 
 """
 
@@ -75,7 +75,7 @@ class TCPServer(QObject):
             # self.status.emit(self.STOP, '')
             pass
         else:
-            self.status.emit(self.LISTEN, '')
+            self.status.emit(self.LISTEN, "")
             while True:
                 # Wait for a connection
                 if self.signal == self.SIG_NORMAL:
@@ -87,8 +87,7 @@ class TCPServer(QObject):
                     except socket.timeout as t_out:
                         pass
                     else:
-                        self.status.emit(
-                            self.CONNECTED, addr[0]+':'+str(addr[1]))
+                        self.status.emit(self.CONNECTED, addr[0] + ":" + str(addr[1]))
 
                         while True:
                             # print('waiting for data')
@@ -99,30 +98,36 @@ class TCPServer(QObject):
                                     pass
                                 except ConnectionError:
                                     self.connection.close()
-                                    self.status.emit(self.LISTEN, '')
+                                    self.status.emit(self.LISTEN, "")
                                     break
                                 else:
                                     if data:
+                                        try:
+                                            payload = data.decode("utf-8")
+                                        except UnicodeDecodeError:
+                                            payload = data
                                         self.message.emit(
-                                            addr[0]+':'+str(addr[1]),
-                                            data.decode())
+                                            addr[0] + ":" + str(addr[1]), payload
+                                        )
                                     else:
-                                        self.status.emit(self.LISTEN, '')
+                                        self.status.emit(self.LISTEN, "")
                                         break
                             elif self.signal == self.SIG_DISCONNECT:
                                 self.signal = self.SIG_NORMAL
                                 self.connection.close()
-                                self.status.emit(self.LISTEN, '')
+                                self.status.emit(self.LISTEN, "")
                                 break
 
                 elif self.signal == self.SIG_STOP:
                     self.tcp_socket.close()
                     break
         finally:
-            self.status.emit(self.STOP, '')
+            self.status.emit(self.STOP, "")
 
     def send(self, msg):
-        self.connection.sendall(msg.encode())
+        if isinstance(msg, str):
+            msg = msg.encode()
+        self.connection.sendall(msg)
 
     def disconnect(self):
         self.signal = self.SIG_DISCONNECT
