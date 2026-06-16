@@ -84,33 +84,35 @@ APP_STYLESHEET = """
     QPushButton#checkBoxTcpServerSendTimer,
     QPushButton#checkBoxTcpClientSendTimer,
     QPushButton#checkBoxUdpSendTimer {
-        background-color: transparent;
+        background-color: #CFD8DC;
         color: #546E7A;
-        border: 1px solid #90A4AE;
+        border: none;
+        border-radius: 11px;
         padding: 3px 10px;
         margin: 1px;
+        min-width: 55px;
+        font-size: 10px;
     }
     QPushButton#checkBoxTcpServerEcho:hover,
     QPushButton#checkBoxTcpServerSendTimer:hover,
     QPushButton#checkBoxTcpClientSendTimer:hover,
     QPushButton#checkBoxUdpSendTimer:hover {
-        background-color: #ECEFF1;
-        border-color: #607D8B;
+        background-color: #B0BEC5;
         color: #37474F;
     }
     QPushButton#checkBoxTcpServerEcho:checked,
     QPushButton#checkBoxTcpServerSendTimer:checked,
     QPushButton#checkBoxTcpClientSendTimer:checked,
     QPushButton#checkBoxUdpSendTimer:checked {
-        background-color: #2E7D32;
+        background-color: #43A047;
         color: white;
-        border: 1px solid #1B5E20;
+        border: none;
     }
     QPushButton#checkBoxTcpServerEcho:checked:hover,
     QPushButton#checkBoxTcpServerSendTimer:checked:hover,
     QPushButton#checkBoxTcpClientSendTimer:checked:hover,
     QPushButton#checkBoxUdpSendTimer:checked:hover {
-        background-color: #1B5E20;
+        background-color: #2E7D32;
     }
     QTextBrowser {
         font-family: Consolas, "Courier New", monospace;

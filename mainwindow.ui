@@ -184,7 +184,7 @@
                 <item>
                  <widget class="QPushButton" name="checkBoxTcpServerEcho">
                   <property name="text">
-                   <string>Echo</string>
+                   <string>ECHO</string>
                   </property>
                   <property name="styleSheet">
                    <string>border-radius: 10px;</string>
@@ -197,7 +197,7 @@
                 <item>
                  <widget class="QPushButton" name="checkBoxTcpServerSendTimer">
                   <property name="text">
-                   <string>Repeat</string>
+                   <string>REPEAT</string>
                   </property>
                   <property name="styleSheet">
                    <string>border-radius: 10px;</string>
@@ -361,7 +361,7 @@
                 <item>
                  <widget class="QPushButton" name="checkBoxTcpClientSendTimer">
                   <property name="text">
-                   <string>Repeat</string>
+                   <string>REPEAT</string>
                   </property>
                   <property name="styleSheet">
                    <string>border-radius: 10px;</string>
@@ -625,7 +625,7 @@
                 <item>
                  <widget class="QPushButton" name="checkBoxUdpSendTimer">
                   <property name="text">
-                   <string>Repeat</string>
+                   <string>REPEAT</string>
                   </property>
                   <property name="styleSheet">
                    <string>border-radius: 10px;</string>
